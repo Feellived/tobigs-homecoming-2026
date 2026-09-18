@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TOBIG'S Homecoming Day 2026</title>
+<meta name="description" content="Big Then. Bigger Now. 2026년 11월 21일(토), TOBIG'S 1기부터 26기까지 다시 한자리에.">
+<meta name="theme-color" content="#0c0d16">
+
+<!-- ===================== EDIT HERE =====================
+     아래 4줄만 바꾸면 됩니다. (RSVP 폼, 문의 채널, 배포 주소)
+======================================================== -->
+<script>
+  const RSVP_URL    = "#";                       // 참석 신청 구글폼 링크 (10/19 오픈)
+  const CONTACT_URL = "#";                       // 운영부 오픈채팅 링크
+  const SITE_URL    = "https://feellived.github.io/tobigs-homecoming-2026/";  // 배포 주소
+  const RSVP_DEADLINE = "2026년 11월 1일(일)";    // 1차 신청 마감
+</script>
+<!-- ===================================================== -->
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="TOBIG'S Homecoming Day 2026">
+<meta property="og:description" content="Big Then. Bigger Now. — 11.21(토) 13:30, 강북노동자복지관 대강당. 1기부터 26기까지 다시 한자리에.">
+<meta property="og:image" content="https://feellived.github.io/tobigs-homecoming-2026/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://feellived.github.io/tobigs-homecoming-2026/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+
+<style>
+  :root{
+    --ink:#0f1215; --ink-2:#3a3e46; --muted:#6b6f7b;
+    --bg:#ffffff; --bg-2:#f5f5f4; --line:rgba(15,18,21,.10);
+    --dark:#0c0d16; --dark-2:#14162a; --on-dark:#ffffff; --on-dark-muted:#a9adb8; --dark-line:rgba(255,255,255,.12);
+    --gold:#ffcc47; --gold-deep:#e0ac1e;
+    --display:'Space Grotesk','Pretendard Variable',Pretendard,sans-serif;
+    --sans:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo',sans-serif;
+    --gutter:clamp(16px,5vw,64px); --max:1080px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ink:#f3f3f1; --ink-2:#c9cbd2; --muted:#8e929d;
+      --bg:#0c0d16; --bg-2:#12141f; --line:rgba(255,255,255,.12);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#f3f3f1; --ink-2:#c9cbd2; --muted:#8e929d;
+    --bg:#0c0d16; --bg-2:#12141f; --line:rgba(255,255,255,.12);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.6;font-size:16px;overflow-x:hidden;word-break:keep-all}
+  img{display:block;max-width:100%;height:auto}
+  a{color:inherit}
+  .wrap{width:100%;max-width:var(--max);margin:0 auto;padding-left:var(--gutter);padding-right:var(--gutter)}
+  section{padding:clamp(64px,10vw,120px) 0}
+  .eyebrow{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);display:flex;align-items:center;gap:12px;margin-bottom:20px}
+  .eyebrow::before{content:"";width:28px;height:2px;background:var(--gold)}
+  h2{font-family:var(--display);font-weight:700;font-size:clamp(28px,4.6vw,44px);line-height:1.08;letter-spacing:-.02em;margin-bottom:24px}
+  h2 .ko{display:block;font-family:var(--sans);font-weight:700;font-size:.62em;letter-spacing:-.01em;color:var(--muted);margin-top:8px}
+  p.lead{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:58ch}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.02em;padding:16px 26px;border-radius:8px;text-decoration:none;transition:transform .18s cubic-bezier(.2,.8,.2,1),background .18s;min-height:52px}
+  .btn:active{transform:scale(.98)}
+  .btn-gold{background:var(--gold);color:#0f1215}
+  .btn-gold:hover{background:#ffd76a}
+  .btn-ghost{border:1.5px solid var(--dark-line);color:var(--on-dark)}
+  .btn-ghost:hover{border-color:rgba(255,255,255,.4)}
+  .btn-ink{background:var(--ink);color:var(--bg)}
+  .btn[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;background:var(--dark);color:var(--on-dark);min-height:100svh;display:flex;flex-direction:column;overflow:hidden;isolation:isolate}
+  .hero::before{content:"";position:absolute;inset:0;background:
+      radial-gradient(1200px 600px at 85% 110%, rgba(255,204,71,.14), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, transparent 1px 72px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 1px, transparent 1px 72px);
+      z-index:-1}
+  .hero-top{display:flex;justify-content:space-between;align-items:center;padding-top:28px}
+  .hero-top img{width:clamp(120px,16vw,168px)}
+  .hero-top .tag{font-family:var(--display);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--on-dark-muted)}
+  .hero-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding-top:64px;padding-bottom:48px;position:relative}
+  .slogan{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-height:.92;font-size:clamp(56px,13vw,164px)}
+  .slogan .l2{color:var(--gold);display:block}
+  .hero-meta{margin-top:40px;display:grid;gap:8px;max-width:640px}
+  .hero-meta .title{font-family:var(--display);font-weight:700;font-size:clamp(16px,2.2vw,22px);letter-spacing:.06em;text-transform:uppercase}
+  .hero-meta .when{font-size:clamp(16px,2vw,20px);color:var(--on-dark-muted)}
+  .hero-meta .when b{color:var(--on-dark);font-weight:600}
+  .hero-cta{margin-top:36px;display:flex;flex-wrap:wrap;gap:12px}
+  .dday{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.18em;color:var(--gold);margin-bottom:18px}
+  .mascot{position:absolute;right:calc(-1 * var(--gutter) + 8px);bottom:-8px;width:clamp(150px,26vw,300px);pointer-events:none;
+      -webkit-mask-image:linear-gradient(to bottom,#000 65%,transparent 100%);mask-image:linear-gradient(to bottom,#000 65%,transparent 100%);opacity:.95}
+  @media (max-width:640px){.mascot{width:150px;right:-8px;opacity:.85}}
+  .hero-bottom{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-top:1px solid var(--dark-line);padding-top:18px;font-size:13px;color:var(--on-dark-muted)}
+  .hero-bottom .gen{font-family:var(--display);letter-spacing:.12em}
+
+  /* ---------- INTRO ---------- */
+  .intro .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(32px,6vw,80px);align-items:start}
+  .intro .facts{display:grid;gap:0;border-top:1px solid var(--line)}
+  .intro .fact{display:grid;grid-template-columns:96px 1fr;gap:16px;padding:18px 0;border-bottom:1px solid var(--line)}
+  .intro .fact dt{font-family:var(--display);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding-top:4px}
+  .intro .fact dd{font-weight:600;font-size:17px}
+  .intro .fact dd small{display:block;font-weight:400;color:var(--muted);font-size:14px;margin-top:2px}
+  @media (max-width:760px){.intro .grid{grid-template-columns:1fr}}
+
+  /* ---------- PLACE ---------- */
+  .place{background:var(--bg-2)}
+  .place .grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,64px)}
+  .card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:28px}
+  .card h3{font-family:var(--display);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:14px}
+  .card .big{font-size:clamp(22px,3vw,30px);font-weight:700;letter-spacing:-.02em;line-height:1.2}
+  .card .sub{color:var(--muted);margin-top:6px}
+  .card ul{list-style:none;margin-top:18px;display:grid;gap:8px;font-size:15px;color:var(--ink-2)}
+  .card ul li{padding-left:18px;position:relative}
+  .card ul li::before{content:"";position:absolute;left:0;top:11px;width:7px;height:7px;background:var(--gold);border-radius:1px}
+  .card .actions{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
+  .card .actions a{font-size:14px;font-weight:600;text-decoration:none;border-bottom:1.5px solid var(--gold);padding-bottom:2px}
+  @media (max-width:760px){.place .grid{grid-template-columns:1fr}}
+
+  /* ---------- PROGRAM ---------- */
+  .program ol{list-style:none;border-top:1px solid var(--line)}
+  .program li{display:grid;grid-template-columns:96px 1fr;gap:20px;padding:22px 0;border-bottom:1px solid var(--line);align-items:baseline}
+  .program .t{font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:.02em;color:var(--gold-deep)}
+  .program .n{font-weight:700;font-size:18px}
+  .program .d{color:var(--muted);font-size:15px;margin-top:4px}
+  .program .note{margin-top:20px;font-size:14px;color:var(--muted)}
+  @media (max-width:520px){.program li{grid-template-columns:72px 1fr;gap:14px}.program .t{font-size:16px}}
+
+  /* ---------- YEARS ---------- */
+  .years{background:var(--dark);color:var(--on-dark);overflow:hidden}
+  .years .row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(10px,4vw,48px)}
+  .years .num{font-family:var(--display);font-weight:700;font-size:clamp(40px,12vw,180px);letter-spacing:-.05em;line-height:.9;white-space:nowrap;min-width:0}
+  .years .num.now{color:var(--gold);text-align:right}
+  .years .arrow{width:clamp(40px,8vw,120px);height:2px;background:var(--dark-line);position:relative}
+  .years .arrow::after{content:"";position:absolute;right:-1px;top:-5px;border:6px solid transparent;border-left-color:var(--on-dark-muted)}
+  .years .cap{display:flex;justify-content:space-between;margin-top:18px;font-family:var(--display);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--on-dark-muted)}
+  .years .line{margin-top:48px;display:grid;grid-template-columns:repeat(26,1fr);gap:4px}
+  .years .line span{height:6px;background:rgba(255,255,255,.18);border-radius:1px}
+  .years .line span:first-child,.years .line span:last-child{background:var(--gold)}
+  .years .line-cap{display:flex;justify-content:space-between;margin-top:10px;font-size:13px;color:var(--on-dark-muted)}
+
+  /* ---------- PHOTOS ---------- */
+  .photos{display:none}
+  .photos.has{display:block}
+  .photos .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .photos figure{aspect-ratio:4/3;overflow:hidden;border-radius:8px;background:var(--bg-2)}
+  .photos img{width:100%;height:100%;object-fit:cover;filter:saturate(.92)}
+  .photos figure:nth-child(1){grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+  @media (max-width:640px){.photos .grid{grid-template-columns:1fr 1fr}.photos figure:nth-child(1){grid-column:span 2;grid-row:span 1;aspect-ratio:16/10}}
+
+  /* ---------- RSVP ---------- */
+  .rsvp{background:var(--dark);color:var(--on-dark);position:relative;overflow:hidden}
+  .rsvp::before{content:"";position:absolute;inset:0;background:radial-gradient(800px 400px at 10% 0%, rgba(255,204,71,.12), transparent 60%);pointer-events:none}
+  .rsvp .wrap{position:relative}
+  .rsvp h2{color:var(--on-dark)}
+  .rsvp h2 .ko{color:var(--on-dark-muted)}
+  .rsvp .lead{color:var(--on-dark-muted)}
+  .rsvp .cta{margin-top:32px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .rsvp .fine{margin-top:16px;font-size:13px;color:var(--on-dark-muted)}
+  .rsvp .facts{margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .rsvp .facts div{border-top:1px solid var(--dark-line);padding-top:14px}
+  .rsvp .facts b{display:block;font-family:var(--display);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+  .rsvp .facts span{font-size:15px;color:var(--on-dark)}
+  @media (max-width:640px){.rsvp .facts{grid-template-columns:1fr}}
+
+  /* ---------- FAQ ---------- */
+  .faq details{border-bottom:1px solid var(--line);padding:18px 0}
+  .faq details:first-of-type{border-top:1px solid var(--line)}
+  .faq summary{cursor:pointer;font-weight:700;font-size:17px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";font-family:var(--display);font-size:22px;color:var(--gold-deep);transition:transform .2s}
+  .faq details[open] summary::after{transform:rotate(45deg)}
+  .faq details p{margin-top:12px;color:var(--ink-2);font-size:15px;max-width:64ch}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--dark);color:var(--on-dark-muted);padding:40px 0 calc(32px + env(safe-area-inset-bottom));font-size:13px}
+  footer .row{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+  footer img.wm{width:120px;opacity:.9}
+  footer .contact a{color:var(--on-dark);text-decoration:none;border-bottom:1px solid var(--gold)}
+  footer .mini{width:40px;opacity:.9}
+
+  /* sticky mobile CTA */
+  .sticky{position:fixed;left:0;right:0;bottom:0;padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));background:rgba(12,13,22,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--dark-line);z-index:20;transform:translateY(110%);transition:transform .25s ease}
+  .sticky.show{transform:none}
+  .sticky .btn{width:100%}
+  @media (min-width:761px){.sticky{display:none}}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="wrap hero-top">
+    <img src="assets/wordmark-light.png" alt="TOBIG'S" width="168" height="22">
+    <span class="tag">Homecoming Day</span>
+  </div>
+
+  <div class="wrap hero-body">
+    <div class="dday" id="dday">2026.11.21 SAT</div>
+    <h1 class="slogan">Big Then.<span class="l2">Bigger Now.</span></h1>
+    <div class="hero-meta">
+      <div class="title">TOBIG'S Homecoming Day 2026</div>
+      <div class="when"><b>2026년 11월 21일 토요일</b> 13:30 – 17:30 · 강북노동자복지관 대강당</div>
+      <div class="when">1기부터 26기까지, 전·현 기수가 함께하는 첫 동문 행사</div>
+    </div>
+    <div class="hero-cta">
+      <a class="btn btn-gold js-rsvp" href="#rsvp">참석 신청하기</a>
+      <a class="btn btn-ghost" href="#program">프로그램 보기</a>
+    </div>
+    <img class="mascot" src="assets/mascot.png" alt="" aria-hidden="true">
+  </div>
+
+  <div class="wrap hero-bottom">
+    <span class="gen">1ST — 26TH</span>
+    <span>본행사 무료 · 2차 개별 정산</span>
+  </div>
+</header>
+
+<!-- ============ INTRO ============ -->
+<section class="intro" id="about">
+  <div class="wrap grid">
+    <div>
+      <div class="eyebrow">About</div>
+      <h2>오랜만에, 다시<span class="ko">TOBIG'S가 처음으로 전 기수를 한자리에 모읍니다</span></h2>
+      <p class="lead">2014년 1기부터 2026년 26기까지, 12년 동안 TOBIG'S를 지나간 사람들이 한 공간에 모입니다. 지난 활동을 사진으로 돌아보고, 지금의 TOBIG'S가 무엇을 하는지 공유하고, 선배와 후배가 테이블에서 편하게 이야기하는 자리입니다.</p>
+      <p class="lead" style="margin-top:16px">세미나도 취업 특강도 아닙니다. 명찰 보고 아무에게나 말을 거는 날입니다.</p>
+    </div>
+    <dl class="facts">
+      <div class="fact"><dt>When</dt><dd>2026.11.21 (토) 13:30<small>13:30 체크인 시작, 14:00 정각 오프닝</small></dd></div>
+      <div class="fact"><dt>Where</dt><dd>강북노동자복지관 5층 대강당<small>서울 마포구 환일길 13</small></dd></div>
+      <div class="fact"><dt>Who</dt><dd>TOBIG'S 1기 – 26기 전원<small>가족·동반 1인 가능 (신청 시 기재)</small></dd></div>
+      <div class="fact"><dt>Fee</dt><dd>본행사 무료<small>18:00 2차 저녁은 희망자 개별 정산</small></dd></div>
+      <div class="fact"><dt>Host</dt><dd>TOBIG'S 25기 운영부<small>회장 김준영</small></dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ PLACE ============ -->
+<section class="place" id="place">
+  <div class="wrap">
+    <div class="eyebrow">Date &amp; Venue</div>
+    <h2>11월 21일, 강북노동자복지관<span class="ko">토요일 오후, 대중교통으로 오세요</span></h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Venue</h3>
+        <div class="big">강북노동자복지관<br>5층 대강당</div>
+        <div class="sub">서울특별시 마포구 환일길 13</div>
+        <ul>
+          <li>최대 150명 · 빔·음향·무선 마이크 구비</li>
+          <li>주차 공간이 제한적입니다. 대중교통을 권장합니다</li>
+          <li>지하철 이용 시 역에서 도보 이동 (상세 약도는 리마인드 안내로 발송)</li>
+        </ul>
+        <div class="actions">
+          <a href="https://map.naver.com/p/search/%EA%B0%95%EB%B6%81%EB%85%B8%EB%8F%99%EC%9E%90%EB%B3%B5%EC%A7%80%EA%B4%80" target="_blank" rel="noopener">네이버 지도</a>
+          <a href="https://map.kakao.com/?q=%EA%B0%95%EB%B6%81%EB%85%B8%EB%8F%99%EC%9E%90%EB%B3%B5%EC%A7%80%EA%B4%80" target="_blank" rel="noopener">카카오맵</a>
+          <a href="#" id="ics">캘린더에 추가</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Timeline</h3>
+        <div class="big">13:30 – 17:30</div>
+        <div class="sub">본행사 4시간 · 이후 희망자 2차</div>
+        <ul>
+          <li><b>13:30</b> 체크인 · 포토월 · 웰컴 드링크</li>
+          <li><b>14:00</b> 본행사 시작 (정각 착석 부탁드립니다)</li>
+          <li><b>17:00</b> 단체사진 · 클로징</li>
+          <li><b>18:00</b> 2차 저녁 (도보 이동, 1/N)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROGRAM ============ -->
+<section class="program" id="program">
+  <div class="wrap">
+    <div class="eyebrow">Program</div>
+    <h2>무대는 짧게, 대화는 길게<span class="ko">프로그램 90분, 네트워킹 100분</span></h2>
+    <ol>
+      <li><span class="t">13:30</span><div><div class="n">체크인 &amp; 자유 네트워킹</div><div class="d">명찰 수령, 포토월, 과거 활동 사진 슬라이드</div></div></li>
+      <li><span class="t">14:00</span><div><div class="n">환영사 · 개회사</div><div class="d">25기 회장 환영사, 1기 선배님의 개회 말씀</div></div></li>
+      <li><span class="t">14:20</span><div><div class="n">TOBIG'S Yesterday &amp; Today</div><div class="d">2014년부터 지금까지, 사진과 영상으로 돌아보는 12년. 그리고 현재 TOBIG'S의 활동</div></div></li>
+      <li><span class="t">14:40</span><div><div class="n">Alumni Session</div><div class="d">선배 세 분의 TOBIG'S 이후 이야기 8분씩, 이어서 미리 받은 질문으로 패널 Q&amp;A</div></div></li>
+      <li><span class="t">15:25</span><div><div class="n">휴식 · 케이터링</div><div class="d">커피, 음료, 핑거푸드</div></div></li>
+      <li><span class="t">15:40</span><div><div class="n">추억 퀴즈 &amp; 테이블 토크</div><div class="d">기수를 섞은 테이블에서 TOBIG'S 퀴즈 5문제, 이어서 관심 주제별 자유 이동</div></div></li>
+      <li><span class="t">16:35</span><div><div class="n">자유 네트워킹 · 기수별 사진</div><div class="d">포토월에서 기수대별 촬영</div></div></li>
+      <li><span class="t">17:00</span><div><div class="n">단체사진 · 클로징</div><div class="d">전원 단체사진 후 2차 안내</div></div></li>
+    </ol>
+    <p class="note">세부 순서와 연사는 10월 중 확정되어 업데이트됩니다.</p>
+  </div>
+</section>
+
+<!-- ============ YEARS ============ -->
+<section class="years">
+  <div class="wrap">
+    <div class="row">
+      <div class="num">2014</div>
+      <div class="arrow"></div>
+      <div class="num now">2026</div>
+    </div>
+    <div class="cap"><span>1st generation</span><span>26th generation</span></div>
+    <div class="line" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="line-cap"><span>12년, 26개 기수</span><span>한 자리에</span></div>
+  </div>
+</section>
+
+<!-- ============ PHOTOS (auto-hidden when empty) ============ -->
+<section class="photos" id="photos">
+  <div class="wrap">
+    <div class="eyebrow">Archive</div>
+    <h2>그때의 TOBIG'S<span class="ko">기수별 활동 사진</span></h2>
+    <div class="grid" id="photo-grid"></div>
+  </div>
+</section>
+
+<!-- ============ RSVP ============ -->
+<section class="rsvp" id="rsvp">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--gold)">RSVP</div>
+    <h2>참석 신청<span class="ko">명찰과 자리, 케이터링을 준비하기 위해 꼭 미리 신청해 주세요</span></h2>
+    <p class="lead">신청은 1분이면 됩니다. 이름, 기수, 연락처, 2차 참석 여부, 그리고 선배에게 묻고 싶은 질문 하나.</p>
+    <div class="cta">
+      <a class="btn btn-gold js-rsvp" href="#">참석 신청하기</a>
+      <span class="fine" style="margin:0" id="deadline"></span>
+    </div>
+    <p class="fine" id="rsvp-note"></p>
+    <div class="facts">
+      <div><b>참가비</b><span>본행사 무료. 2차 저녁은 희망자 개별 정산(1/N)</span></div>
+      <div><b>동반</b><span>배우자·가족 1인 동반 가능. 신청 시 기재</span></div>
+      <div><b>기록</b><span>행사 사진·영상은 TOBIG'S 기록과 홍보에 사용됩니다</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="eyebrow">FAQ</div>
+    <h2>자주 묻는 질문</h2>
+    <details><summary>오래전 기수인데 아는 사람이 없어도 괜찮나요?</summary><p>그래서 만든 자리입니다. 테이블은 기수를 섞어 배정하고, 테이블마다 현 기수 호스트가 있습니다. 명찰에 기수가 크게 적혀 있어 말 걸기 쉽습니다.</p></details>
+    <details><summary>늦게 도착해도 되나요?</summary><p>됩니다. 체크인 데스크는 15:25까지 운영하고, 이후에는 입구의 셀프 명찰함을 이용하시면 됩니다. 15:40 테이블 토크부터 합류하셔도 충분합니다.</p></details>
+    <details><summary>2차는 어디서 하나요?</summary><p>행사장 도보권 식당에서 18:00부터 진행합니다. 인원 확정 후 리마인드 안내로 장소를 보내드립니다. 비용은 개별 정산입니다.</p></details>
+    <details><summary>신청 후 못 가게 되면요?</summary><p>신청 시 안내되는 불참 알림 링크로 알려주시면 됩니다. 케이터링과 명찰 준비 때문에 하루 전까지 부탁드립니다.</p></details>
+    <details><summary>주차할 수 있나요?</summary><p>행사장 주차 공간이 제한적입니다. 대중교통을 권장하며, 부득이한 경우 문의 채널로 미리 연락 주세요.</p></details>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap row">
+    <div>
+      <img class="wm" src="assets/wordmark-light.png" alt="TOBIG'S" width="120" height="16">
+      <p style="margin-top:14px">TOBIG'S Homecoming Day 2026 · 2026.11.21 SAT<br>주최 TOBIG'S 25기 운영부</p>
+    </div>
+    <div class="contact">
+      문의 <a class="js-contact" href="#">운영부 오픈채팅</a>
+    </div>
+    <img class="mini" src="assets/favicon.png" alt="" aria-hidden="true">
+  </div>
+</footer>
+
+<div class="sticky" id="sticky"><a class="btn btn-gold js-rsvp" href="#rsvp">참석 신청하기</a></div>
+
+<script>
+(function(){
+  // ---- links from EDIT HERE ----
+  const rsvpReady = RSVP_URL && RSVP_URL !== "#";
+  const contactReady = CONTACT_URL && CONTACT_URL !== "#";
+  document.querySelectorAll('.js-rsvp').forEach(a=>{
+    if(rsvpReady){ a.href = RSVP_URL; a.target="_blank"; a.rel="noopener"; }
+    else { a.href = "#rsvp"; }
+  });
+  document.querySelectorAll('.js-contact').forEach(a=>{
+    if(contactReady){ a.href = CONTACT_URL; a.target="_blank"; a.rel="noopener"; }
+    else { a.removeAttribute('href'); a.style.borderBottom='none'; a.textContent='운영부 오픈채팅 (링크 준비 중)'; }
+  });
+  const dl = document.getElementById('deadline');
+  const note = document.getElementById('rsvp-note');
+  if(rsvpReady){ dl.textContent = '1차 신청 마감 ' + RSVP_DEADLINE; }
+  else {
+    dl.textContent = '신청 폼은 10월 중순에 열립니다';
+    note.textContent = '공식 참석 신청은 10월 중순 기수별 단톡방으로 다시 안내드립니다. 그 전까지는 이 페이지를 저장해 두세요.';
+    document.querySelectorAll('.rsvp .js-rsvp').forEach(a=>{ a.setAttribute('aria-disabled','true'); a.textContent='참석 신청 (10월 오픈)'; a.addEventListener('click',e=>e.preventDefault()); });
+  }
+
+  // ---- D-day ----
+  const ev = new Date(2026,10,21,13,30);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const d = Math.ceil((new Date(2026,10,21) - today)/86400000);
+  const el = document.getElementById('dday');
+  el.textContent = d>0 ? 'D-'+d+'  ·  2026.11.21 SAT' : (d===0 ? 'D-DAY  ·  2026.11.21 SAT' : '2026.11.21 SAT');
+
+  // ---- ICS ----
+  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//TOBIGS//Homecoming 2026//KO','BEGIN:VEVENT',
+    'UID:tobigs-homecoming-2026@tobigs','DTSTAMP:20260918T000000Z',
+    'DTSTART;TZID=Asia/Seoul:20261121T133000','DTEND;TZID=Asia/Seoul:20261121T173000',
+    "SUMMARY:TOBIG'S Homecoming Day 2026",'LOCATION:강북노동자복지관 5층 대강당 (서울 마포구 환일길 13)',
+    'DESCRIPTION:Big Then. Bigger Now. '+SITE_URL,'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const icsA = document.getElementById('ics');
+  icsA.href = 'data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
+  icsA.download = 'tobigs-homecoming-2026.ics';
+
+  // ---- photos: load 01..09, hide section if none ----
+  const grid = document.getElementById('photo-grid'); const sec = document.getElementById('photos');
+  let loaded = 0, tried = 0; const N = 9;
+  for(let i=1;i<=N;i++){
+    const img = new Image(); const name = String(i).padStart(2,'0')+'.jpg';
+    img.src = 'assets/photos/'+name; img.alt = "TOBIG'S 활동 사진 "+i; img.loading='lazy';
+    img.onload = ()=>{ const f=document.createElement('figure'); f.appendChild(img); grid.appendChild(f); loaded++; sec.classList.add('has'); };
+    img.onerror = ()=>{ tried++; };
+  }
+
+  // ---- sticky CTA on mobile after hero ----
+  const sticky = document.getElementById('sticky'); const hero = document.querySelector('.hero'); const rsvp = document.getElementById('rsvp');
+  if('IntersectionObserver' in window){
+    let heroOut=false, rsvpIn=false;
+    const upd=()=>sticky.classList.toggle('show', heroOut && !rsvpIn);
+    new IntersectionObserver(e=>{heroOut=!e[0].isIntersecting;upd();},{threshold:0.05}).observe(hero);
+    new IntersectionObserver(e=>{rsvpIn=e[0].isIntersecting;upd();},{threshold:0.2}).observe(rsvp);
+  }
+})();
+</script>
+</body>
+</html>
