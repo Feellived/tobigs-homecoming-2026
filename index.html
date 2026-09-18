@@ -15,6 +15,8 @@
   const CONTACT_URL = "#";                       // 운영부 오픈채팅 링크
   const SITE_URL    = "https://feellived.github.io/tobigs-homecoming-2026/";  // 배포 주소
   const RSVP_DEADLINE = "2026년 11월 1일(일)";    // 1차 신청 마감
+  const STAT_MEMBERS  = "";                      // 역대 누적 학회원 수 (예: "480"). 비우면 항목 숨김
+  const STAT_GEN26    = "21";                    // 26기 인원
 </script>
 <!-- ===================================================== -->
 
@@ -144,13 +146,28 @@
   @media (max-width:640px){.conf-grid{grid-template-columns:repeat(2,1fr);gap:8px}.conf{padding:14px}.conf .no{font-size:22px}}
 
   /* ---------- PHOTOS ---------- */
-  .photos{display:none}
-  .photos.has{display:block}
-  .photos .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .photos figure{aspect-ratio:4/3;overflow:hidden;border-radius:8px;background:var(--bg-2)}
-  .photos img{width:100%;height:100%;object-fit:cover;filter:saturate(.92)}
-  .photos figure:nth-child(1){grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
-  @media (max-width:640px){.photos .grid{grid-template-columns:1fr 1fr}.photos figure:nth-child(1){grid-column:span 2;grid-row:span 1;aspect-ratio:16/10}}
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:8px 0 40px}
+  .stats div{border-top:2px solid var(--accent);padding-top:12px}
+  .stats b{display:block;font-family:var(--display);font-weight:700;font-size:clamp(28px,4vw,40px);letter-spacing:-.03em;line-height:1;color:var(--ink)}
+  .stats span{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-family:var(--display)}
+  .stats div.hide{display:none}
+  .era{display:flex;align-items:baseline;gap:14px;margin:36px 0 14px}
+  .era-tag{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--bg);background:var(--ink);padding:5px 10px;border-radius:4px}
+  .era-tag.now{background:var(--primary);color:#fff}
+  .era-sub{font-size:14px;color:var(--muted)}
+  .photos .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .photos figure{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:8px;background:var(--bg-2)}
+  .photos .grid.now figure:first-child{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+  .photos img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+  .photos figure:hover img{transform:scale(1.03)}
+  .photos .grid.then img{filter:saturate(.75) contrast(.98)}
+  .photos figcaption{position:absolute;left:0;right:0;bottom:0;padding:28px 12px 10px;font-size:12px;color:#fff;background:linear-gradient(to top,rgba(11,18,48,.75),transparent);letter-spacing:.02em}
+  @media (max-width:760px){.stats{grid-template-columns:repeat(3,1fr)}.photos .grid{grid-template-columns:1fr 1fr}.photos .grid.now figure:first-child{grid-column:span 2;grid-row:auto;aspect-ratio:16/10}}
+  .posters{display:flex;gap:12px;overflow-x:auto;padding:4px 0 14px;margin:28px 0 24px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .posters::-webkit-scrollbar{height:6px}.posters::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .posters figure{flex:0 0 150px;scroll-snap-align:start}
+  .posters img{width:150px;height:212px;object-fit:cover;object-position:top;border-radius:6px;border:1px solid var(--line);background:var(--bg);display:block}
+  .posters figcaption{font-size:11px;color:var(--muted);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
   /* ---------- RSVP ---------- */
   .rsvp{background:var(--dark);color:var(--on-dark);position:relative;overflow:hidden}
@@ -300,6 +317,17 @@
     <div class="eyebrow">Conference Archive</div>
     <h2>22번의 컨퍼런스<span class="ko">2016년 여름부터 2026년 여름까지, 기수마다 남긴 프로젝트</span></h2>
     <p class="lead">홈커밍 전에 내 기수 컨퍼런스 페이지를 한 번 열어보세요. 그때 발표한 프로젝트가 그대로 남아 있습니다. 당일 Yesterday &amp; Today 세션과 추억 퀴즈도 이 기록에서 나옵니다.</p>
+    <div class="posters" aria-label="역대 컨퍼런스 포스터">
+      <figure><img src="assets/posters/2015.06.jpg" alt="2015.06 제1회 공개 세미나 포스터" loading="lazy"><figcaption>2015 · 제1회 공개 세미나</figcaption></figure>
+      <figure><img src="assets/posters/2015.12.jpg" alt="2015.12 제1회 연합 컨퍼런스 포스터" loading="lazy"><figcaption>2015 · 제1회 연합 컨퍼런스</figcaption></figure>
+      <figure><img src="assets/posters/2017.07.jpg" alt="2017.07 연합 컨퍼런스 포스터" loading="lazy"><figcaption>2017 · 연합 컨퍼런스</figcaption></figure>
+      <figure><img src="assets/posters/2018.07.jpg" alt="2018.07 제6회 포스터" loading="lazy"><figcaption>2018 · 제6회</figcaption></figure>
+      <figure><img src="assets/posters/2020.07.jpg" alt="2020.07 제10회 포스터" loading="lazy"><figcaption>2020 · 제10회</figcaption></figure>
+      <figure><img src="assets/posters/2021.01.jpg" alt="2021.01 제11회 포스터" loading="lazy"><figcaption>2021 · 제11회</figcaption></figure>
+      <figure><img src="assets/posters/2021.07.jpg" alt="2021.07 제12회 포스터" loading="lazy"><figcaption>2021 · 제12회</figcaption></figure>
+      <figure><img src="assets/posters/2023.06.jpg" alt="2023.06 제16회 포스터" loading="lazy"><figcaption>2023 · 제16회</figcaption></figure>
+      <figure><img src="assets/posters/2024.07.jpg" alt="2024.07 제18회 포스터" loading="lazy"><figcaption>2024 · 제18회</figcaption></figure>
+    </div>
     <div class="conf-grid">
       <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">1st</span><span class="yr">2016</span><span class="pj">기록 보기</span></a>
       <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">2nd</span><span class="yr">2016</span><span class="pj">하트 프로젝트</span></a>
@@ -328,12 +356,33 @@
   </div>
 </section>
 
-<!-- ============ PHOTOS (auto-hidden when empty) ============ -->
+<!-- ============ PHOTOS ============ -->
 <section class="photos" id="photos">
   <div class="wrap">
-    <div class="eyebrow">Archive</div>
-    <h2>그때의 TOBIG'S<span class="ko">기수별 활동 사진</span></h2>
-    <div class="grid" id="photo-grid"></div>
+    <div class="eyebrow">Then &amp; Now</div>
+    <h2>그때의 TOBIG'S, 지금의 TOBIG'S<span class="ko">같은 이름, 다른 얼굴들</span></h2>
+    <div class="stats" id="stats">
+      <div><b>2014</b><span>창립</span></div>
+      <div><b>26</b><span>기수</span></div>
+      <div><b>22</b><span>컨퍼런스</span></div>
+      <div id="stat-members"><b></b><span>누적 학회원</span></div>
+      <div id="stat-gen26"><b></b><span>26기 현재</span></div>
+    </div>
+    <div class="era"><span class="era-tag">Then</span><span class="era-sub">2017 – 2018 · 8기의 강의실</span></div>
+    <div class="grid then">
+        <figure><img src="assets/photos/then/01.jpg" alt="2017 · 8기 정규 교육" loading="lazy"><figcaption>2017 · 8기 정규 교육</figcaption></figure>
+        <figure><img src="assets/photos/then/02.jpg" alt="2017 · 8기 정규 교육" loading="lazy"><figcaption>2017 · 8기 정규 교육</figcaption></figure>
+        <figure><img src="assets/photos/then/03.jpg" alt="2018 · 신년회" loading="lazy"><figcaption>2018 · 신년회</figcaption></figure>
+        <figure><img src="assets/photos/then/04.jpg" alt="2017 · 8기 딥러닝 세미나" loading="lazy"><figcaption>2017 · 8기 딥러닝 세미나</figcaption></figure>
+    </div>
+    <div class="era"><span class="era-tag now">Now</span><span class="era-sub">2024 – 2026 · 22기부터 26기까지</span></div>
+    <div class="grid now">
+        <figure><img src="assets/photos/now/03.jpg" alt="2026 · 제22회 컨퍼런스" loading="lazy"><figcaption>2026 · 제22회 컨퍼런스</figcaption></figure>
+        <figure><img src="assets/photos/now/01.jpg" alt="2024 · 제18회 컨퍼런스" loading="lazy"><figcaption>2024 · 제18회 컨퍼런스</figcaption></figure>
+        <figure><img src="assets/photos/now/02.jpg" alt="2024 · 제18회 컨퍼런스 시상" loading="lazy"><figcaption>2024 · 제18회 컨퍼런스 시상</figcaption></figure>
+        <figure><img src="assets/photos/now/04.jpg" alt="2026 · 코덱스 해커톤" loading="lazy"><figcaption>2026 · 코덱스 해커톤</figcaption></figure>
+        <figure><img src="assets/photos/now/05.jpg" alt="2026 · 25·26기 OT" loading="lazy"><figcaption>2026 · 25·26기 OT</figcaption></figure>
+    </div>
   </div>
 </section>
 
@@ -428,15 +477,10 @@
   icsA.href = 'data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
   icsA.download = 'tobigs-homecoming-2026.ics';
 
-  // ---- photos: load 01..09, hide section if none ----
-  const grid = document.getElementById('photo-grid'); const sec = document.getElementById('photos');
-  let loaded = 0, tried = 0; const N = 9;
-  for(let i=1;i<=N;i++){
-    const img = new Image(); const name = String(i).padStart(2,'0')+'.jpg';
-    img.src = 'assets/photos/'+name; img.alt = "TOBIG'S 활동 사진 "+i; img.loading='lazy';
-    img.onload = ()=>{ const f=document.createElement('figure'); f.appendChild(img); grid.appendChild(f); loaded++; sec.classList.add('has'); };
-    img.onerror = ()=>{ tried++; };
-  }
+  // ---- stats ----
+  const sm=document.getElementById('stat-members'), sg=document.getElementById('stat-gen26');
+  if(STAT_MEMBERS){ sm.querySelector('b').textContent=STAT_MEMBERS; } else { sm.classList.add('hide'); }
+  if(STAT_GEN26){ sg.querySelector('b').textContent=STAT_GEN26; } else { sg.classList.add('hide'); }
 
   // ---- sticky CTA on mobile after hero ----
   const sticky = document.getElementById('sticky'); const hero = document.querySelector('.hero'); const rsvp = document.getElementById('rsvp');
