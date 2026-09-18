@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TOBIG'S Homecoming Day 2026</title>
 <meta name="description" content="Big Then. Bigger Now. 2026년 11월 21일(토), TOBIG'S 1기부터 26기까지 다시 한자리에.">
-<meta name="theme-color" content="#0c0d16">
+<meta name="theme-color" content="#0b1230">
 
 <!-- ===================== EDIT HERE =====================
      아래 4줄만 바꾸면 됩니다. (RSVP 폼, 문의 채널, 배포 주소)
@@ -37,22 +37,22 @@
 <style>
   :root{
     --ink:#0f1215; --ink-2:#3a3e46; --muted:#6b6f7b;
-    --bg:#ffffff; --bg-2:#f5f5f4; --line:rgba(15,18,21,.10);
-    --dark:#0c0d16; --dark-2:#14162a; --on-dark:#ffffff; --on-dark-muted:#a9adb8; --dark-line:rgba(255,255,255,.12);
-    --gold:#ffcc47; --gold-deep:#e0ac1e;
+    --bg:#ffffff; --bg-2:#f3f5fb; --line:rgba(11,18,48,.10);
+    --dark:#0b1230; --dark-2:#141d48; --on-dark:#ffffff; --on-dark-muted:#aab4d9; --dark-line:rgba(255,255,255,.14);
+    --accent:#9db0ff; --accent-deep:#2f47c4; --primary:#3d5afe; --primary-hover:#5470ff;
     --display:'Space Grotesk','Pretendard Variable',Pretendard,sans-serif;
     --sans:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo',sans-serif;
     --gutter:clamp(16px,5vw,64px); --max:1080px;
   }
   @media (prefers-color-scheme:dark){
     :root:not([data-theme="light"]){
-      --ink:#f3f3f1; --ink-2:#c9cbd2; --muted:#8e929d;
-      --bg:#0c0d16; --bg-2:#12141f; --line:rgba(255,255,255,.12);
+      --ink:#f2f4fb; --ink-2:#c6cde6; --muted:#8f9bc4;
+      --bg:#0b1230; --bg-2:#101840; --line:rgba(255,255,255,.12); --accent-deep:#9db0ff;
     }
   }
   :root[data-theme="dark"]{
-    --ink:#f3f3f1; --ink-2:#c9cbd2; --muted:#8e929d;
-    --bg:#0c0d16; --bg-2:#12141f; --line:rgba(255,255,255,.12);
+    --ink:#f2f4fb; --ink-2:#c6cde6; --muted:#8f9bc4;
+    --bg:#0b1230; --bg-2:#101840; --line:rgba(255,255,255,.12); --accent-deep:#9db0ff;
   }
 
   *{box-sizing:border-box;margin:0;padding:0}
@@ -62,15 +62,15 @@
   a{color:inherit}
   .wrap{width:100%;max-width:var(--max);margin:0 auto;padding-left:var(--gutter);padding-right:var(--gutter)}
   section{padding:clamp(64px,10vw,120px) 0}
-  .eyebrow{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);display:flex;align-items:center;gap:12px;margin-bottom:20px}
-  .eyebrow::before{content:"";width:28px;height:2px;background:var(--gold)}
+  .eyebrow{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent-deep);display:flex;align-items:center;gap:12px;margin-bottom:20px}
+  .eyebrow::before{content:"";width:28px;height:2px;background:var(--accent)}
   h2{font-family:var(--display);font-weight:700;font-size:clamp(28px,4.6vw,44px);line-height:1.08;letter-spacing:-.02em;margin-bottom:24px}
   h2 .ko{display:block;font-family:var(--sans);font-weight:700;font-size:.62em;letter-spacing:-.01em;color:var(--muted);margin-top:8px}
   p.lead{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:58ch}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.02em;padding:16px 26px;border-radius:8px;text-decoration:none;transition:transform .18s cubic-bezier(.2,.8,.2,1),background .18s;min-height:52px}
   .btn:active{transform:scale(.98)}
-  .btn-gold{background:var(--gold);color:#0f1215}
-  .btn-gold:hover{background:#ffd76a}
+  .btn-gold{background:var(--primary);color:#fff;box-shadow:0 8px 24px rgba(61,90,254,.28)}
+  .btn-gold:hover{background:var(--primary-hover)}
   .btn-ghost{border:1.5px solid var(--dark-line);color:var(--on-dark)}
   .btn-ghost:hover{border-color:rgba(255,255,255,.4)}
   .btn-ink{background:var(--ink);color:var(--bg)}
@@ -79,7 +79,8 @@
   /* ---------- HERO ---------- */
   .hero{position:relative;background:var(--dark);color:var(--on-dark);min-height:100svh;display:flex;flex-direction:column;overflow:hidden;isolation:isolate}
   .hero::before{content:"";position:absolute;inset:0;background:
-      radial-gradient(1200px 600px at 85% 110%, rgba(255,204,71,.14), transparent 60%),
+      radial-gradient(1200px 600px at 85% 110%, rgba(157,176,255,.22), transparent 60%),
+      radial-gradient(900px 500px at 0% 0%, rgba(61,90,254,.18), transparent 60%),
       repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, transparent 1px 72px),
       repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 1px, transparent 1px 72px);
       z-index:-1}
@@ -88,13 +89,13 @@
   .hero-top .tag{font-family:var(--display);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--on-dark-muted)}
   .hero-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding-top:64px;padding-bottom:48px;position:relative}
   .slogan{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-height:.92;font-size:clamp(56px,13vw,164px)}
-  .slogan .l2{color:var(--gold);display:block}
+  .slogan .l2{color:var(--accent);display:block}
   .hero-meta{margin-top:40px;display:grid;gap:8px;max-width:640px}
   .hero-meta .title{font-family:var(--display);font-weight:700;font-size:clamp(16px,2.2vw,22px);letter-spacing:.06em;text-transform:uppercase}
   .hero-meta .when{font-size:clamp(16px,2vw,20px);color:var(--on-dark-muted)}
   .hero-meta .when b{color:var(--on-dark);font-weight:600}
   .hero-cta{margin-top:36px;display:flex;flex-wrap:wrap;gap:12px}
-  .dday{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.18em;color:var(--gold);margin-bottom:18px}
+  .dday{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
   .mascot{position:absolute;right:calc(-1 * var(--gutter) + 8px);bottom:-8px;width:clamp(150px,26vw,300px);pointer-events:none;
       -webkit-mask-image:linear-gradient(to bottom,#000 65%,transparent 100%);mask-image:linear-gradient(to bottom,#000 65%,transparent 100%);opacity:.95}
   @media (max-width:640px){.mascot{width:150px;right:-8px;opacity:.85}}
@@ -114,20 +115,20 @@
   .place{background:var(--bg-2)}
   .place .grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,64px)}
   .card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:28px}
-  .card h3{font-family:var(--display);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:14px}
+  .card h3{font-family:var(--display);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-deep);margin-bottom:14px}
   .card .big{font-size:clamp(22px,3vw,30px);font-weight:700;letter-spacing:-.02em;line-height:1.2}
   .card .sub{color:var(--muted);margin-top:6px}
   .card ul{list-style:none;margin-top:18px;display:grid;gap:8px;font-size:15px;color:var(--ink-2)}
   .card ul li{padding-left:18px;position:relative}
-  .card ul li::before{content:"";position:absolute;left:0;top:11px;width:7px;height:7px;background:var(--gold);border-radius:1px}
+  .card ul li::before{content:"";position:absolute;left:0;top:11px;width:7px;height:7px;background:var(--accent);border-radius:1px}
   .card .actions{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
-  .card .actions a{font-size:14px;font-weight:600;text-decoration:none;border-bottom:1.5px solid var(--gold);padding-bottom:2px}
+  .card .actions a{font-size:14px;font-weight:600;text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:2px}
   @media (max-width:760px){.place .grid{grid-template-columns:1fr}}
 
   /* ---------- PROGRAM ---------- */
   .program ol{list-style:none;border-top:1px solid var(--line)}
   .program li{display:grid;grid-template-columns:96px 1fr;gap:20px;padding:22px 0;border-bottom:1px solid var(--line);align-items:baseline}
-  .program .t{font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:.02em;color:var(--gold-deep)}
+  .program .t{font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:.02em;color:var(--accent-deep)}
   .program .n{font-weight:700;font-size:18px}
   .program .d{color:var(--muted);font-size:15px;margin-top:4px}
   .program .note{margin-top:20px;font-size:14px;color:var(--muted)}
@@ -137,13 +138,13 @@
   .years{background:var(--dark);color:var(--on-dark);overflow:hidden}
   .years .row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(10px,4vw,48px)}
   .years .num{font-family:var(--display);font-weight:700;font-size:clamp(40px,12vw,180px);letter-spacing:-.05em;line-height:.9;white-space:nowrap;min-width:0}
-  .years .num.now{color:var(--gold);text-align:right}
+  .years .num.now{color:var(--accent);text-align:right}
   .years .arrow{width:clamp(40px,8vw,120px);height:2px;background:var(--dark-line);position:relative}
   .years .arrow::after{content:"";position:absolute;right:-1px;top:-5px;border:6px solid transparent;border-left-color:var(--on-dark-muted)}
   .years .cap{display:flex;justify-content:space-between;margin-top:18px;font-family:var(--display);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--on-dark-muted)}
   .years .line{margin-top:48px;display:grid;grid-template-columns:repeat(26,1fr);gap:4px}
   .years .line span{height:6px;background:rgba(255,255,255,.18);border-radius:1px}
-  .years .line span:first-child,.years .line span:last-child{background:var(--gold)}
+  .years .line span:first-child,.years .line span:last-child{background:var(--accent)}
   .years .line-cap{display:flex;justify-content:space-between;margin-top:10px;font-size:13px;color:var(--on-dark-muted)}
 
   /* ---------- PHOTOS ---------- */
@@ -157,7 +158,7 @@
 
   /* ---------- RSVP ---------- */
   .rsvp{background:var(--dark);color:var(--on-dark);position:relative;overflow:hidden}
-  .rsvp::before{content:"";position:absolute;inset:0;background:radial-gradient(800px 400px at 10% 0%, rgba(255,204,71,.12), transparent 60%);pointer-events:none}
+  .rsvp::before{content:"";position:absolute;inset:0;background:radial-gradient(800px 400px at 10% 0%, rgba(157,176,255,.16), transparent 60%);pointer-events:none}
   .rsvp .wrap{position:relative}
   .rsvp h2{color:var(--on-dark)}
   .rsvp h2 .ko{color:var(--on-dark-muted)}
@@ -166,7 +167,7 @@
   .rsvp .fine{margin-top:16px;font-size:13px;color:var(--on-dark-muted)}
   .rsvp .facts{margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .rsvp .facts div{border-top:1px solid var(--dark-line);padding-top:14px}
-  .rsvp .facts b{display:block;font-family:var(--display);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+  .rsvp .facts b{display:block;font-family:var(--display);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
   .rsvp .facts span{font-size:15px;color:var(--on-dark)}
   @media (max-width:640px){.rsvp .facts{grid-template-columns:1fr}}
 
@@ -175,7 +176,7 @@
   .faq details:first-of-type{border-top:1px solid var(--line)}
   .faq summary{cursor:pointer;font-weight:700;font-size:17px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px}
   .faq summary::-webkit-details-marker{display:none}
-  .faq summary::after{content:"+";font-family:var(--display);font-size:22px;color:var(--gold-deep);transition:transform .2s}
+  .faq summary::after{content:"+";font-family:var(--display);font-size:22px;color:var(--accent-deep);transition:transform .2s}
   .faq details[open] summary::after{transform:rotate(45deg)}
   .faq details p{margin-top:12px;color:var(--ink-2);font-size:15px;max-width:64ch}
 
@@ -183,7 +184,7 @@
   footer{background:var(--dark);color:var(--on-dark-muted);padding:40px 0 calc(32px + env(safe-area-inset-bottom));font-size:13px}
   footer .row{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
   footer img.wm{width:120px;opacity:.9}
-  footer .contact a{color:var(--on-dark);text-decoration:none;border-bottom:1px solid var(--gold)}
+  footer .contact a{color:var(--on-dark);text-decoration:none;border-bottom:1px solid var(--accent)}
   footer .mini{width:40px;opacity:.9}
 
   /* sticky mobile CTA */
@@ -221,7 +222,7 @@
 
   <div class="wrap hero-bottom">
     <span class="gen">1ST — 26TH</span>
-    <span>본행사 무료 · 2차 개별 정산</span>
+    <span>본행사 무료</span>
   </div>
 </header>
 
@@ -230,16 +231,15 @@
   <div class="wrap grid">
     <div>
       <div class="eyebrow">About</div>
-      <h2>오랜만에, 다시<span class="ko">TOBIG'S가 처음으로 전 기수를 한자리에 모읍니다</span></h2>
-      <p class="lead">2014년 1기부터 2026년 26기까지, 12년 동안 TOBIG'S를 지나간 사람들이 한 공간에 모입니다. 지난 활동을 사진으로 돌아보고, 지금의 TOBIG'S가 무엇을 하는지 공유하고, 선배와 후배가 테이블에서 편하게 이야기하는 자리입니다.</p>
-      <p class="lead" style="margin-top:16px">세미나도 취업 특강도 아닙니다. 명찰 보고 아무에게나 말을 거는 날입니다.</p>
+      <h2>다시, 투빅스<span class="ko">TOBIG'S가 처음으로 전 기수를 한자리에 모읍니다</span></h2>
+      <p class="lead">2014년 1기부터 2026년 26기까지, 12년 동안 TOBIG'S를 지나간 사람들이 한 공간에 모입니다. 지난 활동을 사진으로 돌아보고, 지금의 TOBIG'S가 무엇을 하는지 공유하고, 선배와 후배가 연결되는 시간입니다.</p>
     </div>
     <dl class="facts">
       <div class="fact"><dt>When</dt><dd>2026.11.21 (토) 13:30<small>13:30 체크인 시작, 14:00 정각 오프닝</small></dd></div>
       <div class="fact"><dt>Where</dt><dd>강북노동자복지관 5층 대강당<small>서울 마포구 환일길 13</small></dd></div>
       <div class="fact"><dt>Who</dt><dd>TOBIG'S 1기 – 26기 전원<small>가족·동반 1인 가능 (신청 시 기재)</small></dd></div>
-      <div class="fact"><dt>Fee</dt><dd>본행사 무료<small>18:00 2차 저녁은 희망자 개별 정산</small></dd></div>
-      <div class="fact"><dt>Host</dt><dd>TOBIG'S 25기 운영부<small>회장 김준영</small></dd></div>
+      <div class="fact"><dt>Fee</dt><dd>본행사 무료<small>18:00 뒤풀이는 희망자 참석</small></dd></div>
+      <div class="fact"><dt>Host</dt><dd>TOBIG'S 25기 운영부<small>회장 김준영 · 운영부장 유주형</small></dd></div>
     </dl>
   </div>
 </section>
@@ -268,12 +268,12 @@
       <div class="card">
         <h3>Timeline</h3>
         <div class="big">13:30 – 17:30</div>
-        <div class="sub">본행사 4시간 · 이후 희망자 2차</div>
+        <div class="sub">본행사 4시간 · 이후 희망자 뒤풀이</div>
         <ul>
           <li><b>13:30</b> 체크인 · 포토월 · 웰컴 드링크</li>
-          <li><b>14:00</b> 본행사 시작 (정각 착석 부탁드립니다)</li>
+          <li><b>14:00</b> 본행사 시작</li>
           <li><b>17:00</b> 단체사진 · 클로징</li>
-          <li><b>18:00</b> 2차 저녁 (도보 이동, 1/N)</li>
+          <li><b>18:00</b> 뒤풀이 (도보 이동)</li>
         </ul>
       </div>
     </div>
@@ -293,7 +293,7 @@
       <li><span class="t">15:25</span><div><div class="n">휴식 · 케이터링</div><div class="d">커피, 음료, 핑거푸드</div></div></li>
       <li><span class="t">15:40</span><div><div class="n">추억 퀴즈 &amp; 테이블 토크</div><div class="d">기수를 섞은 테이블에서 TOBIG'S 퀴즈 5문제, 이어서 관심 주제별 자유 이동</div></div></li>
       <li><span class="t">16:35</span><div><div class="n">자유 네트워킹 · 기수별 사진</div><div class="d">포토월에서 기수대별 촬영</div></div></li>
-      <li><span class="t">17:00</span><div><div class="n">단체사진 · 클로징</div><div class="d">전원 단체사진 후 2차 안내</div></div></li>
+      <li><span class="t">17:00</span><div><div class="n">단체사진 · 클로징</div><div class="d">전원 단체사진 후 뒤풀이 안내</div></div></li>
     </ol>
     <p class="note">세부 순서와 연사는 10월 중 확정되어 업데이트됩니다.</p>
   </div>
@@ -328,16 +328,16 @@
 <!-- ============ RSVP ============ -->
 <section class="rsvp" id="rsvp">
   <div class="wrap">
-    <div class="eyebrow" style="color:var(--gold)">RSVP</div>
+    <div class="eyebrow" style="color:var(--accent)">RSVP</div>
     <h2>참석 신청<span class="ko">명찰과 자리, 케이터링을 준비하기 위해 꼭 미리 신청해 주세요</span></h2>
-    <p class="lead">신청은 1분이면 됩니다. 이름, 기수, 연락처, 2차 참석 여부, 그리고 선배에게 묻고 싶은 질문 하나.</p>
+    <p class="lead">신청은 1분이면 됩니다. 이름, 기수, 연락처, 뒤풀이 참석 여부, 그리고 선배에게 묻고 싶은 질문 하나.</p>
     <div class="cta">
       <a class="btn btn-gold js-rsvp" href="#">참석 신청하기</a>
       <span class="fine" style="margin:0" id="deadline"></span>
     </div>
     <p class="fine" id="rsvp-note"></p>
     <div class="facts">
-      <div><b>참가비</b><span>본행사 무료. 2차 저녁은 희망자 개별 정산(1/N)</span></div>
+      <div><b>참가비</b><span>본행사 무료. 뒤풀이는 희망자 참석</span></div>
       <div><b>동반</b><span>배우자·가족 1인 동반 가능. 신청 시 기재</span></div>
       <div><b>기록</b><span>행사 사진·영상은 TOBIG'S 기록과 홍보에 사용됩니다</span></div>
     </div>
@@ -351,7 +351,7 @@
     <h2>자주 묻는 질문</h2>
     <details><summary>오래전 기수인데 아는 사람이 없어도 괜찮나요?</summary><p>그래서 만든 자리입니다. 테이블은 기수를 섞어 배정하고, 테이블마다 현 기수 호스트가 있습니다. 명찰에 기수가 크게 적혀 있어 말 걸기 쉽습니다.</p></details>
     <details><summary>늦게 도착해도 되나요?</summary><p>됩니다. 체크인 데스크는 15:25까지 운영하고, 이후에는 입구의 셀프 명찰함을 이용하시면 됩니다. 15:40 테이블 토크부터 합류하셔도 충분합니다.</p></details>
-    <details><summary>2차는 어디서 하나요?</summary><p>행사장 도보권 식당에서 18:00부터 진행합니다. 인원 확정 후 리마인드 안내로 장소를 보내드립니다. 비용은 개별 정산입니다.</p></details>
+    <details><summary>뒤풀이는 어디서 하나요?</summary><p>행사장 도보권 식당에서 18:00부터 진행합니다. 인원 확정 후 리마인드 안내로 장소를 보내드립니다.</p></details>
     <details><summary>신청 후 못 가게 되면요?</summary><p>신청 시 안내되는 불참 알림 링크로 알려주시면 됩니다. 케이터링과 명찰 준비 때문에 하루 전까지 부탁드립니다.</p></details>
     <details><summary>주차할 수 있나요?</summary><p>행사장 주차 공간이 제한적입니다. 대중교통을 권장하며, 부득이한 경우 문의 채널로 미리 연락 주세요.</p></details>
   </div>
@@ -391,7 +391,6 @@
   if(rsvpReady){ dl.textContent = '1차 신청 마감 ' + RSVP_DEADLINE; }
   else {
     dl.textContent = '신청 폼은 10월 중순에 열립니다';
-    note.textContent = '공식 참석 신청은 10월 중순 기수별 단톡방으로 다시 안내드립니다. 그 전까지는 이 페이지를 저장해 두세요.';
     document.querySelectorAll('.rsvp .js-rsvp').forEach(a=>{ a.setAttribute('aria-disabled','true'); a.textContent='참석 신청 (10월 오픈)'; a.addEventListener('click',e=>e.preventDefault()); });
   }
 
