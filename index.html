@@ -15,7 +15,7 @@
   const CONTACT_URL = "#";                       // 운영부 오픈채팅 링크
   const SITE_URL    = "https://feellived.github.io/tobigs-homecoming-2026/";  // 배포 주소
   const RSVP_DEADLINE = "2026년 11월 1일(일)";    // 1차 신청 마감
-  const STAT_MEMBERS  = "";                      // 역대 누적 학회원 수 (예: "480"). 비우면 항목 숨김
+  const STAT_MEMBERS  = "400+";                  // 누적 학회원 수 (공식 홈페이지 기준). 비우면 항목 숨김
   const STAT_GEN26    = "21";                    // 26기 인원
 </script>
 <!-- ===================================================== -->
@@ -135,15 +135,9 @@
 
   /* ---------- CONFERENCES ---------- */
   .confs{background:var(--bg-2)}
-  .conf-grid{margin-top:36px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-  .conf{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:12px;align-items:baseline;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:16px 18px;text-decoration:none;transition:border-color .18s,transform .18s cubic-bezier(.2,.8,.2,1)}
-  .conf:hover{border-color:var(--accent);transform:translateY(-2px)}
-  .conf .no{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.03em;color:var(--accent-deep);grid-row:span 2;line-height:1}
-  .conf .yr{font-family:var(--display);font-size:12px;letter-spacing:.14em;color:var(--muted)}
-  .conf .pj{font-size:14px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .conf-cta{margin-top:28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
-  @media (max-width:900px){.conf-grid{grid-template-columns:repeat(3,1fr)}}
-  @media (max-width:640px){.conf-grid{grid-template-columns:repeat(2,1fr);gap:8px}.conf{padding:14px}.conf .no{font-size:22px}}
+  .conf-cta{margin-top:8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .btn-line{border:1.5px solid var(--line);color:var(--ink)}
+  .btn-line:hover{border-color:var(--accent-deep)}
 
   /* ---------- PHOTOS ---------- */
   .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:8px 0 40px}
@@ -200,6 +194,9 @@
   footer img.wm{width:120px;opacity:.9}
   footer .contact a{color:var(--on-dark);text-decoration:none;border-bottom:1px solid var(--accent)}
   footer .mini{width:40px;opacity:.9}
+  footer .links{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px 16px}
+  footer .links a{border-bottom:1px solid var(--dark-line);color:var(--on-dark-muted)}
+  footer .links a:hover{color:var(--on-dark);border-color:var(--accent)}
 
   /* sticky mobile CTA */
   .sticky{position:fixed;left:0;right:0;bottom:0;padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));background:rgba(12,13,22,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--dark-line);z-index:20;transform:translateY(110%);transition:transform .25s ease}
@@ -245,7 +242,7 @@
     <div>
       <div class="eyebrow">About</div>
       <h2>다시, 투빅스<span class="ko">TOBIG'S가 처음으로 전 기수를 한자리에 모읍니다</span></h2>
-      <p class="lead">2014년 1기부터 2026년 26기까지, 12년 동안 TOBIG'S를 지나간 사람들이 한 공간에 모입니다. 지난 활동을 사진으로 돌아보고, 지금의 TOBIG'S가 무엇을 하는지 공유하고, 선배와 후배가 연결되는 시간입니다.</p>
+      <p class="lead">투빅스(To + Bigs)는 빅데이터를 공부하고 큰 사람이 되기 위해 모인 사람들이라는 뜻입니다. 2014년 1기부터 2026년 26기까지, 12년 동안 TOBIG'S를 지나간 400명 넘는 사람들이 한 공간에 모입니다. 지난 활동을 사진으로 돌아보고, 지금의 TOBIG'S가 무엇을 하는지 공유하고, 선배와 후배가 연결되는 시간입니다.</p>
     </div>
     <dl class="facts">
       <div class="fact"><dt>When</dt><dd>2026.11.21 (토) 13:30<small>13:30 체크인 시작, 14:00 정각 오프닝</small></dd></div>
@@ -317,7 +314,7 @@
   <div class="wrap">
     <div class="eyebrow">Conference Archive</div>
     <h2>22번의 컨퍼런스<span class="ko">2016년 여름부터 2026년 여름까지, 기수마다 남긴 프로젝트</span></h2>
-    <p class="lead">홈커밍 전에 내 기수 컨퍼런스 페이지를 한 번 열어보세요. 그때 발표한 프로젝트가 그대로 남아 있습니다. 당일 Yesterday &amp; Today 세션과 추억 퀴즈도 이 기록에서 나옵니다.</p>
+    <p class="lead">1회부터 22회까지, 기수마다 발표한 프로젝트가 갤러리에 그대로 남아 있습니다. 홈커밍 전에 내 기수 페이지를 한 번 열어보세요.</p>
     <div class="posters" aria-label="역대 컨퍼런스 포스터">
       <figure><img src="assets/posters/2015.06.jpg" alt="2015.06 제1회 공개 세미나 포스터" loading="lazy"><figcaption>2015 · 제1회 공개 세미나</figcaption></figure>
       <figure><img src="assets/posters/2015.12.jpg" alt="2015.12 제1회 연합 컨퍼런스 포스터" loading="lazy"><figcaption>2015 · 제1회 연합 컨퍼런스</figcaption></figure>
@@ -329,31 +326,10 @@
       <figure><img src="assets/posters/2023.06.jpg" alt="2023.06 제16회 포스터" loading="lazy"><figcaption>2023 · 제16회</figcaption></figure>
       <figure><img src="assets/posters/2024.07.jpg" alt="2024.07 제18회 포스터" loading="lazy"><figcaption>2024 · 제18회</figcaption></figure>
     </div>
-    <div class="conf-grid">
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">1st</span><span class="yr">2016</span><span class="pj">기록 보기</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">2nd</span><span class="yr">2016</span><span class="pj">하트 프로젝트</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">3rd</span><span class="yr">2017</span><span class="pj">유기 동물을 부탁해</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">4th</span><span class="yr">2017</span><span class="pj">기록 보기</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">5th</span><span class="yr">2017</span><span class="pj">Big Voice</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">6th</span><span class="yr">2017</span><span class="pj">DeepKSL</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">7th</span><span class="yr">2018</span><span class="pj">투빅스쿨</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">8th</span><span class="yr">2018</span><span class="pj">GAN SONG</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">9th</span><span class="yr">2019</span><span class="pj">인공지능 폰트 스타일러</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">10th</span><span class="yr">2020</span><span class="pj">tripbigs</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">11th</span><span class="yr">2020</span><span class="pj">투빅티콘</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">12th</span><span class="yr">2021</span><span class="pj">MPTI: Meet Persona Through AI</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">13th</span><span class="yr">2021</span><span class="pj">Smootify</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">14th</span><span class="yr">2022</span><span class="pj">우리 모두의 블루스</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">15th</span><span class="yr">2022</span><span class="pj">AIVLOG</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">16th</span><span class="yr">2023</span><span class="pj">롤문철</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">17th</span><span class="yr">2023</span><span class="pj">AutoDub</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">18th</span><span class="yr">2024</span><span class="pj">MPRAG</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">19th</span><span class="yr">2024</span><span class="pj">InpaLLA</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">20th</span><span class="yr">2025</span><span class="pj">PLAYBALL Agent</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">21st</span><span class="yr">2025</span><span class="pj">Curat3R</span></a>
-      <a class="conf" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener"><span class="no">22nd</span><span class="yr">2026</span><span class="pj">POLICY DEBATE AI</span></a>
+    <div class="conf-cta">
+      <a class="btn btn-ink" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener">컨퍼런스 갤러리 보기</a>
+      <a class="btn btn-line" href="https://www.datamarket.ai.kr/" target="_blank" rel="noopener">TOBIG'S 공식 홈페이지</a>
     </div>
-    <div class="conf-cta"><a class="btn btn-ink" href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc" target="_blank" rel="noopener">컨퍼런스 갤러리 전체 보기</a><span>노션 페이지로 이동합니다</span></div>
   </div>
 </section>
 
@@ -435,6 +411,13 @@
     </div>
     <div class="contact">
       문의 <a class="js-contact" href="#">운영부 오픈채팅</a>
+      <div class="links">
+        <a href="https://www.datamarket.ai.kr/" target="_blank" rel="noopener">공식 홈페이지</a>
+        <a href="https://www.instagram.com/tobigs_official/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/tobigs-datamarket" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://pf.kakao.com/_QyxiDxb" target="_blank" rel="noopener">카카오 채널</a>
+        <a href="mailto:datamarket.tobigs@gmail.com">datamarket.tobigs@gmail.com</a>
+      </div>
     </div>
     <img class="mini" src="assets/favicon.png" alt="" aria-hidden="true">
   </div>
