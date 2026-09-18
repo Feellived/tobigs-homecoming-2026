@@ -96,10 +96,10 @@
   .hero-meta .when b{color:var(--on-dark);font-weight:600}
   .hero-cta{margin-top:36px;display:flex;flex-wrap:wrap;gap:12px}
   .dday{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
-  .mascot{position:absolute;right:0;bottom:0;width:256px;height:216px;pointer-events:none;overflow:hidden;
+  .mascot{position:absolute;right:0;bottom:0;width:clamp(240px,30vw,380px);aspect-ratio:157/155;pointer-events:none;overflow:hidden;
       -webkit-mask-image:linear-gradient(to bottom,#000 60%,transparent 100%);mask-image:linear-gradient(to bottom,#000 60%,transparent 100%)}
-  .mascot img{width:256px;height:300px;display:block;filter:drop-shadow(0 10px 20px rgba(0,0,0,.35))}
-  @media (max-width:760px){.mascot{width:128px;height:108px;bottom:auto;top:-4px;right:0} .mascot img{width:128px;height:150px}}
+  .mascot img{width:100%;height:auto;display:block;filter:drop-shadow(0 12px 24px rgba(0,0,0,.35))}
+  @media (max-width:760px){.mascot{width:170px;bottom:auto;top:-6px;right:0}}
   .hero-bottom{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-top:1px solid var(--dark-line);padding-top:18px;font-size:13px;color:var(--on-dark-muted)}
   .hero-bottom .gen{font-family:var(--display);letter-spacing:.12em}
 
