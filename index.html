@@ -156,13 +156,14 @@
   .era-tag.now{background:var(--primary);color:#fff}
   .era-sub{font-size:14px;color:var(--muted)}
   .photos .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .photos .grid.then{grid-template-columns:repeat(3,1fr)}
   .photos figure{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:8px;background:var(--bg-2)}
   .photos .grid.now figure:first-child{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
   .photos img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
   .photos figure:hover img{transform:scale(1.03)}
   .photos .grid.then img{filter:saturate(.75) contrast(.98)}
   .photos figcaption{position:absolute;left:0;right:0;bottom:0;padding:28px 12px 10px;font-size:12px;color:#fff;background:linear-gradient(to top,rgba(11,18,48,.75),transparent);letter-spacing:.02em}
-  @media (max-width:760px){.stats{grid-template-columns:repeat(3,1fr)}.photos .grid{grid-template-columns:1fr 1fr}.photos .grid.now figure:first-child{grid-column:span 2;grid-row:auto;aspect-ratio:16/10}}
+  @media (max-width:760px){.stats{grid-template-columns:repeat(3,1fr)}.photos .grid,.photos .grid.then{grid-template-columns:1fr 1fr}.photos .grid.now figure:first-child{grid-column:span 2;grid-row:auto;aspect-ratio:16/10}}
   .posters{display:flex;gap:12px;overflow-x:auto;padding:4px 0 14px;margin:28px 0 24px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
   .posters::-webkit-scrollbar{height:6px}.posters::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
   .posters figure{flex:0 0 150px;scroll-snap-align:start}
@@ -368,18 +369,20 @@
       <div id="stat-members"><b></b><span>누적 학회원</span></div>
       <div id="stat-gen26"><b></b><span>26기 현재</span></div>
     </div>
-    <div class="era"><span class="era-tag">Then</span><span class="era-sub">2017 – 2018 · 8기의 강의실</span></div>
+    <div class="era"><span class="era-tag">Then</span><span class="era-sub">1기 – 24기 · 2017년 강의실부터 2024년 컨퍼런스까지</span></div>
     <div class="grid then">
         <figure><img src="assets/photos/then/01.jpg" alt="2017 · 8기 정규 교육" loading="lazy"><figcaption>2017 · 8기 정규 교육</figcaption></figure>
         <figure><img src="assets/photos/then/02.jpg" alt="2017 · 8기 정규 교육" loading="lazy"><figcaption>2017 · 8기 정규 교육</figcaption></figure>
         <figure><img src="assets/photos/then/03.jpg" alt="2018 · 신년회" loading="lazy"><figcaption>2018 · 신년회</figcaption></figure>
         <figure><img src="assets/photos/then/04.jpg" alt="2017 · 8기 딥러닝 세미나" loading="lazy"><figcaption>2017 · 8기 딥러닝 세미나</figcaption></figure>
+        <figure><img src="assets/photos/then/05.jpg" alt="2024 · 제18회 컨퍼런스" loading="lazy"><figcaption>2024 · 제18회 컨퍼런스</figcaption></figure>
+        <figure><img src="assets/photos/then/06.jpg" alt="2024 · 제18회 컨퍼런스 시상" loading="lazy"><figcaption>2024 · 제18회 컨퍼런스 시상</figcaption></figure>
     </div>
-    <div class="era"><span class="era-tag now">Now</span><span class="era-sub">2024 – 2026 · 22기부터 26기까지</span></div>
+    <div class="era"><span class="era-tag now">Now</span><span class="era-sub">25기 · 26기 · 2026년의 TOBIG'S</span></div>
     <div class="grid now">
-        <figure><img src="assets/photos/now/03.jpg" alt="2026 · 제22회 컨퍼런스" loading="lazy"><figcaption>2026 · 제22회 컨퍼런스</figcaption></figure>
-        <figure><img src="assets/photos/now/01.jpg" alt="2024 · 제18회 컨퍼런스" loading="lazy"><figcaption>2024 · 제18회 컨퍼런스</figcaption></figure>
-        <figure><img src="assets/photos/now/02.jpg" alt="2024 · 제18회 컨퍼런스 시상" loading="lazy"><figcaption>2024 · 제18회 컨퍼런스 시상</figcaption></figure>
+        <figure><img src="assets/photos/now/01.jpg" alt="2026 · 제22회 컨퍼런스" loading="lazy"><figcaption>2026 · 제22회 컨퍼런스</figcaption></figure>
+        <figure><img src="assets/photos/now/02.jpg" alt="2026 · 제22회 컨퍼런스 발표" loading="lazy"><figcaption>2026 · 제22회 컨퍼런스 발표</figcaption></figure>
+        <figure><img src="assets/photos/now/03.jpg" alt="2026 · 제22회 컨퍼런스 시상" loading="lazy"><figcaption>2026 · 제22회 컨퍼런스 시상</figcaption></figure>
         <figure><img src="assets/photos/now/04.jpg" alt="2026 · 코덱스 해커톤" loading="lazy"><figcaption>2026 · 코덱스 해커톤</figcaption></figure>
         <figure><img src="assets/photos/now/05.jpg" alt="2026 · 25·26기 OT" loading="lazy"><figcaption>2026 · 25·26기 OT</figcaption></figure>
     </div>
