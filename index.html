@@ -158,6 +158,8 @@
   .posters{display:flex;gap:12px;overflow-x:auto;padding:4px 0 14px;margin:28px 0 24px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
   .posters::-webkit-scrollbar{height:6px}.posters::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
   .posters figure{flex:0 0 150px;scroll-snap-align:start}
+  .posters figure.wide{flex-basis:636px}
+  .posters figure.wide img{width:636px}
   .posters img{width:150px;height:212px;object-fit:cover;object-position:top;border-radius:6px;border:1px solid var(--line);background:var(--bg);display:block}
   .posters figcaption{font-size:11px;color:var(--muted);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
@@ -317,9 +319,7 @@
       <figure><img src="assets/posters/2021.07.jpg" alt="2021.07 제12회 포스터" loading="lazy"><figcaption>2021 · 제12회</figcaption></figure>
       <figure><img src="assets/posters/2023.06.jpg" alt="2023.06 제16회 포스터" loading="lazy"><figcaption>2023 · 제16회</figcaption></figure>
       <figure><img src="assets/posters/2024.07.jpg" alt="2024.07 제18회 포스터" loading="lazy"><figcaption>2024 · 제18회</figcaption></figure>
-      <figure><img src="assets/posters/2025.01.jpg" alt="2025.01 제19회 포스터" loading="lazy"><figcaption>2025 · 제19회</figcaption></figure>
-      <figure><img src="assets/posters/2025.07.jpg" alt="2025.07 제20회 포스터" loading="lazy"><figcaption>2025 · 제20회</figcaption></figure>
-      <figure><img src="assets/posters/2026.01.jpg" alt="2026.01 제21회 포스터" loading="lazy"><figcaption>2026 · 제21회</figcaption></figure>
+      <figure class="wide"><img src="assets/posters/2025.01.jpg" alt="2025.01 제19회 포스터" loading="lazy"><figcaption>2025 · 제19회</figcaption></figure>
       <figure><img src="assets/posters/2026.07.jpg" alt="2026.07 제22회 포스터" loading="lazy"><figcaption>2026 · 제22회</figcaption></figure>
     </div>
     <div class="conf-cta">
