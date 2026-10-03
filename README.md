@@ -2,7 +2,7 @@
 
 정적 원페이지 초대장. 서버 없음, GitHub Pages로 배포.
 
-- 배포 주소: https://feellived.github.io/tobigs-homecoming-2026/
+- 배포 주소: https://homecoming.datamarket.ai.kr/
 - 파일: `index.html` 하나 + `assets/`
 
 ## 링크 바꾸기 (10/19 RSVP 오픈 전)
@@ -12,7 +12,7 @@
 ```js
 const RSVP_URL    = "#";   // → 참석 신청 구글폼 링크
 const CONTACT_URL = "#";   // → 운영부 오픈채팅 링크
-const SITE_URL    = "https://feellived.github.io/tobigs-homecoming-2026/";
+const SITE_URL    = "https://homecoming.datamarket.ai.kr/";
 const RSVP_DEADLINE = "2026년 11월 1일(일)";
 ```
 
