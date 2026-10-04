@@ -114,6 +114,14 @@
   .hero-cta{margin-top:36px;display:flex;flex-wrap:wrap;gap:12px}
   .share{margin-top:28px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
   .share-label{font-size:13px;color:var(--on-dark-muted);margin-right:4px;flex-basis:100%}
+  .share-wrap{position:relative}
+  .share-menu{position:absolute;left:0;top:calc(100% + 8px);min-width:180px;background:#ffffff;color:var(--ink);border-radius:12px;padding:6px;box-shadow:0 16px 40px rgba(11,18,48,.35);z-index:25;display:grid}
+  .share-menu[hidden]{display:none}
+  .share-menu > *{appearance:none;background:none;border:0;font:inherit;font-size:14px;font-weight:600;color:#0f1215;text-align:left;padding:11px 12px;border-radius:8px;cursor:pointer;text-decoration:none;display:block}
+  .share-menu > *:hover{background:#f3f5fb}
+  .share-menu > *[hidden]{display:none}
+  .share-menu > *[aria-disabled="true"]{opacity:.45;cursor:default}
+  .share-menu .sub{display:block;font-weight:400;font-size:11px;color:#6b6f7b;margin-top:2px}
   .chip{appearance:none;border:1px solid var(--dark-line);background:rgba(255,255,255,.04);color:var(--on-dark);font:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;cursor:pointer;text-decoration:none;transition:border-color .18s,background .18s}
   .chip:hover{border-color:var(--accent);background:rgba(157,176,255,.12)}
   .chip[hidden]{display:none}
@@ -306,10 +314,14 @@
       <a class="btn btn-ghost" href="#program">프로그램 보기</a>
     </div>
     <div class="share" aria-label="공유">
-      <span class="share-label">다른 투빅스 구성원들이 볼 수 있도록 공유해주세요</span>
-      <button type="button" class="chip js-copy">링크 복사</button>
-      <button type="button" class="chip js-share" hidden>공유하기</button>
-      <button type="button" class="chip js-ig" hidden>인스타그램에 공유</button>
+      <div class="share-wrap">
+        <button type="button" class="chip js-share-open" aria-haspopup="menu" aria-expanded="false">공유하기</button>
+        <div class="share-menu" role="menu" hidden>
+          <button type="button" role="menuitem" class="js-copy">링크 복사</button>
+          <button type="button" role="menuitem" class="js-ig">인스타그램 공유</button>
+          <a role="menuitem" class="js-li" href="#" target="_blank" rel="noopener">링크드인 공유</a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -459,9 +471,14 @@
     <p class="fine" id="rsvp-note"></p>
     <div class="share on-dark" aria-label="공유">
       <span class="share-label">다른 투빅스 구성원들이 볼 수 있도록 공유해주세요</span>
-      <button type="button" class="chip js-copy">링크 복사</button>
-      <button type="button" class="chip js-share" hidden>공유하기</button>
-      <button type="button" class="chip js-ig" hidden>인스타그램에 공유</button>
+      <div class="share-wrap">
+        <button type="button" class="chip js-share-open" aria-haspopup="menu" aria-expanded="false">공유하기</button>
+        <div class="share-menu" role="menu" hidden>
+          <button type="button" role="menuitem" class="js-copy">링크 복사</button>
+          <button type="button" role="menuitem" class="js-ig">인스타그램 공유</button>
+          <a role="menuitem" class="js-li" href="#" target="_blank" rel="noopener">링크드인 공유</a>
+        </div>
+      </div>
     </div>
     <div class="facts">
       <div><b>뒤풀이</b><span>17:30 방이동. 희망자 참석, 신청 폼에서 체크</span></div>
@@ -561,24 +578,34 @@
     document.querySelectorAll('.rsvp .share, .rsvp .facts, #rsvp-note, #deadline').forEach(e=>e.remove());
   }
 
-  // ---- share / copy ----
+  // ---- share menu: 링크 복사 / 인스타그램 / 링크드인 ----
   const SHARE_TEXT = "TOBIG'S Homecoming Day 2026 · Big Then. Bigger Now. 11.21(토) 13:00 올림픽공원 KSPO 연수원";
   let toast = document.createElement('div'); toast.className='toast'; document.body.appendChild(toast);
-  const say = m => { toast.textContent=m; toast.classList.add('show'); clearTimeout(say.t); say.t=setTimeout(()=>toast.classList.remove('show'),1800); };
-  const copyLink = async () => { try { await navigator.clipboard.writeText(SITE_URL); say('링크를 복사했습니다'); } catch(e){ const i=document.createElement('input'); i.value=SITE_URL; document.body.appendChild(i); i.select(); document.execCommand('copy'); i.remove(); say('링크를 복사했습니다'); } };
+  const say = m => { toast.textContent=m; toast.classList.add('show'); clearTimeout(say.t); say.t=setTimeout(()=>toast.classList.remove('show'),2200); };
+  const copyLink = async () => { try { await navigator.clipboard.writeText(SITE_URL); } catch(e){ const i=document.createElement('input'); i.value=SITE_URL; document.body.appendChild(i); i.select(); document.execCommand('copy'); i.remove(); } say('링크를 복사했습니다'); };
+  const LI_URL = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(SITE_URL);
+  document.querySelectorAll('.js-li').forEach(a=>{ a.href=LI_URL; });
+  // 인스타그램: 스토리용 이미지를 기기 공유 시트로 (파일 공유가 되는 모바일 브라우저만). 안 되면 이미지 저장으로 대체
+  let storyFile=null;
+  const getFile=async()=>{ if(storyFile) return storyFile; const blob=await (await fetch('assets/story.png')).blob(); storyFile=new File([blob],'tobigs-homecoming-2026.png',{type:'image/png'}); return storyFile; };
+  const canFileShare = !!(navigator.share && navigator.canShare && navigator.canShare({files:[new File([new Uint8Array(1)],'p.png',{type:'image/png'})]}));
+  document.querySelectorAll('.js-ig').forEach(b=>{
+    if(canFileShare){ b.innerHTML='인스타그램 공유<span class="sub">공유 시트에서 Instagram → 스토리 선택</span>'; getFile().catch(()=>{}); }
+    else { b.innerHTML='인스타그램용 이미지 저장<span class="sub">저장 후 인스타 앱에서 스토리에 올리기</span>'; }
+    b.addEventListener('click', async ()=>{
+      if(canFileShare){ try{ const f=await getFile(); await navigator.share({files:[f],title:"TOBIG'S Homecoming Day 2026"}); say('Instagram → 스토리에 올리고 링크 스티커를 붙여주세요'); }catch(e){} }
+      else { const a=document.createElement('a'); a.href='assets/story.png'; a.download='tobigs-homecoming-2026.png'; document.body.appendChild(a); a.click(); a.remove(); say('이미지를 저장했습니다. 인스타 앱에서 스토리에 올려주세요'); }
+    });
+  });
   document.querySelectorAll('.js-copy').forEach(b=>b.addEventListener('click',copyLink));
-  if(navigator.share){ document.querySelectorAll('.js-share').forEach(b=>{ b.hidden=false; b.addEventListener('click',()=>navigator.share({title:"TOBIG'S Homecoming Day 2026",text:SHARE_TEXT,url:SITE_URL}).catch(()=>{})); }); }
-  // 인스타그램 공유: 스토리용 이미지를 기기 공유 시트로 넘김 (모바일, 파일 공유 가능한 브라우저만)
-  const igBtns=document.querySelectorAll('.js-ig');
-  if(igBtns.length && navigator.share && navigator.canShare){
-    let storyFile=null;
-    const getFile=async()=>{ if(storyFile) return storyFile; const blob=await (await fetch('assets/story.png')).blob(); storyFile=new File([blob],'tobigs-homecoming-2026.png',{type:'image/png'}); return storyFile; };
-    const probe=new File([new Uint8Array(1)],'p.png',{type:'image/png'});
-    if(navigator.canShare({files:[probe]})){
-      igBtns.forEach(b=>{ b.hidden=false; b.addEventListener('click',async()=>{ try{ const f=await getFile(); if(navigator.canShare({files:[f]})){ await navigator.share({files:[f],title:"TOBIG'S Homecoming Day 2026"}); say('인스타그램을 고른 뒤 스토리에 올리고 링크 스티커를 붙여주세요'); } }catch(e){} }); });
-      getFile().catch(()=>{});
-    }
-  }
+  // open/close
+  const closeAll = () => document.querySelectorAll('.share-menu').forEach(m=>{ m.hidden=true; m.previousElementSibling.setAttribute('aria-expanded','false'); });
+  document.querySelectorAll('.js-share-open').forEach(btn=>{
+    btn.addEventListener('click', e=>{ e.stopPropagation(); const m=btn.nextElementSibling; const open=m.hidden; closeAll(); if(open){ m.hidden=false; btn.setAttribute('aria-expanded','true'); } });
+  });
+  document.querySelectorAll('.share-menu').forEach(m=>m.addEventListener('click', e=>{ if(e.target.closest('[role=menuitem]')) setTimeout(closeAll,150); e.stopPropagation(); }));
+  document.addEventListener('click', closeAll);
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAll(); });
 
   // ---- stats ----
   const sm=document.getElementById('stat-members'), sg=document.getElementById('stat-gen26');
