@@ -12,6 +12,8 @@
 ```js
 const RSVP_URL    = "#";   // → 참석 신청 구글폼 링크
 const CONTACT_URL = "#";   // → 운영부 오픈채팅 링크
+const SURVEY_URL  = "#";   // 행사 후 설문 링크 (행사 다음날부터 자동 표시)
+const PHOTOS_URL  = "#";   // 행사 후 사진 폴더 링크
 const SITE_URL    = "https://homecoming.datamarket.ai.kr/";
 const RSVP_DEADLINE = "2026년 11월 1일(일)";
 ```
@@ -37,3 +39,8 @@ git add -A && git commit -m "update" && git push
 ## 카톡 미리보기
 
 `assets/og.png`(1200×630)가 카톡 링크 미리보기로 쓰입니다. 카톡이 예전 미리보기를 캐시하면 링크 끝에 `?v=2`처럼 쿼리를 붙여 공유하세요.
+
+
+## 공유 이미지
+- `assets/story.png` 인스타 스토리용(1080×1920, QR 포함), `assets/share-square.png` 카드용(1080×1080). 페이지의 "공유" 버튼으로 내려받을 수 있음.
+- 행사 다음날(11/22)부터 히어로·RSVP 버튼이 자동으로 설문·사진 링크로 바뀜. SURVEY_URL, PHOTOS_URL을 미리 채워둘 것.

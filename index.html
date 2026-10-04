@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>TOBIG'S Homecoming Day 2026</title>
-<meta name="description" content="Big Then. Bigger Now. 2026년 11월 21일(토), TOBIG'S 1기부터 26기까지 다시 한자리에.">
+<title>TOBIG'S Homecoming Day 2026 · Big Then. Bigger Now.</title>
+<meta name="description" content="투빅스(TOBIG'S) 홈커밍데이 2026. 11월 21일(토) 13:00, 올림픽공원 KSPO 연수원 대강당. 1기부터 26기까지 전 기수가 모이는 동문 행사. 선배 토크, 퀴즈, 테이블 토크, 네트워킹. 본행사 무료, 사전 신청.">
+<link rel="canonical" href="https://homecoming.datamarket.ai.kr/">
 <meta name="theme-color" content="#0b1230">
 
 <!-- ===================== EDIT HERE =====================
@@ -15,6 +16,8 @@
   const CONTACT_URL = "#";                       // 운영부 오픈채팅 링크
   const SITE_URL    = "https://homecoming.datamarket.ai.kr/";  // 배포 주소
   const RSVP_DEADLINE = "2026년 11월 1일(일)";    // 1차 신청 마감
+  const SURVEY_URL  = "#";                       // 행사 후 만족도 설문 링크 (행사 다음날부터 히어로 버튼으로 표시)
+  const PHOTOS_URL  = "#";                       // 행사 사진 공유 폴더 링크 (행사 후 표시)
   const STAT_MEMBERS  = "400+";                  // 누적 학회원 수 (공식 홈페이지 기준). 비우면 항목 숨김
   const STAT_GEN26    = "21";                    // 26기 인원
   // 연사 확정 후 채우면 Alumni Session에 카드가 나타남. 비워 두면 숨김. photo는 assets/speakers/01.jpg 식, 없으면 "".
@@ -25,13 +28,18 @@
 <!-- ===================================================== -->
 
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="TOBIG'S Homecoming Day 2026">
+<meta property="og:locale" content="ko_KR">
 <meta property="og:title" content="TOBIG'S Homecoming Day 2026">
-<meta property="og:description" content="Big Then. Bigger Now. — 11.21(토) 13:00 입장, 올림픽공원 KSPO 연수원 대강당. 1기부터 26기까지 다시 한자리에.">
+<meta property="og:description" content="Big Then. Bigger Now. 11월 21일(토) 13:00, 올림픽공원 KSPO 연수원 대강당. 투빅스 1기부터 26기까지 다시 한자리에. 본행사 무료, 사전 신청.">
 <meta property="og:image" content="https://homecoming.datamarket.ai.kr/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://homecoming.datamarket.ai.kr/">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TOBIG'S Homecoming Day 2026 · Big Then. Bigger Now.">
+<meta name="twitter:description" content="11월 21일(토) 13:00, 올림픽공원 KSPO 연수원 대강당. 투빅스 1기부터 26기까지 다시 한자리에.">
+<meta name="twitter:image" content="https://homecoming.datamarket.ai.kr/assets/og.png">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 
@@ -100,6 +108,13 @@
   .hero-meta .when{font-size:clamp(16px,2vw,20px);color:var(--on-dark-muted)}
   .hero-meta .when b{color:var(--on-dark);font-weight:600}
   .hero-cta{margin-top:36px;display:flex;flex-wrap:wrap;gap:12px}
+  .share{margin-top:28px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .share-label{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-family:var(--display);color:var(--on-dark-muted);margin-right:4px}
+  .chip{appearance:none;border:1px solid var(--dark-line);background:rgba(255,255,255,.04);color:var(--on-dark);font:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;cursor:pointer;text-decoration:none;transition:border-color .18s,background .18s}
+  .chip:hover{border-color:var(--accent);background:rgba(157,176,255,.12)}
+  .chip[hidden]{display:none}
+  .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(12px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30}
+  .toast.show{opacity:1;transform:translateX(-50%)}
   .dday{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
   .hero-bottom{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-top:1px solid var(--dark-line);padding-top:18px;font-size:13px;color:var(--on-dark-muted)}
   .hero-bottom .gen{font-family:var(--display);letter-spacing:.12em}
@@ -125,6 +140,7 @@
   .card ul li::before{content:"";position:absolute;left:0;top:11px;width:7px;height:7px;background:var(--accent);border-radius:1px}
   .card .actions{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
   .card .actions a{font-size:14px;font-weight:600;text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:2px}
+  .card .actions .cal-note{flex-basis:100%;font-size:12px;color:var(--muted);margin-top:2px}
   @media (max-width:760px){.place .grid{grid-template-columns:1fr}}
 
   /* ---------- PROGRAM (scroll timeline) ---------- */
@@ -266,9 +282,16 @@
       <div class="when"><b>2026년 11월 21일 토요일</b> 13:00 – 17:00 · 올림픽공원 KSPO 연수원 대강당</div>
       <div class="when">1기부터 26기까지, 전·현 기수가 함께하는 동문 행사</div>
     </div>
-    <div class="hero-cta">
+    <div class="hero-cta" id="hero-cta">
       <a class="btn btn-gold js-rsvp" href="#rsvp">참석 신청하기</a>
       <a class="btn btn-ghost" href="#program">프로그램 보기</a>
+    </div>
+    <div class="share" aria-label="공유">
+      <span class="share-label">공유</span>
+      <button type="button" class="chip js-copy">링크 복사</button>
+      <button type="button" class="chip js-share" hidden>공유하기</button>
+      <a class="chip" href="assets/story.png" download="tobigs-homecoming-2026-story.png">인스타 스토리 이미지</a>
+      <a class="chip" href="assets/share-square.png" download="tobigs-homecoming-2026.png">카드 이미지</a>
     </div>
   </div>
 
@@ -314,7 +337,8 @@
         <div class="actions">
           <a href="https://map.naver.com/p/search/%EC%98%AC%EB%A6%BC%ED%94%BD%ED%8C%8C%ED%81%AC%ED%85%94" target="_blank" rel="noopener">네이버 지도</a>
           <a href="https://map.kakao.com/?q=%EC%98%AC%EB%A6%BC%ED%94%BD%ED%8C%8C%ED%81%AC%ED%85%94" target="_blank" rel="noopener">카카오맵</a>
-          <a href="#" id="ics">캘린더에 추가</a>
+          <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=TOBIG%27S%20Homecoming%20Day%202026&dates=20261121T040000Z/20261121T080000Z&ctz=Asia/Seoul&location=KSPO%20%EC%97%B0%EC%88%98%EC%9B%90%20%EB%8C%80%EA%B0%95%EB%8B%B9%20(%EC%84%9C%EC%9A%B8%20%EC%86%A1%ED%8C%8C%EA%B5%AC%20%EC%98%AC%EB%A6%BC%ED%94%BD%EB%A1%9C%20424%20%EC%98%AC%EB%A6%BC%ED%94%BD%ED%8C%8C%ED%81%AC%ED%85%94%20B1)&details=Big%20Then.%20Bigger%20Now.%20%ED%88%AC%EB%B9%85%EC%8A%A4%201%EA%B8%B0~26%EA%B8%B0%20%ED%99%88%EC%BB%A4%EB%B0%8D%EB%8D%B0%EC%9D%B4.%2013%3A00%20%EC%9E%85%EC%9E%A5%20%C2%B7%2013%3A30%20%EA%B0%9C%ED%9A%8C%0Ahttps%3A%2F%2Fhomecoming.datamarket.ai.kr%2F" target="_blank" rel="noopener">Google 캘린더에 추가</a>
+          <span class="cal-note">노션 캘린더·애플 캘린더는 연동된 Google 계정에 함께 표시됩니다</span>
         </div>
       </div>
       <div class="card">
@@ -351,7 +375,7 @@
       <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">13:00</span><div class="tl-body"><div class="n">입장 · 체크인</div><div class="d">명찰을 받고 미리 배정된 테이블로. 포토부스에서 첫 사진을 남기는 동안 무대 화면에는 12년 치 사진이 흐릅니다</div></div></li>
       <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">13:30</span><div class="tl-body"><div class="n">개회사</div><div class="d">TOBIG'S의 첫 기수, 1기 선배님의 개회 말씀</div></div></li>
       <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">13:40</span><div class="tl-body"><div class="n">TOBIG'S Yesterday &amp; Today</div><div class="d">2014년부터 지금까지 사진으로 돌아보는 12년. 이어서 지금의 TOBIG'S가 무엇을 하는지, 25기 회장의 환영 인사와 함께</div></div></li>
-      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">14:00</span><div class="tl-body"><div class="n">Alumni Session</div><div class="d">선배 세 분이 TOBIG'S 이후의 이야기를 8분씩. 이어서 신청할 때 미리 받은 질문으로 Q&amp;A</div><div class="speakers" id="speakers" hidden></div></div></li>
+      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">14:00</span><div class="tl-body"><div class="n">Alumni Session</div><div class="d">선배 세 분과 MC가 나누는 토크. 발표가 아니라 대화입니다. 신청 폼과 입구 질문 보드에 남겨주신 질문으로 Q&amp;A를 이어갑니다</div><div class="speakers" id="speakers" hidden></div></div></li>
       <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">14:45</span><div class="tl-body"><div class="n">티타임 · 경품 추첨</div><div class="d">테이블에 준비된 구움과자와 커피, 차. 쉬는 동안 명찰 번호로 경품 추첨</div></div></li>
       <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">15:15</span><div class="tl-body"><div class="n">TOBIG'S 퀴즈</div><div class="d">테이블 대항 5문제. 초기 기수만 아는 문제와 현 기수만 아는 문제가 섞여 있어 선후배가 힘을 합쳐야 풀립니다</div></div></li>
       <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">15:30</span><div class="tl-body"><div class="n">테이블 토크</div><div class="d">기수를 섞어 앉은 테이블에서 대화 카드로 시작해, 신청 때 고른 관심 주제로 이어집니다. 자리 이동 없이 같은 테이블에서</div></div></li>
@@ -429,6 +453,12 @@
       <span class="fine" style="margin:0" id="deadline"></span>
     </div>
     <p class="fine" id="rsvp-note"></p>
+    <div class="share on-dark" aria-label="공유">
+      <span class="share-label">선배님, 기수 단톡에도 공유해 주세요</span>
+      <button type="button" class="chip js-copy">링크 복사</button>
+      <button type="button" class="chip js-share" hidden>공유하기</button>
+      <a class="chip" href="assets/story.png" download="tobigs-homecoming-2026-story.png">인스타 스토리 이미지</a>
+    </div>
     <div class="facts">
       <div><b>참가비</b><span>본행사 무료. 뒤풀이는 희망자 참석</span></div>
       <div><b>동반</b><span>배우자·가족 1인 동반 가능. 신청 시 기재</span></div>
@@ -444,6 +474,7 @@
     <h2>자주 묻는 질문</h2>
     <details><summary>오래전 기수인데 아는 사람이 없어도 괜찮나요?</summary><p>그래서 만든 자리입니다. 명찰에 이름과 기수가 크게 적혀 있고, 기수대별로 명찰 줄 색이 달라 멀리서도 선배인지 후배인지 보입니다. 테이블 토크 첫 라운드는 운영진이 기수를 섞어 배정하고, 테이블마다 현 기수 호스트가 자기소개와 대화를 이끕니다. 이어서 같은 테이블에서 신청 때 고른 관심 주제로 대화가 이어지고, 그 다음 네트워킹 미션(기수 스티커 교환)이 선후배에게 말을 걸 이유를 만들어 줍니다. 혼자 오셔도 어색할 틈이 없도록 설계했습니다.</p></details>
     <details><summary>몇 시까지 가야 하나요? 늦게 도착해도 되나요?</summary><p>13:00부터 입장과 체크인이 시작되고 13:30에 개회합니다. 13:20까지 도착하시면 명찰을 받고 사진도 찍고 자리 잡을 여유가 있습니다. 늦으시는 경우에도 14:45 티타임까지는 체크인 데스크가 운영되고, 그 이후에는 입구 셀프 명찰함에서 명찰을 찾아 들어오시면 됩니다. 15:30 테이블 토크부터 합류하셔도 프로그램의 핵심은 충분히 함께하실 수 있습니다. 행사는 16:35에 끝나고 17:00에 행사장을 비워야 합니다. 중간에 먼저 가셔야 하는 경우도 물론 괜찮습니다.</p></details>
+    <details><summary>선배님께 묻고 싶은 게 있어요. 어떻게 질문하나요?</summary><p>두 가지 방법이 있습니다. 참석 신청 폼에 "선배에게 묻고 싶은 질문" 칸이 있으니 미리 적어주시면 운영진이 질문 보드에 옮겨 둡니다. 당일에는 입구 체크인 데스크 옆 질문 보드에 포스트잇으로 직접 붙이실 수 있고, Alumni Session 도중에 떠오른 질문도 운영진에게 건네주시면 됩니다. 운영진이 질문을 모아 세션 후반 Q&amp;A 시간에 MC가 연사분들께 대신 여쭤봅니다. 이름을 적지 않으셔도 됩니다.</p></details>
     <details><summary>프로그램은 어떻게 진행되나요?</summary><p>앞부분 약 75분은 무대 프로그램입니다. 1기 선배님의 개회 말씀, 2014년부터 지금까지의 TOBIG'S를 사진으로 돌아보고 현재 활동을 소개하는 Yesterday &amp; Today, 그리고 선배 세 분이 TOBIG'S 이후의 이야기를 8분씩 들려주는 Alumni Session과 미리 받은 질문으로 진행하는 Q&amp;A가 있습니다. 뒷부분 약 110분은 네트워킹입니다. 티타임과 경품 추첨, 기수를 섞은 테이블에서 푸는 TOBIG'S 퀴즈, 테이블 토크, 기수 스티커를 교환하는 네트워킹 미션, 기수별 사진과 전원 단체사진으로 마무리합니다.</p></details>
     <details><summary>참가비가 있나요? 음식은 나오나요?</summary><p>본행사는 무료입니다. 행사장 규정상 식사류 반입이 되지 않아 식사는 제공되지 않습니다. 대신 테이블마다 구움과자와 물, 커피, 차, 단백질 음료를 준비해 두고 14:45 티타임에 편하게 드실 수 있습니다. 점심은 드시고 오시는 것을 권하고, 저녁은 17:30 뒤풀이에서 함께합니다. 알레르기 등 음식 관련 요청은 신청 폼에 적어주시면 반영합니다.</p></details>
     <details><summary>뒤풀이는 어디서, 어떻게 하나요?</summary><p>본행사가 16:35에 끝나고 17:00에 행사장을 비운 뒤, 희망자에 한해 방이동 식당가로 함께 걸어가(약 10분) 17:30부터 진행합니다. 장소는 참석 인원이 확정된 뒤 리마인드 안내로 보내드립니다. 신청 폼에서 뒤풀이 참석 여부를 미리 알려주시면 자리 예약에 큰 도움이 됩니다. 뒤풀이만 참석하시는 것도 가능하니 신청 시 기재해 주세요.</p></details>
@@ -505,17 +536,34 @@
   const today = new Date(); today.setHours(0,0,0,0);
   const d = Math.ceil((new Date(2026,10,21) - today)/86400000);
   const el = document.getElementById('dday');
-  el.textContent = d>0 ? 'D-'+d+'  ·  2026.11.21 SAT' : (d===0 ? 'D-DAY  ·  2026.11.21 SAT' : '2026.11.21 SAT');
+  el.textContent = d>0 ? 'D-'+d+'  ·  2026.11.21 SAT' : (d===0 ? 'D-DAY  ·  2026.11.21 SAT' : 'THANK YOU  ·  2026.11.21 SAT');
 
-  // ---- ICS ----
-  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//TOBIGS//Homecoming 2026//KO','BEGIN:VEVENT',
-    'UID:tobigs-homecoming-2026@tobigs','DTSTAMP:20260918T000000Z',
-    'DTSTART;TZID=Asia/Seoul:20261121T130000','DTEND;TZID=Asia/Seoul:20261121T170000',
-    "SUMMARY:TOBIG'S Homecoming Day 2026",'LOCATION:KSPO 연수원 대강당 (서울 송파구 올림픽로 424 올림픽파크텔 B1)',
-    'DESCRIPTION:Big Then. Bigger Now. '+SITE_URL,'END:VEVENT','END:VCALENDAR'].join('\r\n');
-  const icsA = document.getElementById('ics');
-  icsA.href = 'data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
-  icsA.download = 'tobigs-homecoming-2026.ics';
+  // ---- after the event: swap CTAs to survey / photos ----
+  if(d<0){
+    const ok = u => u && u !== '#';
+    const mk = (txt,u,cls) => { const a=document.createElement('a'); a.className='btn '+cls; a.textContent=txt; a.href=u; a.target='_blank'; a.rel='noopener'; return a; };
+    const hc=document.getElementById('hero-cta'); hc.innerHTML='';
+    if(ok(SURVEY_URL)) hc.appendChild(mk('만족도 설문 참여',SURVEY_URL,'btn-gold'));
+    if(ok(PHOTOS_URL)) hc.appendChild(mk('행사 사진 보기',PHOTOS_URL,'btn-ghost'));
+    if(!hc.children.length) hc.appendChild(mk('프로그램 다시 보기','#program','btn-ghost'));
+    const hm=document.querySelector('.hero-meta .when:last-child'); if(hm) hm.textContent='함께해 주신 모든 기수 선후배님, 감사합니다.';
+    const rs=document.getElementById('rsvp');
+    rs.querySelector('h2').innerHTML='행사가 끝났습니다<span class="ko">함께해 주셔서 감사합니다. 설문과 사진은 아래에서</span>';
+    rs.querySelector('.lead').textContent='짧은 만족도 설문은 다음 홈커밍데이를 준비하는 데 큰 힘이 됩니다. 행사 사진은 참석자 전원에게 공유됩니다.';
+    const cta=rs.querySelector('.cta'); cta.innerHTML='';
+    if(ok(SURVEY_URL)) cta.appendChild(mk('만족도 설문 참여',SURVEY_URL,'btn-gold'));
+    if(ok(PHOTOS_URL)) cta.appendChild(mk('행사 사진 보기',PHOTOS_URL,'btn-ghost'));
+    const st=document.querySelector('#sticky .btn'); if(ok(SURVEY_URL)){ st.textContent='만족도 설문 참여'; st.href=SURVEY_URL; st.target='_blank'; } else { document.getElementById('sticky').remove(); }
+    document.querySelectorAll('.rsvp .share, .rsvp .facts, #rsvp-note, #deadline').forEach(e=>e.remove());
+  }
+
+  // ---- share / copy ----
+  const SHARE_TEXT = "TOBIG'S Homecoming Day 2026 · Big Then. Bigger Now. 11.21(토) 13:00 올림픽공원 KSPO 연수원";
+  let toast = document.createElement('div'); toast.className='toast'; document.body.appendChild(toast);
+  const say = m => { toast.textContent=m; toast.classList.add('show'); clearTimeout(say.t); say.t=setTimeout(()=>toast.classList.remove('show'),1800); };
+  const copyLink = async () => { try { await navigator.clipboard.writeText(SITE_URL); say('링크를 복사했습니다'); } catch(e){ const i=document.createElement('input'); i.value=SITE_URL; document.body.appendChild(i); i.select(); document.execCommand('copy'); i.remove(); say('링크를 복사했습니다'); } };
+  document.querySelectorAll('.js-copy').forEach(b=>b.addEventListener('click',copyLink));
+  if(navigator.share){ document.querySelectorAll('.js-share').forEach(b=>{ b.hidden=false; b.addEventListener('click',()=>navigator.share({title:"TOBIG'S Homecoming Day 2026",text:SHARE_TEXT,url:SITE_URL}).catch(()=>{})); }); }
 
   // ---- stats ----
   const sm=document.getElementById('stat-members'), sg=document.getElementById('stat-gen26');
@@ -580,7 +628,7 @@
 
   // ---- sticky CTA on mobile after hero ----
   const sticky = document.getElementById('sticky'); const hero = document.querySelector('.hero'); const rsvp = document.getElementById('rsvp');
-  if('IntersectionObserver' in window){
+  if(sticky && 'IntersectionObserver' in window){
     let heroOut=false, rsvpIn=false;
     const upd=()=>sticky.classList.toggle('show', heroOut && !rsvpIn);
     new IntersectionObserver(e=>{heroOut=!e[0].isIntersecting;upd();},{threshold:0.05}).observe(hero);
