@@ -112,7 +112,7 @@
   .hero-meta .when{font-size:clamp(16px,2vw,20px);color:var(--on-dark-muted)}
   .hero-meta .when b{color:var(--on-dark);font-weight:600}
   .hero-cta{margin-top:36px;display:flex;flex-wrap:wrap;gap:12px}
-  .share{margin-top:28px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .share{margin-top:28px;display:flex;flex-wrap:wrap;align-items:center;gap:12px}
   .share-label{font-size:13px;color:var(--on-dark-muted);margin-right:4px;flex-basis:100%}
   .share-wrap{position:relative}
   .share-menu{position:absolute;left:0;top:calc(100% + 8px);min-width:180px;background:#ffffff;color:var(--ink);border-radius:12px;padding:6px;box-shadow:0 16px 40px rgba(11,18,48,.35);z-index:25;display:grid}
@@ -312,10 +312,8 @@
     <div class="hero-cta" id="hero-cta">
       <a class="btn btn-gold js-rsvp" href="#rsvp">참석 신청하기</a>
       <a class="btn btn-ghost" href="#program">프로그램 보기</a>
-    </div>
-    <div class="share" aria-label="공유">
       <div class="share-wrap">
-        <button type="button" class="chip js-share-open" aria-haspopup="menu" aria-expanded="false">공유하기</button>
+        <button type="button" class="btn btn-ghost js-share-open" aria-haspopup="menu" aria-expanded="false">공유하기</button>
         <div class="share-menu" role="menu" hidden>
           <button type="button" role="menuitem" class="js-copy">링크 복사</button>
           <button type="button" role="menuitem" class="js-ig">인스타그램 공유</button>
@@ -472,7 +470,7 @@
     <div class="share on-dark" aria-label="공유">
       <span class="share-label">다른 투빅스 구성원들이 볼 수 있도록 공유해주세요</span>
       <div class="share-wrap">
-        <button type="button" class="chip js-share-open" aria-haspopup="menu" aria-expanded="false">공유하기</button>
+        <button type="button" class="btn btn-ghost js-share-open" aria-haspopup="menu" aria-expanded="false">공유하기</button>
         <div class="share-menu" role="menu" hidden>
           <button type="button" role="menuitem" class="js-copy">링크 복사</button>
           <button type="button" role="menuitem" class="js-ig">인스타그램 공유</button>
