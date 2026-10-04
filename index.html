@@ -473,7 +473,6 @@
     </div>
     <p class="fine" id="rsvp-note"></p>
     <div class="share on-dark" aria-label="공유">
-      <span class="share-label">다른 투빅스 구성원들이 볼 수 있도록 공유해주세요</span>
       <div class="share-wrap">
         <button type="button" class="btn btn-ghost js-share-open" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>공유하기</button>
         <div class="share-menu" role="menu" hidden>
@@ -551,7 +550,7 @@
   const note = document.getElementById('rsvp-note');
   if(rsvpReady){ dl.textContent = '1차 신청 마감 ' + RSVP_DEADLINE; }
   else {
-    dl.textContent = '신청 폼은 10월 중순에 열립니다';
+    dl.textContent = '';
     document.querySelectorAll('.rsvp .js-rsvp').forEach(a=>{ a.setAttribute('aria-disabled','true'); a.textContent='참석 신청 (10월 오픈)'; a.addEventListener('click',e=>e.preventDefault()); });
   }
 
