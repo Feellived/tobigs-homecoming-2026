@@ -321,7 +321,7 @@
         <button type="button" class="btn btn-ghost js-share-open" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>공유하기</button>
         <div class="share-menu" role="menu" hidden>
           <button type="button" role="menuitem" class="js-copy">링크 복사</button>
-          <button type="button" role="menuitem" class="js-ig">인스타그램 공유</button>
+          <button type="button" role="menuitem" class="js-ig">인스타그램 공유 (모바일)</button>
           <a role="menuitem" class="js-li" href="#" target="_blank" rel="noopener">링크드인 공유</a>
         </div>
       </div>
@@ -478,7 +478,7 @@
         <button type="button" class="btn btn-ghost js-share-open" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>공유하기</button>
         <div class="share-menu" role="menu" hidden>
           <button type="button" role="menuitem" class="js-copy">링크 복사</button>
-          <button type="button" role="menuitem" class="js-ig">인스타그램 공유</button>
+          <button type="button" role="menuitem" class="js-ig">인스타그램 공유 (모바일)</button>
           <a role="menuitem" class="js-li" href="#" target="_blank" rel="noopener">링크드인 공유</a>
         </div>
       </div>
@@ -593,11 +593,10 @@
   const getFile=async()=>{ if(storyFile) return storyFile; const blob=await (await fetch('assets/story.png')).blob(); storyFile=new File([blob],'tobigs-homecoming-2026.png',{type:'image/png'}); return storyFile; };
   const canFileShare = !!(navigator.share && navigator.canShare && navigator.canShare({files:[new File([new Uint8Array(1)],'p.png',{type:'image/png'})]}));
   document.querySelectorAll('.js-ig').forEach(b=>{
-    if(canFileShare){ b.innerHTML='인스타그램 공유<span class="sub">공유 시트에서 Instagram → 스토리 선택</span>'; getFile().catch(()=>{}); }
-    else { b.innerHTML='인스타그램용 이미지 저장<span class="sub">저장 후 인스타 앱에서 스토리에 올리기</span>'; }
+    if(canFileShare){ getFile().catch(()=>{}); }
     b.addEventListener('click', async ()=>{
       if(canFileShare){ try{ const f=await getFile(); await navigator.share({files:[f],title:"TOBIG'S Homecoming Day 2026"}); say('Instagram → 스토리에 올리고 링크 스티커를 붙여주세요'); }catch(e){} }
-      else { const a=document.createElement('a'); a.href='assets/story.png'; a.download='tobigs-homecoming-2026.png'; document.body.appendChild(a); a.click(); a.remove(); say('이미지를 저장했습니다. 인스타 앱에서 스토리에 올려주세요'); }
+      else { const a=document.createElement('a'); a.href='assets/story.png'; a.download='tobigs-homecoming-2026.png'; document.body.appendChild(a); a.click(); a.remove(); window.open('https://www.instagram.com/','_blank','noopener'); say('이미지를 저장했습니다. 인스타그램에서 올려주세요'); }
     });
   });
   document.querySelectorAll('.js-copy').forEach(b=>b.addEventListener('click',copyLink));
