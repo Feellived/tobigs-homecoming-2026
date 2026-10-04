@@ -282,16 +282,13 @@
   footer .links a{border-bottom:1px solid var(--dark-line);color:var(--on-dark-muted)}
   footer .links a:hover{color:var(--on-dark);border-color:var(--accent)}
 
-  /* sticky mobile CTA */
-  .sticky{position:fixed;left:0;right:0;bottom:0;padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));background:rgba(12,13,22,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--dark-line);z-index:20;transform:translateY(110%);transition:transform .25s ease}
+  /* sticky bottom CTA bar */
+  .sticky{position:fixed;left:0;right:0;bottom:0;padding:10px 0 calc(10px + env(safe-area-inset-bottom));background:rgba(12,13,22,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--dark-line);z-index:20;transform:translateY(110%);transition:transform .25s ease}
   .sticky.show{transform:none}
-  .sticky .btn{width:100%}
-  @media (min-width:761px){
-    .sticky{left:auto;right:24px;bottom:24px;padding:0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;border:0;transform:translateY(24px);opacity:0;transition:transform .25s ease,opacity .25s ease}
-    .sticky.show{transform:none;opacity:1}
-    .sticky .btn{width:auto;padding:14px 22px;box-shadow:0 12px 32px rgba(11,18,48,.35)}
-  }
-
+  .sticky-in{display:flex;align-items:center;gap:10px}
+  .sticky-txt{flex:1;font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.06em;color:var(--on-dark-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sticky .btn{min-height:46px;padding:12px 20px;font-size:14px}
+  @media (max-width:760px){.sticky-txt{display:none}.sticky .btn{flex:1}.sticky .btn-gold{flex:1.4}}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -523,7 +520,7 @@
   </div>
 </footer>
 
-<div class="sticky" id="sticky"><a class="btn btn-gold js-rsvp" href="#rsvp">참석 신청하기</a></div>
+<div class="sticky" id="sticky"><div class="wrap sticky-in"><span class="sticky-txt">TOBIG'S Homecoming Day 2026 · 11.21 SAT 13:00</span><a class="btn btn-ghost" href="#program">프로그램 보기</a><a class="btn btn-gold js-rsvp" href="#rsvp">참석 신청하기</a></div></div>
 
 <script>
 (function(){
