@@ -20,10 +20,14 @@
   const PHOTOS_URL  = "#";                       // 행사 사진 공유 폴더 링크 (행사 후 표시)
   const STAT_MEMBERS  = "400+";                  // 누적 학회원 수 (공식 홈페이지 기준). 비우면 항목 숨김
   const STAT_GEN26    = "21";                    // 26기 인원
-  // 연사 확정 후 채우면 Alumni Session에 카드가 나타남. 비워 두면 숨김. photo는 assets/speakers/01.jpg 식, 없으면 "".
+  // 개회사(1기 선배). name을 채우면 개회사 항목에 카드가 나타남. photo는 assets/speakers/opener.jpg 식, 없으면 "".
+  const OPENER   = { name:"", gen:"1기", org:"", photo:"" };
+  // Alumni Session 토크 게스트. 확정 후 채우면 카드가 나타남(비우면 숨김). topic은 한 줄 소개나 비워도 됨.
   const SPEAKERS = [
-    // { name:"홍길동", gen:"7기", org:"○○ AI Lab · Research Scientist", topic:"TOBIG'S 이후, 연구자로 산다는 것", photo:"assets/speakers/01.jpg" },
+    // { name:"홍길동", gen:"7기", org:"○○ AI Lab · Research Scientist", topic:"그때의 투빅스, 지금의 나", photo:"assets/speakers/01.jpg" },
   ];
+  // 토크 진행 MC. name을 채우면 게스트 카드 옆에 MC 카드가 붙음. 비우면 숨김.
+  const MC       = { name:"", gen:"25기", org:"운영부", photo:"" };
 </script>
 <!-- ===================================================== -->
 
@@ -166,6 +170,14 @@
   /* ---------- SPEAKER CARDS ---------- */
   .speakers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px;max-width:720px}
   .speakers[hidden]{display:none}
+  .speakers.one{grid-template-columns:minmax(0,340px)}
+  .speakers.four{grid-template-columns:repeat(4,1fr);max-width:none}
+  @media (max-width:980px){.speakers.four{grid-template-columns:1fr 1fr}}
+  .spk-label{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-deep);margin-top:18px}
+  .spk-label[hidden]{display:none}
+  .spk-label + .speakers{margin-top:10px}
+  .spk .role{display:inline-block;font-family:var(--display);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 6px;margin-bottom:5px}
+  .spk.mc{background:var(--bg);border-style:dashed}
   .spk{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2)}
   .spk .ph{width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--dark);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:20px;overflow:hidden}
   .spk .ph img{width:100%;height:100%;object-fit:cover}
@@ -373,9 +385,9 @@
     <ol class="tl" id="tl">
       <span class="tl-progress" id="tl-progress" aria-hidden="true"></span>
       <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">13:00</span><div class="tl-body"><div class="n">입장 · 체크인</div><div class="d">명찰을 받고 미리 배정된 테이블로. 포토부스에서 첫 사진을 남기는 동안 무대 화면에는 12년 치 사진이 흐릅니다</div></div></li>
-      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">13:30</span><div class="tl-body"><div class="n">개회사</div><div class="d">TOBIG'S의 첫 기수, 1기 선배님의 개회 말씀</div></div></li>
+      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">13:30</span><div class="tl-body"><div class="n">개회사</div><div class="d">TOBIG'S의 첫 기수, 1기 선배님의 개회 말씀</div><div class="speakers one" id="opener" hidden></div></div></li>
       <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">13:40</span><div class="tl-body"><div class="n">TOBIG'S Yesterday &amp; Today</div><div class="d">2014년부터 지금까지 사진으로 돌아보는 12년. 이어서 지금의 TOBIG'S가 무엇을 하는지, 25기 회장의 환영 인사와 함께</div></div></li>
-      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">14:00</span><div class="tl-body"><div class="n">Alumni Session</div><div class="d">선배 세 분과 MC가 나누는 토크. 발표가 아니라 대화입니다. 신청 폼과 입구 질문 보드에 남겨주신 질문으로 Q&amp;A를 이어갑니다</div><div class="speakers" id="speakers" hidden></div></div></li>
+      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">14:00</span><div class="tl-body"><div class="n">Alumni Session</div><div class="d">선배 세 분과 MC가 무대에 앉아 나누는 토크 콘서트. 발표가 아니라 대화입니다. 신청 폼과 입구 질문 보드에 남겨주신 질문으로 Q&amp;A를 이어갑니다</div><div class="spk-label" id="spk-label" hidden>Talk Guests</div><div class="speakers" id="speakers" hidden></div></div></li>
       <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">14:45</span><div class="tl-body"><div class="n">티타임 · 경품 추첨</div><div class="d">테이블에 준비된 구움과자와 커피, 차. 쉬는 동안 명찰 번호로 경품 추첨</div></div></li>
       <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">15:15</span><div class="tl-body"><div class="n">TOBIG'S 퀴즈</div><div class="d">테이블 대항 5문제. 초기 기수만 아는 문제와 현 기수만 아는 문제가 섞여 있어 선후배가 힘을 합쳐야 풀립니다</div></div></li>
       <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">15:30</span><div class="tl-body"><div class="n">테이블 토크</div><div class="d">기수를 섞어 앉은 테이블에서 대화 카드로 시작해, 신청 때 고른 관심 주제로 이어집니다. 자리 이동 없이 같은 테이블에서</div></div></li>
@@ -603,13 +615,19 @@
     addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll); tick();
   }
 
-  // ---- speaker cards ----
-  const spk=document.getElementById('speakers');
-  if(spk && Array.isArray(SPEAKERS) && SPEAKERS.length){
-    spk.innerHTML = SPEAKERS.map(x=>{
-      const ph = x.photo ? '<span class="ph"><img src="'+x.photo+'" alt="'+x.name+'" loading="lazy"></span>' : '<span class="ph">'+(x.name||'?').slice(0,1)+'</span>';
-      return '<div class="spk">'+ph+'<div><div class="nm">'+x.name+'<em>'+(x.gen||'')+'</em></div>'+(x.org?'<div class="org">'+x.org+'</div>':'')+(x.topic?'<div class="tp">“'+x.topic+'”</div>':'')+'</div></div>';
-    }).join(''); spk.hidden=false;
+  // ---- people cards (개회사 / 토크 게스트 / MC) ----
+  const card = (x, role, cls) => {
+    const ph = x.photo ? '<span class="ph"><img src="'+x.photo+'" alt="'+x.name+'" loading="lazy"></span>' : '<span class="ph">'+(x.name||'?').slice(0,1)+'</span>';
+    return '<div class="spk'+(cls?' '+cls:'')+'">'+ph+'<div>'+(role?'<span class="role">'+role+'</span>':'')+'<div class="nm">'+x.name+'<em>'+(x.gen||'')+'</em></div>'+(x.org?'<div class="org">'+x.org+'</div>':'')+(x.topic?'<div class="tp">“'+x.topic+'”</div>':'')+'</div></div>';
+  };
+  const op=document.getElementById('opener');
+  if(op && OPENER && OPENER.name){ op.innerHTML=card(OPENER,'개회사'); op.hidden=false; }
+  const spk=document.getElementById('speakers'), spl=document.getElementById('spk-label');
+  const guests = Array.isArray(SPEAKERS) ? SPEAKERS.filter(x=>x && x.name) : [];
+  if(spk && (guests.length || (MC && MC.name))){
+    spk.innerHTML = guests.map(x=>card(x,'Guest')).join('') + (MC && MC.name ? card(MC,'MC','mc') : '');
+    spk.classList.toggle('four', spk.children.length>=4);
+    spk.hidden=false; if(spl) spl.hidden=false;
   }
 
   // ---- hero parallax ----
