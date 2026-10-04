@@ -302,8 +302,6 @@
     <h1 class="slogan">Big Then.<span class="l2">Bigger Now.</span></h1>
     <div class="hero-meta">
       <div class="title">TOBIG'S Homecoming Day 2026</div>
-      <div class="when"><b>2026년 11월 21일 토요일</b> 13:00 – 17:00 · 올림픽공원 KSPO 연수원 대강당</div>
-      <div class="when">1기부터 26기까지, 전·현 기수가 함께하는 동문 행사</div>
     </div>
     <div class="hero-cta" id="hero-cta">
       <a class="btn btn-gold js-rsvp" href="#rsvp">참석 신청하기</a>
@@ -558,7 +556,7 @@
     if(ok(SURVEY_URL)) hc.appendChild(mk('만족도 설문 참여',SURVEY_URL,'btn-gold'));
     if(ok(PHOTOS_URL)) hc.appendChild(mk('행사 사진 보기',PHOTOS_URL,'btn-ghost'));
     if(!hc.children.length) hc.appendChild(mk('프로그램 다시 보기','#program','btn-ghost'));
-    const hm=document.querySelector('.hero-meta .when:last-child'); if(hm) hm.textContent='함께해 주신 모든 기수 선후배님, 감사합니다.';
+    const hm=document.createElement('div'); hm.className='when'; hm.textContent='함께해 주신 모든 기수 선후배님, 감사합니다.'; document.querySelector('.hero-meta').appendChild(hm);
     const rs=document.getElementById('rsvp');
     rs.querySelector('h2').innerHTML='행사가 끝났습니다<span class="ko">함께해 주셔서 감사합니다. 설문과 사진은 아래에서</span>';
     rs.querySelector('.lead').textContent='짧은 만족도 설문은 다음 홈커밍데이를 준비하는 데 큰 힘이 됩니다. 행사 사진은 참석자 전원에게 공유됩니다.';
