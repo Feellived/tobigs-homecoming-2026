@@ -13,7 +13,7 @@
 ======================================================== -->
 <script>
   const RSVP_URL    = "#";                       // 참석 신청 구글폼 링크 (10/19 오픈)
-  const CONTACT_URL = "#";                       // 운영부 오픈채팅 링크
+  const CONTACT_URL = "https://open.kakao.com/o/sW8KJKQi";  // 운영부 카카오톡 오픈채팅
   const SITE_URL    = "https://homecoming.datamarket.ai.kr/";  // 배포 주소
   const RSVP_DEADLINE = "2026년 11월 1일(일)";    // 1차 신청 마감
   const SURVEY_URL  = "#";                       // 행사 후 만족도 설문 링크 (행사 다음날부터 히어로 버튼으로 표시)
@@ -142,6 +142,7 @@
   .card ul{list-style:none;margin-top:18px;display:grid;gap:8px;font-size:15px;color:var(--ink-2)}
   .card ul li{padding-left:18px;position:relative}
   .card ul li::before{content:"";position:absolute;left:0;top:11px;width:7px;height:7px;background:var(--accent);border-radius:1px}
+  .card ul a{font-weight:600;text-decoration:none;border-bottom:1.5px solid var(--accent)}
   .card .actions{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
   .card .actions a{font-size:14px;font-weight:600;text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:2px}
   .card .actions .cal-note{flex-basis:100%;font-size:12px;color:var(--muted);margin-top:2px}
@@ -261,6 +262,9 @@
   .faq summary::after{content:"+";font-family:var(--display);font-size:22px;color:var(--accent-deep);transition:transform .2s}
   .faq details[open] summary::after{transform:rotate(45deg)}
   .faq details p{margin-top:12px;color:var(--ink-2);font-size:15px;max-width:64ch}
+  .faq-more{margin-top:28px;font-size:15px;color:var(--ink-2)}
+  .faq-more a{font-weight:700;text-decoration:none;border-bottom:1.5px solid var(--accent)}
+  .rsvp .facts a{color:var(--on-dark);text-decoration:none;border-bottom:1px solid var(--accent)}
 
   /* ---------- FOOTER ---------- */
   footer{background:var(--dark);color:var(--on-dark-muted);padding:40px 0 calc(32px + env(safe-area-inset-bottom));font-size:13px}
@@ -345,6 +349,7 @@
           <li>국민체육진흥공단 연수원 · 빔·음향·무선 마이크 구비</li>
           <li>행사장 주차 등록이 되지 않습니다. 대중교통으로 오세요</li>
           <li>행사장 안에 와이파이가 없습니다. 자료는 리마인드로 미리 보내드립니다</li>
+          <li>당일 길을 못 찾으시면 <a class="js-contact" href="#">운영부 오픈채팅</a>으로 연락 주세요</li>
         </ul>
         <div class="actions">
           <a href="https://map.naver.com/p/search/%EC%98%AC%EB%A6%BC%ED%94%BD%ED%9A%8C%EA%B4%80" target="_blank" rel="noopener">네이버 지도</a>
@@ -462,6 +467,7 @@
     <p class="lead">신청은 1분이면 됩니다. 이름, 기수, 연락처, 뒤풀이 참석 여부, 테이블 토크 관심 주제, 그리고 선배에게 묻고 싶은 질문 하나.</p>
     <div class="cta">
       <a class="btn btn-gold js-rsvp" href="#">참석 신청하기</a>
+      <a class="btn btn-ghost js-contact" href="#">카카오톡 문의</a>
       <span class="fine" style="margin:0" id="deadline"></span>
     </div>
     <p class="fine" id="rsvp-note"></p>
@@ -473,7 +479,7 @@
     </div>
     <div class="facts">
       <div><b>참가비</b><span>본행사 무료. 뒤풀이는 희망자 참석</span></div>
-      <div><b>마감</b><span>1차 신청 마감 후에도 추가 접수 기간이 있습니다</span></div>
+      <div><b>추가 접수</b><span>1차 마감 후에도 추가 접수가 가능합니다. 카카오톡 <a class="js-contact" href="#">운영부 오픈채팅</a>으로 문의해 주세요</span></div>
       <div><b>기록</b><span>행사 사진·영상은 TOBIG'S 기록과 홍보에 사용됩니다</span></div>
     </div>
   </div>
@@ -494,6 +500,7 @@
     <details><summary>사진 촬영이 있나요?</summary><p>포토부스 촬영, 행사 스냅, 기수별 사진, 전원 단체사진이 있고 무대 프로그램은 영상으로 기록합니다. 촬영본은 행사 후 일주일 안에 참석자 전원에게 공유하고, 일부는 TOBIG'S 기록과 홍보에 사용됩니다. 촬영을 원치 않으시면 체크인 때 말씀해 주시면 스냅에서 제외해 드립니다.</p></details>
     <details><summary>어떻게 가나요? 주차할 수 있나요?</summary><p>행사장은 서울 송파구 올림픽로 424, 올림픽공원 평화의 문 옆 올림픽회관(국민체육진흥공단) 지하 1층 KSPO 연수원 대강당입니다. 8호선 몽촌토성역 1번 출구에서 평화의 문을 지나 걸어서 5분이고, 위의 네이버 지도, 카카오맵 버튼으로 길찾기를 열 수 있습니다. 행사장 주차 등록이 되지 않아 대중교통을 권장하며, 꼭 차량이 필요하시면 올림픽공원 공영주차장(유료)을 이용하셔야 합니다. 건물 입구 안내는 행사 전날 리마인드로 다시 보내드립니다.</p></details>
     <details><summary>복장 규정이 있나요?</summary><p>없습니다. 편한 복장으로 오세요. 다만 단체사진과 기수별 사진을 찍으니 그 점만 참고하시면 됩니다.</p></details>
+    <p class="faq-more">여기 없는 질문은 <a class="js-contact" href="#">카카오톡 운영부 오픈채팅</a>으로 편하게 물어봐 주세요. 신청 변경, 추가 접수, 당일 연락도 같은 채널입니다.</p>
   </div>
 </section>
 
