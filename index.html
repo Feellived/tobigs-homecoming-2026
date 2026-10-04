@@ -306,6 +306,7 @@
       <span class="share-label">공유</span>
       <button type="button" class="chip js-copy">링크 복사</button>
       <button type="button" class="chip js-share" hidden>공유하기</button>
+      <button type="button" class="chip js-ig" hidden>인스타그램에 공유</button>
     </div>
   </div>
 
@@ -473,6 +474,7 @@
       <span class="share-label">선배님, 기수 단톡에도 공유해 주세요</span>
       <button type="button" class="chip js-copy">링크 복사</button>
       <button type="button" class="chip js-share" hidden>공유하기</button>
+      <button type="button" class="chip js-ig" hidden>인스타그램에 공유</button>
     </div>
     <div class="facts">
       <div><b>뒤풀이</b><span>17:30 방이동. 희망자 참석, 신청 폼에서 체크</span></div>
@@ -579,6 +581,17 @@
   const copyLink = async () => { try { await navigator.clipboard.writeText(SITE_URL); say('링크를 복사했습니다'); } catch(e){ const i=document.createElement('input'); i.value=SITE_URL; document.body.appendChild(i); i.select(); document.execCommand('copy'); i.remove(); say('링크를 복사했습니다'); } };
   document.querySelectorAll('.js-copy').forEach(b=>b.addEventListener('click',copyLink));
   if(navigator.share){ document.querySelectorAll('.js-share').forEach(b=>{ b.hidden=false; b.addEventListener('click',()=>navigator.share({title:"TOBIG'S Homecoming Day 2026",text:SHARE_TEXT,url:SITE_URL}).catch(()=>{})); }); }
+  // 인스타그램 공유: 스토리용 이미지를 기기 공유 시트로 넘김 (모바일, 파일 공유 가능한 브라우저만)
+  const igBtns=document.querySelectorAll('.js-ig');
+  if(igBtns.length && navigator.share && navigator.canShare){
+    let storyFile=null;
+    const getFile=async()=>{ if(storyFile) return storyFile; const blob=await (await fetch('assets/story.png')).blob(); storyFile=new File([blob],'tobigs-homecoming-2026.png',{type:'image/png'}); return storyFile; };
+    const probe=new File([new Uint8Array(1)],'p.png',{type:'image/png'});
+    if(navigator.canShare({files:[probe]})){
+      igBtns.forEach(b=>{ b.hidden=false; b.addEventListener('click',async()=>{ try{ const f=await getFile(); if(navigator.canShare({files:[f]})){ await navigator.share({files:[f],title:"TOBIG'S Homecoming Day 2026"}); say('인스타그램을 고른 뒤 스토리에 올리고 링크 스티커를 붙여주세요'); } }catch(e){} }); });
+      getFile().catch(()=>{});
+    }
+  }
 
   // ---- stats ----
   const sm=document.getElementById('stat-members'), sg=document.getElementById('stat-gen26');
