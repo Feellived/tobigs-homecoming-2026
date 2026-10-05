@@ -24,7 +24,9 @@
   const OPENER   = { name:"", gen:"1기", org:"", photo:"" };
   // Alumni Session 토크 게스트. 확정 후 채우면 카드가 나타남(비우면 숨김). topic은 한 줄 소개나 비워도 됨.
   const SPEAKERS = [
-    // { name:"홍길동", gen:"7기", org:"○○ AI Lab · Research Scientist", topic:"그때의 투빅스, 지금의 나", photo:"assets/speakers/01.jpg" },
+    { name:"정세영", gen:"14기", org:"코오롱베니트", topic:"", photo:"" },
+    { name:"임지영", gen:"19기", org:"19기 회장 · KAIST 전기전자공학부 석사", topic:"", photo:"" },
+    { name:"최혜윤", gen:"24기", org:"24기 회장 · 이화여대 인공지능학과", topic:"", photo:"" },
   ];
   // 토크 진행 MC. name을 채우면 게스트 카드 옆에 MC 카드가 붙음. 비우면 숨김.
   const MC       = { name:"유주형", gen:"25기", org:"운영부장", photo:"" };
@@ -349,7 +351,7 @@
       <p class="lead">투빅스(To + Bigs)는 빅데이터를 공부하고 큰 사람이 되기 위해 모인 사람들이라는 뜻입니다. 2014년 1기부터 2026년 26기까지, 12년 동안 TOBIG'S를 지나간 400명 넘는 사람들이 한 공간에 모입니다. 지난 활동을 사진으로 돌아보고, 지금의 TOBIG'S가 무엇을 하는지 공유하고, 선배와 후배가 연결되는 시간입니다.</p>
     </div>
     <dl class="facts">
-      <div class="fact"><dt>When</dt><dd>2026.11.21 (토) 13:00<small>13:00 입장 · 13:30 개회 · 16:35 종료</small></dd></div>
+      <div class="fact"><dt>When</dt><dd>2026.11.21 (토) 13:00</dd></div>
       <div class="fact"><dt>Where</dt><dd>KSPO 연수원 대강당<small>서울 송파구 올림픽로 424 · 몽촌토성역 도보 5분</small></dd></div>
       <div class="fact"><dt>Who</dt><dd>TOBIG'S 1기 – 26기 전원<small>전·현 기수 학회원 누구나</small></dd></div>
       <div class="fact"><dt>After</dt><dd>17:30 뒤풀이<small>희망자 참석 · 방이동 식당가</small></dd></div>
@@ -362,14 +364,14 @@
 <section class="place" id="place">
   <div class="wrap">
     <div class="eyebrow">Date &amp; Venue</div>
-    <h2>11월 21일, 올림픽공원<span class="ko">토요일 오후, 몽촌토성역에서 걸어서 5분</span></h2>
+    <h2>11월 21일, 올림픽공원</h2>
     <div class="grid">
       <div class="card">
         <h3>Venue</h3>
         <div class="big">KSPO 연수원<br>대강당</div>
         <div class="sub">서울특별시 송파구 올림픽로 424 (올림픽공원 · 올림픽회관 지하 1층)</div>
         <ul>
-          <li>13:00부터 입장, 17:00에 행사장을 비웁니다</li>
+          <li>13:00부터 입장, 17:00까지 행사가 마무리됩니다</li>
           <li>8인 테이블 10개. 자리는 신청 때 고른 관심 주제로 미리 배정합니다</li>
           <li>행사장 주차 등록이 되지 않습니다</li>
           <li>행사장 안에 와이파이가 없습니다</li>
@@ -397,19 +399,20 @@
 <section class="program" id="program">
   <div class="wrap">
     <div class="eyebrow">Program</div>
-    <h2>무대는 짧게, 대화는 길게<span class="ko">13:00 입장 · 13:30 개회 · 16:35 종료</span></h2>
+    <h2>무대는 짧게, 대화는 길게</h2>
     <ol class="tl" id="tl">
       <span class="tl-progress" id="tl-progress" aria-hidden="true"></span>
-      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">13:00</span><div class="tl-body"><div class="n">입장 · 체크인</div><div class="d">명찰을 받고 미리 배정된 테이블로. 포토부스에서 첫 사진을 남기는 동안 무대 화면에는 12년 치 사진이 흐릅니다</div></div></li>
+      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">13:00</span><div class="tl-body"><div class="n">입장 · 체크인</div><div class="d">명찰을 받고 미리 배정된 테이블로. 입구 질문 보드에 선배님께 묻고 싶은 질문을 남기고, 포토존에서 첫 사진을 남깁니다</div></div></li>
       <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">13:30</span><div class="tl-body"><div class="n">개회사</div><div class="d">TOBIG'S의 첫 기수, 1기 선배님의 개회 말씀</div><div class="speakers one" id="opener" hidden></div></div></li>
-      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">13:40</span><div class="tl-body"><div class="n">TOBIG'S Yesterday &amp; Today</div><div class="d">2014년부터 지금까지 사진으로 돌아보는 12년. 이어서 지금의 TOBIG'S가 무엇을 하는지, 25기 회장의 환영 인사와 함께</div></div></li>
-      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">14:00</span><div class="tl-body"><div class="n">Alumni Session</div><div class="d">선배 세 분과 MC가 무대에 앉아 나누는 토크 콘서트. 발표가 아니라 대화입니다. 신청 폼과 입구 질문 보드에 남겨주신 질문으로 Q&amp;A를 이어갑니다</div><div class="spk-label" id="spk-label" hidden>Talk Guests</div><div class="speakers" id="speakers" hidden></div></div></li>
-      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">14:45</span><div class="tl-body"><div class="n">티타임 · 경품 추첨</div><div class="d">테이블에 준비된 구움과자와 커피, 차. 쉬는 동안 명찰 번호로 경품 추첨</div></div></li>
-      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">15:15</span><div class="tl-body"><div class="n">TOBIG'S 퀴즈</div><div class="d">테이블 대항 5문제. 초기 기수만 아는 문제와 현 기수만 아는 문제가 섞여 있어 선후배가 힘을 합쳐야 풀립니다</div></div></li>
-      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">15:30</span><div class="tl-body"><div class="n">테이블 토크</div><div class="d">기수를 섞어 앉은 테이블에서 대화 카드로 시작해, 신청 때 고른 관심 주제로 이어집니다. 자리 이동 없이 같은 테이블에서</div></div></li>
-      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">16:00</span><div class="tl-body"><div class="n">네트워킹 미션</div><div class="d">기수 스티커 교환. 선배는 후배 두 명, 후배는 선배 두 명 이상을 만나 명찰에 스티커를 모읍니다</div></div></li>
-      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">16:20</span><div class="tl-body"><div class="n">단체사진 · 클로징</div><div class="d">기수별 사진, 그리고 전원 단체사진. 설문과 뒤풀이 안내로 마무리</div></div></li>
-      <li class="tl-item last"><span class="tl-dot"></span><span class="tl-time">17:30</span><div class="tl-body"><div class="n">뒤풀이</div><div class="d">희망자에 한해 방이동 식당가로 도보 이동(약 10분). 장소는 리마인드로 안내</div></div></li>
+      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">13:40</span><div class="tl-body"><div class="n">TOBIG'S Yesterday &amp; Today</div><div class="d">투빅스의 시작부터 지금까지, 사진으로 돌아보는 12년. 이어서 25·26기의 현재 활동 소개와 회장·운영부장 환영사</div></div></li>
+      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">14:00</span><div class="tl-body"><div class="n">Alumni Session</div><div class="d">MC와 선배 세 분이 함께하는 45분 토크 콘서트. 지금 → 그때의 투빅스 → 투빅스가 남긴 것 → 객석 Q&amp;A → 앞으로. 발표가 아니라 대화입니다</div><div class="spk-label" id="spk-label" hidden>Talk Guests</div><div class="speakers" id="speakers" hidden></div></div></li>
+      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">14:45</span><div class="tl-body"><div class="n">Break &amp; Snack</div><div class="d">테이블에 준비된 구움과자와 커피, 차, 음료. 자유롭게 대화하고 포토존도 이용하세요</div></div></li>
+      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">15:05</span><div class="tl-body"><div class="n">TOBIG'S Quiz</div><div class="d">테이블 대항 8문제. 선배의 이야기, 옛 사진, 투빅스의 역사가 문제로 나와 서로 다른 기수의 기억을 합쳐야 풀립니다</div></div></li>
+      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">15:25</span><div class="tl-body"><div class="n">Table Talk</div><div class="d">신청 때 고른 관심 분야로 모인 테이블에서 선후배가 30분간 대화. 가벼운 질문으로 시작해 커리어와 연구 이야기로</div></div></li>
+      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">15:55</span><div class="tl-body"><div class="n">Connection Networking</div><div class="d">테이블을 벗어나 아직 만나지 못한 기수를 만나는 시간. 선배는 후배 기수 두 명, 후배는 선배 기수 두 명 이상을 만나 기수 스티커를 교환합니다</div></div></li>
+      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">16:15</span><div class="tl-body"><div class="n">Lucky Draw</div><div class="d">모두 자리로 돌아와 경품 추첨</div></div></li>
+      <li class="tl-item"><span class="tl-dot"></span><span class="tl-time">16:25</span><div class="tl-body"><div class="n">단체사진 · Closing</div><div class="d">전원 단체사진, 만족도 설문, 뒤풀이 안내. 16:35 본행사 종료</div></div></li>
+      <li class="tl-item last"><span class="tl-dot"></span><span class="tl-time">17:30</span><div class="tl-body"><div class="n">뒤풀이</div><div class="d">희망자에 한해 방이동 식당가로 함께 이동. 장소는 리마인드로 안내</div></div></li>
     </ol>
     <p class="note">연사와 세부 순서는 10월 중 확정되어 업데이트됩니다.</p>
   </div>
@@ -420,7 +423,7 @@
   <div class="wrap">
     <div class="eyebrow">Conference Archive</div>
     <h2>22번의 컨퍼런스<span class="ko">2016년 여름부터 2026년 여름까지, 기수마다 남긴 프로젝트</span></h2>
-    <p class="lead">1회부터 22회까지, 기수마다 발표한 프로젝트가 갤러리에 그대로 남아 있습니다. 홈커밍 전에 내 기수 페이지를 한 번 열어보세요.</p>
+    <p class="lead">1회부터 22회까지, 기수마다 발표한 프로젝트가 갤러리에 그대로 남아 있습니다.<br>홈커밍 전에 내 기수 페이지를 한 번 열어보세요.</p>
     <div class="posters" aria-label="역대 컨퍼런스 포스터">
       <figure><a href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc#3b902c1ed366807ebe0fe12be053a320" target="_blank" rel="noopener" title="제1회 컨퍼런스 갤러리로 이동"><img src="assets/posters/2015.06.jpg" alt="2015.06 제1회 공개 세미나 포스터" loading="lazy"><figcaption>2015 · 제1회 공개 세미나</figcaption></a></figure>
       <figure><a href="https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc#3b902c1ed366803db71cd88af0b8e73b" target="_blank" rel="noopener" title="제2회 컨퍼런스 갤러리로 이동"><img src="assets/posters/2015.12.jpg" alt="2015.12 제1회 연합 컨퍼런스 포스터" loading="lazy"><figcaption>2015 · 제1회 연합 컨퍼런스</figcaption></a></figure>
@@ -474,8 +477,7 @@
 <section class="rsvp" id="rsvp">
   <div class="wrap">
     <div class="eyebrow" style="color:var(--accent)">RSVP</div>
-    <h2>참석 신청<span class="ko">명찰과 자리, 간식을 준비하기 위해 꼭 미리 신청해 주세요</span></h2>
-    <p class="lead">신청은 1분이면 됩니다. 이름, 기수, 연락처, 뒤풀이 참석 여부, 테이블 토크 관심 주제, 그리고 선배에게 묻고 싶은 질문 하나.</p>
+    <h2>참석 신청</h2>
     <div class="cta">
       <a class="btn btn-gold js-rsvp" href="#">참석 신청하기</a>
       <a class="btn btn-ghost js-contact" href="#">카카오톡 문의</a>
@@ -495,17 +497,16 @@
   <div class="wrap">
     <div class="eyebrow">FAQ</div>
     <h2>자주 묻는 질문</h2>
-    <details><summary>오래전 기수인데 아는 사람이 없어도 괜찮나요?</summary><p>그래서 만든 자리입니다. 명찰에 이름과 기수가 크게 적혀 있고, 기수대별로 명찰 줄 색이 달라 멀리서도 선배인지 후배인지 보입니다. 테이블 토크 첫 라운드는 운영진이 기수를 섞어 배정하고, 테이블마다 현 기수 호스트가 자기소개와 대화를 이끕니다. 이어서 같은 테이블에서 신청 때 고른 관심 주제로 대화가 이어지고, 그 다음 네트워킹 미션(기수 스티커 교환)이 선후배에게 말을 걸 이유를 만들어 줍니다. 혼자 오셔도 어색할 틈이 없도록 설계했습니다.</p></details>
-    <details><summary>몇 시까지 가야 하나요? 늦게 도착해도 되나요?</summary><p>13:00부터 입장과 체크인이 시작되고 13:30에 개회합니다. 13:20까지 도착하시면 명찰을 받고 사진도 찍고 자리 잡을 여유가 있습니다. 늦으시는 경우에도 14:45 티타임까지는 체크인 데스크가 운영되고, 그 이후에는 입구 셀프 명찰함에서 명찰을 찾아 들어오시면 됩니다. 15:30 테이블 토크부터 합류하셔도 프로그램의 핵심은 충분히 함께하실 수 있습니다. 행사는 16:35에 끝나고 17:00에 행사장을 비워야 합니다. 중간에 먼저 가셔야 하는 경우도 물론 괜찮습니다.</p></details>
+    <details><summary>오래전 기수인데 아는 사람이 없어도 괜찮나요?</summary><p>그래서 만든 자리입니다. 명찰에 이름과 기수가 크게 적혀 있습니다. 테이블 토크 첫 라운드는 운영진이 기수를 섞어 배정하고, 테이블마다 현 기수 호스트가 자기소개와 대화를 이끕니다. 이어서 같은 테이블에서 신청 때 고른 관심 주제로 대화가 이어지고, 그 다음 네트워킹 미션(기수 스티커 교환)이 선후배에게 말을 걸 이유를 만들어 줍니다. 혼자 오셔도 어색할 틈이 없도록 설계했습니다.</p></details>
+    <details><summary>몇 시까지 가야 하나요? 늦게 도착해도 되나요?</summary><p>13:00부터 입장과 체크인이 시작되고 13:30에 개회합니다. 13:20까지 도착하시면 명찰을 받고 사진도 찍고 자리 잡을 여유가 있습니다. 늦으시는 경우에도 14:45 Break 시간까지는 체크인 데스크가 운영되고, 그 이후에는 입구 셀프 명찰함에서 명찰을 찾아 들어오시면 됩니다. 15:25 Table Talk부터 합류하셔도 프로그램의 핵심은 충분히 함께하실 수 있습니다. 본행사는 16:35에 끝납니다. 중간에 먼저 가셔야 하는 경우도 물론 괜찮습니다.</p></details>
     <details><summary>선배님께 묻고 싶은 게 있어요. 어떻게 질문하나요?</summary><p>두 가지 방법이 있습니다. 참석 신청 폼에 "선배에게 묻고 싶은 질문" 칸이 있으니 미리 적어주시면 운영진이 질문 보드에 옮겨 둡니다. 당일에는 입구 체크인 데스크 옆 질문 보드에 포스트잇으로 직접 붙이실 수 있고, Alumni Session 도중에 떠오른 질문도 운영진에게 건네주시면 됩니다. 운영진이 질문을 모아 세션 후반 Q&amp;A 시간에 MC가 연사분들께 대신 여쭤봅니다. 이름을 적지 않으셔도 됩니다.</p></details>
-    <details><summary>프로그램은 어떻게 진행되나요?</summary><p>앞부분 약 75분은 무대 프로그램입니다. 1기 선배님의 개회 말씀, 2014년부터 지금까지의 TOBIG'S를 사진으로 돌아보고 현재 활동을 소개하는 Yesterday &amp; Today, 그리고 선배 세 분이 TOBIG'S 이후의 이야기를 8분씩 들려주는 Alumni Session과 미리 받은 질문으로 진행하는 Q&amp;A가 있습니다. 뒷부분 약 110분은 네트워킹입니다. 티타임과 경품 추첨, 기수를 섞은 테이블에서 푸는 TOBIG'S 퀴즈, 테이블 토크, 기수 스티커를 교환하는 네트워킹 미션, 기수별 사진과 전원 단체사진으로 마무리합니다.</p></details>
-    <details><summary>음식은 나오나요?</summary><p>행사장 규정상 식사류 반입이 되지 않아 식사는 제공되지 않습니다. 대신 테이블마다 구움과자와 물, 커피, 차, 단백질 음료를 준비해 두고 14:45 티타임에 편하게 드실 수 있습니다. 점심은 드시고 오시는 것을 권하고, 저녁은 17:30 뒤풀이에서 함께합니다. 알레르기 등 음식 관련 요청은 신청 폼에 적어주시면 반영합니다.</p></details>
-    <details><summary>뒤풀이는 어디서, 어떻게 하나요?</summary><p>본행사가 16:35에 끝나고 17:00에 행사장을 비운 뒤, 희망자에 한해 방이동 식당가로 함께 걸어가(약 10분) 17:30부터 진행합니다. 장소는 참석 인원이 확정된 뒤 리마인드 안내로 보내드립니다. 신청 폼에서 뒤풀이 참석 여부를 미리 알려주시면 자리 예약에 큰 도움이 됩니다. 뒤풀이만 참석하시는 것도 가능하니 신청 시 기재해 주세요.</p></details>
-    <details><summary>신청 후 못 가게 되면 어떻게 하나요?</summary><p>알게 되시는 즉시 알려주세요. 명찰 인쇄, 간식 수량, 테이블 배정, 뒤풀이 예약이 모두 신청 인원 기준으로 확정되기 때문에 하루 전 연락은 이미 반영이 어렵습니다. 늦어도 행사 3일 전인 11월 18일(수)까지 신청 시 안내되는 불참 알림 링크 또는 운영부 문의 채널로 말씀해 주시면 됩니다. 참석 여부가 불확실하면 일단 신청하지 마시고, 확정되는 대로 신청해 주시는 편이 서로 편합니다. 추가 접수 기간을 따로 두고 있습니다.</p></details>
-    <details><summary>사진 촬영이 있나요?</summary><p>포토부스 촬영, 행사 스냅, 기수별 사진, 전원 단체사진이 있고 무대 프로그램은 영상으로 기록합니다. 촬영본은 행사 후 일주일 안에 참석자 전원에게 공유하고, 일부는 TOBIG'S 기록과 홍보에 사용됩니다. 촬영을 원치 않으시면 체크인 때 말씀해 주시면 스냅에서 제외해 드립니다.</p></details>
-    <details><summary>어떻게 가나요? 주차할 수 있나요?</summary><p>행사장은 서울 송파구 올림픽로 424, 올림픽공원 평화의 문 옆 올림픽회관(국민체육진흥공단) 지하 1층 KSPO 연수원 대강당입니다. 8호선 몽촌토성역 1번 출구에서 평화의 문을 지나 걸어서 5분이고, 위의 네이버 지도, 카카오맵 버튼으로 길찾기를 열 수 있습니다. 행사장 주차 등록이 되지 않아 대중교통을 권장하며, 꼭 차량이 필요하시면 올림픽공원 공영주차장(유료)을 이용하셔야 합니다. 건물 입구 안내는 행사 전날 리마인드로 다시 보내드립니다.</p></details>
-    <details><summary>복장 규정이 있나요?</summary><p>없습니다. 편한 복장으로 오세요. 다만 단체사진과 기수별 사진을 찍으니 그 점만 참고하시면 됩니다.</p></details>
-    <p class="faq-more">여기 없는 질문은 <a class="js-contact" href="#">카카오톡 운영부 오픈채팅</a>으로 편하게 물어봐 주세요. 신청 변경, 추가 접수, 당일 연락도 같은 채널입니다.</p>
+    <details><summary>프로그램은 어떻게 진행되나요?</summary><p>앞부분 약 75분은 무대 프로그램입니다. 1기 선배님의 개회 말씀, 투빅스의 시작부터 지금까지를 사진으로 돌아보고 현재 활동을 소개하는 Yesterday &amp; Today, 그리고 MC와 선배 세 분이 함께하는 45분 토크 콘서트 Alumni Session과 객석 Q&amp;A가 있습니다. 뒷부분 약 110분은 네트워킹입니다. Break &amp; Snack, 테이블 대항 TOBIG'S Quiz, 관심 분야별 Table Talk, 기수 스티커를 교환하는 Connection Networking, 그리고 Lucky Draw와 전원 단체사진으로 마무리합니다.</p></details>
+    <details><summary>음식은 나오나요?</summary><p>행사장 규정상 식사류 반입이 되지 않아 식사는 제공되지 않습니다. 대신 테이블마다 구움과자와 물, 커피, 차, 단백질 음료를 준비해 두고 14:45 Break 시간에 편하게 드실 수 있습니다. 점심은 드시고 오시는 것을 권하고, 저녁은 17:30 뒤풀이에서 함께합니다. 알레르기 등 음식 관련 요청은 신청 폼에 적어주시면 반영합니다.</p></details>
+    <details><summary>뒤풀이는 어디서, 어떻게 하나요?</summary><p>본행사가 16:35에 끝난 뒤, 희망자에 한해 방이동 식당가로 함께 걸어가(약 10분) 17:30부터 진행합니다. 장소는 참석 인원이 확정된 뒤 리마인드 안내로 보내드립니다. 신청 폼에서 뒤풀이 참석 여부를 미리 알려주시면 자리 예약에 큰 도움이 됩니다. 뒤풀이만 참석하시는 것도 가능하니 신청 시 기재해 주세요.</p></details>
+    <details><summary>신청 후 못 가게 되면 어떻게 하나요?</summary><p>알게 되시는 즉시 알려주세요. 명찰 인쇄, 간식 수량, 테이블 배정, 뒤풀이 예약이 모두 신청 인원 기준으로 확정되기 때문에 하루 전 연락은 이미 반영이 어렵습니다. 늦어도 행사 3일 전인 11월 18일(수)까지 신청 시 안내되는 불참 알림 링크 또는 운영부 문의 채널로 말씀해 주시면 됩니다. 참석 여부가 불확실하면 일단 신청하지 마시고, 확정되는 대로 신청해주시기 바랍니다. 추가 접수 기간을 따로 두고 있습니다.</p></details>
+    <details><summary>사진 촬영이 있나요?</summary><p>포토존 촬영, 행사 스냅, 전원 단체사진이 있고 무대 프로그램은 영상으로 기록합니다. 촬영본은 행사 후 일주일 안에 참석자 전원에게 공유하고, 일부는 TOBIG'S 기록과 홍보에 사용됩니다. 촬영을 원치 않으시면 체크인 때 말씀해 주시면 스냅에서 제외해 드립니다.</p></details>
+    <details><summary>어떻게 가나요? 주차할 수 있나요?</summary><p>행사장은 서울 송파구 올림픽로 424, 올림픽공원 평화의 문 옆 올림픽회관(국민체육진흥공단) 지하 1층 KSPO 연수원 대강당입니다. 8호선 몽촌토성역 1번 출구에서 평화의 문을 지나 걸어서 5분이고, 위의 네이버 지도, 카카오맵 버튼으로 길찾기를 열 수 있습니다. 행사장 주차 등록이 되지 않아 대중교통을 권장하며, 꼭 차량이 필요하시면 올림픽공원 공영주차장(유료)을 이용하셔야 합니다.</p></details>
+    <p class="faq-more">여기 없는 질문이나 신청 변경, 추가 접수, 당일 연락은 <a class="js-contact" href="#">카카오톡 운영부 오픈채팅</a>으로 문의해 주세요.</p>
   </div>
 </section>
 
