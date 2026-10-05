@@ -25,10 +25,10 @@
   // Alumni Session 토크 게스트. 확정 후 채우면 카드가 나타남(비우면 숨김). topic은 한 줄 소개나 비워도 됨.
   const SPEAKERS = [
     { name:"정세영", gen:"14기", org:"코오롱베니트", topic:"", photo:"" },
-    { name:"임지영", gen:"19기", org:"19기 회장 · KAIST 전기전자공학부 석사", topic:"", photo:"" },
-    { name:"최혜윤", gen:"24기", org:"24기 회장 · 이화여대 인공지능학과", topic:"", photo:"" },
+    { name:"임지영", gen:"19기", org:"KAIST 전기전자공학부", topic:"", photo:"" },
+    { name:"최혜윤", gen:"24기", org:"이화여대 인공지능학과", topic:"", photo:"" },
   ];
-  // 토크 진행 MC. name을 채우면 게스트 카드 옆에 MC 카드가 붙음. 비우면 숨김.
+  // 토크 진행 Host. name을 채우면 게스트 카드 맨 앞에 Host 카드가 붙음. 비우면 숨김.
   const MC       = { name:"유주형", gen:"25기", org:"운영부장", photo:"" };
 </script>
 <!-- ===================================================== -->
@@ -192,12 +192,12 @@
   .spk-label + .speakers{margin-top:10px}
   .spk .role{display:inline-block;font-family:var(--display);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 6px;margin-bottom:5px}
   .spk.mc{background:var(--bg);border-style:dashed}
-  .spk{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2)}
+  .spk{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);min-height:96px}
   .spk .ph{width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--dark);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:20px;overflow:hidden}
   .spk .ph img{width:100%;height:100%;object-fit:cover}
-  .spk .nm{font-weight:700;font-size:15px;line-height:1.25}
+  .spk .nm{font-weight:700;font-size:15px;line-height:1.25;white-space:nowrap}
   .spk .nm em{font-style:normal;font-family:var(--display);font-size:11px;letter-spacing:.12em;color:var(--accent-deep);margin-left:6px;vertical-align:1px}
-  .spk .org{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+  .spk .org{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .spk .tp{font-size:12.5px;color:var(--ink-2);margin-top:4px;line-height:1.4}
   @media (max-width:760px){.speakers{grid-template-columns:1fr}}
 
@@ -663,7 +663,7 @@
   const spk=document.getElementById('speakers'), spl=document.getElementById('spk-label');
   const guests = Array.isArray(SPEAKERS) ? SPEAKERS.filter(x=>x && x.name) : [];
   if(spk && (guests.length || (MC && MC.name))){
-    spk.innerHTML = guests.map(x=>card(x,'Guest')).join('') + (MC && MC.name ? card(MC,'MC','mc') : '');
+    spk.innerHTML = (MC && MC.name ? card(MC,'Host','mc') : '') + guests.map(x=>card(x,'Guest')).join('');
     spk.classList.toggle('four', spk.children.length>=4);
     spk.hidden=false; if(spl) spl.hidden=false;
   }
