@@ -6,13 +6,13 @@ service cloud.firestore {
       return request.auth != null && request.auth.token.email == 'tobigs2026hoco@gmail.com';
     }
 
-    // 진행 순서 (state/program)
+    // program state (state/program): read all, write admin
     match /state/{docId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // 질문: 누구나 등록·공감, 수정·삭제는 운영진만
+    // questions: anyone can create and upvote, admin edits/deletes
     match /questions/{qid} {
       allow read: if true;
       allow create: if qid.matches('^[A-Za-z0-9]{20}$')
@@ -33,7 +33,7 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // 투표: 문항은 운영진만, 표는 1기기 1표(문서 ID = 기기 ID, 생성만 허용)
+    // polls: admin writes polls; one vote per device (doc id = device id, create only)
     match /polls/{pid} {
       allow read: if true;
       allow write: if isAdmin();
@@ -49,7 +49,7 @@ service cloud.firestore {
       }
     }
 
-    // 체크인 명단, 추첨 결과: 읽기는 누구나, 쓰기는 운영진만
+    // check-ins and draw results: read all, write admin
     match /checkins/{no} {
       allow read: if true;
       allow write: if isAdmin();
