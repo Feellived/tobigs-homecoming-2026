@@ -247,7 +247,7 @@ function guestView(){
     const list = visibleQuestions();
     $('#g-list').innerHTML = list.length ? list.map(q => {
       const n = q.voters?.length||0, on = q.voters?.includes(cid);
-      return `<div class="q${q.answered?' answered':''}"><div class="grow"><div class="t">${esc(q.text)}</div><div class="meta">${esc(q.gen||'')}${q.name?' · '+esc(q.name):''}${q.answered?'<span class="tag">답변 완료</span>':''}</div></div><button class="vote${on?' on':''}" data-id="${q.id}" ${on||q.answered?'disabled':''}><b>${n}</b><small>${on?'공감함':'공감'}</small></button></div>`;
+      return `<div class="q${q.answered?' answered':''}"><div class="grow"><div class="t">${esc(q.text)}</div><div class="meta">${esc(q.gen||'')}${q.name?' · '+esc(q.name):''}${q.answered?'<span class="tag">답변 완료</span>':''}</div></div><button class="vote${on?' on':''}" data-id="${esc(q.id)}" ${on||q.answered?'disabled':''}><b>${n}</b><small>${on?'공감함':'공감'}</small></button></div>`;
     }).join('') : '<p class="muted">아직 질문이 없습니다. 첫 질문을 올려주세요.</p>';
   };
   $('#g-list').addEventListener('click', async e => {
@@ -388,7 +388,7 @@ function adminMain(){
   render.questions = () => {
     const all = S.questions.slice().sort((a,b)=>(b.voters?.length||0)-(a.voters?.length||0));
     $('#a-qcount').textContent = `전체 ${all.length} · 표시 ${all.filter(q=>!q.hidden).length} · 답변 완료 ${all.filter(q=>q.answered).length}`;
-    $('#a-qlist').innerHTML = all.map(q=>`<div class="q${q.answered?' answered':''}" style="${q.hidden?'opacity:.45':''}"><div class="grow"><div class="t">${esc(q.text)}</div><div class="meta">👍 ${q.voters?.length||0} · ${esc(q.gen||'')}${q.name?' · '+esc(q.name):''}${q.hidden?' · 숨김':''}</div><div class="row" style="margin-top:6px"><button class="btn btn-sm" data-a="ans" data-id="${q.id}">${q.answered?'답변 완료 취소':'답변 완료'}</button><button class="btn btn-sm" data-a="hide" data-id="${q.id}">${q.hidden?'표시':'숨김'}</button><button class="btn btn-sm danger" data-a="del" data-id="${q.id}">삭제</button></div></div></div>`).join('') || '<p class="muted">질문 없음</p>';
+    $('#a-qlist').innerHTML = all.map(q=>`<div class="q${q.answered?' answered':''}" style="${q.hidden?'opacity:.45':''}"><div class="grow"><div class="t">${esc(q.text)}</div><div class="meta">👍 ${q.voters?.length||0} · ${esc(q.gen||'')}${q.name?' · '+esc(q.name):''}${q.hidden?' · 숨김':''}</div><div class="row" style="margin-top:6px"><button class="btn btn-sm" data-a="ans" data-id="${esc(q.id)}">${q.answered?'답변 완료 취소':'답변 완료'}</button><button class="btn btn-sm" data-a="hide" data-id="${esc(q.id)}">${q.hidden?'표시':'숨김'}</button><button class="btn btn-sm danger" data-a="del" data-id="${esc(q.id)}">삭제</button></div></div></div>`).join('') || '<p class="muted">질문 없음</p>';
   };
   $('#a-qlist').addEventListener('click', async e => {
     const b = e.target.closest('button'); if(!b) return; const q = S.questions.find(x=>x.id===b.dataset.id); if(!q) return;
@@ -402,7 +402,7 @@ function adminMain(){
   $('#a-poll').innerHTML = `<section class="card"><div class="eyebrow">New Poll</div><form id="a-pform"><div class="field"><label>질문</label><input type="text" id="a-pq" placeholder="투빅스에서 가장 기억에 남는 활동은?" required></div><div class="field"><label>선택지 (한 줄에 하나)</label><textarea id="a-popt" placeholder="정규세션&#10;컨퍼런스 프로젝트&#10;스터디·소모임&#10;MT·뒤풀이&#10;그 외" required></textarea></div><div class="row"><button class="btn btn-primary" type="submit">만들기 (닫힌 상태)</button></div></form></section><div id="a-plist"></div>`;
   $('#a-pform').addEventListener('submit', async e => { e.preventDefault(); const q = $('#a-pq').value.trim(); const options = $('#a-popt').value.split('\n').map(s=>s.trim()).filter(Boolean); if(!q||options.length<2) return; await addDoc(collection(db,'polls'), { q, options, open:false, show:false, createdAt: serverTimestamp() }); $('#a-pq').value=''; $('#a-popt').value=''; say('투표를 만들었습니다'); });
   render.polls = () => {
-    $('#a-plist').innerHTML = S.polls.map(p => { const { c, total } = pollCounts(p); return `<section class="card"><div class="row"><b class="grow">${esc(p.q)}</b><span class="pill${p.open?' on':''}">${p.open?'진행 중':'닫힘'}</span>${p.show?'<span class="pill ok">화면 표시</span>':''}</div>` + p.options.map((o,i)=>`<div class="res"><div class="l"><span>${esc(o)}</span><b>${c[i]}</b></div><div class="bar"><i style="width:${total?Math.round(c[i]/total*100):0}%"></i></div></div>`).join('') + `<p class="muted">${total}명 참여</p><div class="row"><button class="btn btn-sm btn-primary" data-a="open" data-id="${p.id}">${p.open?'닫기':'열기'}</button><button class="btn btn-sm" data-a="show" data-id="${p.id}">${p.show?'화면에서 내리기':'화면에 올리기'}</button><button class="btn btn-sm danger" data-a="del" data-id="${p.id}">삭제</button></div></section>`; }).join('') || '<p class="muted">투표 없음</p>';
+    $('#a-plist').innerHTML = S.polls.map(p => { const { c, total } = pollCounts(p); return `<section class="card"><div class="row"><b class="grow">${esc(p.q)}</b><span class="pill${p.open?' on':''}">${p.open?'진행 중':'닫힘'}</span>${p.show?'<span class="pill ok">화면 표시</span>':''}</div>` + p.options.map((o,i)=>`<div class="res"><div class="l"><span>${esc(o)}</span><b>${c[i]}</b></div><div class="bar"><i style="width:${total?Math.round(c[i]/total*100):0}%"></i></div></div>`).join('') + `<p class="muted">${total}명 참여</p><div class="row"><button class="btn btn-sm btn-primary" data-a="open" data-id="${esc(p.id)}">${p.open?'닫기':'열기'}</button><button class="btn btn-sm" data-a="show" data-id="${esc(p.id)}">${p.show?'화면에서 내리기':'화면에 올리기'}</button><button class="btn btn-sm danger" data-a="del" data-id="${esc(p.id)}">삭제</button></div></section>`; }).join('') || '<p class="muted">투표 없음</p>';
   };
   $('#a-plist').addEventListener('click', async e => {
     const b = e.target.closest('button'); if(!b) return; const p = S.polls.find(x=>x.id===b.dataset.id); if(!p) return; const ref = doc(db,'polls',p.id);
@@ -420,7 +420,7 @@ function adminMain(){
     const rows = ciRows().filter(r => !q || normName(r.name).includes(q) || String(r.no)===q);
     const extra = Object.values(S.checkins).filter(c => !ciRows().some(r => String(r.no)===String(c.no)));
     $('#a-cicount').textContent = `체크인 ${Object.keys(S.checkins).length} / 명단 ${ciRows().length}`;
-    $('#a-cilist').innerHTML = rows.map(r => { const on = !!S.checkins[String(r.no)]; return `<label class="row" style="padding:8px 0;border-top:1px solid var(--line)"><input type="checkbox" data-no="${r.no}" ${on?'checked':''}><span class="muted" style="min-width:36px">${r.no}</span><b>${esc(r.name)}</b><span class="muted">${esc(r.gen)} · T${esc(r.t1)}/${esc(r.t2)}</span></label>`; }).join('') + extra.map(c=>`<label class="row" style="padding:8px 0;border-top:1px solid var(--line)"><input type="checkbox" data-no="${c.no}" checked><span class="muted" style="min-width:36px">${c.no}</span><b>${esc(c.name)}</b><span class="muted">${esc(c.gen)} · 현장 등록</span></label>`).join('') || '<p class="muted">tables.json이 비어 있습니다. 아래에서 번호·이름으로 체크인하세요.</p>';
+    $('#a-cilist').innerHTML = rows.map(r => { const on = !!S.checkins[String(r.no)]; return `<label class="row" style="padding:8px 0;border-top:1px solid var(--line)"><input type="checkbox" data-no="${esc(r.no)}" ${on?'checked':''}><span class="muted" style="min-width:36px">${esc(r.no)}</span><b>${esc(r.name)}</b><span class="muted">${esc(r.gen)} · T${esc(r.t1)}/${esc(r.t2)}</span></label>`; }).join('') + extra.map(c=>`<label class="row" style="padding:8px 0;border-top:1px solid var(--line)"><input type="checkbox" data-no="${esc(c.no)}" checked><span class="muted" style="min-width:36px">${esc(c.no)}</span><b>${esc(c.name)}</b><span class="muted">${esc(c.gen)} · 현장 등록</span></label>`).join('') || '<p class="muted">tables.json이 비어 있습니다. 아래에서 번호·이름으로 체크인하세요.</p>';
   };
   $('#a-cisearch').addEventListener('input', render.checkins);
   $('#a-cilist').addEventListener('change', async e => { const cb = e.target; if(cb.type!=='checkbox') return; const no = String(cb.dataset.no); const r = ciRows().find(x=>String(x.no)===no) || S.checkins[no]; if(cb.checked) await setDoc(doc(db,'checkins',no), { no:Number(no), name:r?.name||'', gen:r?.gen||'', at: serverTimestamp() }); else await deleteDoc(doc(db,'checkins',no)); });
@@ -451,12 +451,12 @@ function adminMain(){
     const quizT = parseNos($('#a-xquiz').value), stk = new Set(parseNos($('#a-xstk').value)), pic = new Set(parseNos($('#a-xpic').value));
     pool = base.map(p => { let t = 1; if(p.t1!==undefined && quizT.includes(String(p.t1))) t++; if(stk.has(p.no)) t++; if(pic.has(p.no)) t++; return { ...p, tickets: Math.min(t,4) }; });
     const total = pool.reduce((s,p)=>s+p.tickets,0);
-    $('#a-pool').innerHTML = `<p><b>${pool.length}명</b> · 응모권 ${total}장</p>` + (pool.some(p=>p.tickets>1) ? `<table class="t"><tr><th>번호</th><th>이름</th><th>응모권</th></tr>${pool.filter(p=>p.tickets>1).sort((a,b)=>b.tickets-a.tickets).map(p=>`<tr><td>${p.no}</td><td>${esc(p.name)}</td><td>${p.tickets}</td></tr>`).join('')}</table>` : '<p class="muted">추가 응모권 없음</p>');
+    $('#a-pool').innerHTML = `<p><b>${pool.length}명</b> · 응모권 ${total}장</p>` + (pool.some(p=>p.tickets>1) ? `<table class="t"><tr><th>번호</th><th>이름</th><th>응모권</th></tr>${pool.filter(p=>p.tickets>1).sort((a,b)=>b.tickets-a.tickets).map(p=>`<tr><td>${esc(p.no)}</td><td>${esc(p.name)}</td><td>${p.tickets}</td></tr>`).join('')}</table>` : '<p class="muted">추가 응모권 없음</p>');
     return pool;
   };
   const drawOne = (excluded) => { const c = pool.filter(p=>!excluded.has(p.no)); const total = c.reduce((s,p)=>s+p.tickets,0); if(!total) return null; let r = rand()*total; for(const p of c){ r -= p.tickets; if(r<0) return p; } return c[c.length-1]; };
   const saveWinners = async () => { try { await setDoc(doc(db,'draw','results'), { items: winners, updatedAt: serverTimestamp() }); } catch(e){ say('결과를 서버에 올리지 못했습니다 (오프라인). 화면에는 로컬로 표시됩니다'); } renderWinners(); };
-  const renderWinners = () => { $('#a-winners').innerHTML = winners.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<li><span class="rk">${w.rank}등</span><div><div class="nm">${esc(w.name)} <span class="muted">${esc(w.gen)} · No.${w.no}</span></div><div class="pz">${esc(w.prize)}</div></div></li>`).join(''); };
+  const renderWinners = () => { $('#a-winners').innerHTML = winners.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<li><span class="rk">${w.rank}등</span><div><div class="nm">${esc(w.name)} <span class="muted">${esc(w.gen)} · No.${esc(w.no)}</span></div><div class="pz">${esc(w.prize)}</div></div></li>`).join(''); };
   $('#a-build').onclick = buildPool;
   $('#a-rank').addEventListener('click', e => {
     const b = e.target.closest('button'); if(!b) return; const rank = Number(b.dataset.r);
@@ -464,17 +464,17 @@ function adminMain(){
     if(winners.some(w=>w.rank===rank)){ say(rank+'등은 이미 추첨했습니다. 재추첨을 쓰세요'); return; }
     const w = drawOne(new Set(winners.map(x=>x.no))); if(!w){ say('남은 응모자가 없습니다'); return; }
     winners.push({ rank, no:w.no, name:w.name, gen:w.gen, prize: prizes[rank-1]||'' });
-    $('#a-result').innerHTML = `<div class="muted">${rank}등 · ${esc(prizes[rank-1]||'')}</div><div class="big">${esc(w.name)}</div><div class="muted">${esc(w.gen)} · 명찰 번호 ${w.no}</div>`;
+    $('#a-result').innerHTML = `<div class="muted">${rank}등 · ${esc(prizes[rank-1]||'')}</div><div class="big">${esc(w.name)}</div><div class="muted">${esc(w.gen)} · 명찰 번호 ${esc(w.no)}</div>`;
     saveWinners();
   });
-  $('#a-redo').onclick = () => { if(!winners.length) return; const last = winners[winners.length-1]; if(!confirm(`${last.rank}등 ${last.name} 취소하고 다시 뽑을까요? (번호는 풀에 남습니다)`)) return; winners.pop(); const w = drawOne(new Set(winners.map(x=>x.no))); if(!w) return; winners.push({ rank:last.rank, no:w.no, name:w.name, gen:w.gen, prize: prizes[last.rank-1]||'' }); $('#a-result').innerHTML = `<div class="muted">${last.rank}등 · 재추첨</div><div class="big">${esc(w.name)}</div><div class="muted">${esc(w.gen)} · 명찰 번호 ${w.no}</div>`; saveWinners(); };
+  $('#a-redo').onclick = () => { if(!winners.length) return; const last = winners[winners.length-1]; if(!confirm(`${last.rank}등 ${last.name} 취소하고 다시 뽑을까요? (번호는 풀에 남습니다)`)) return; winners.pop(); const w = drawOne(new Set(winners.map(x=>x.no))); if(!w) return; winners.push({ rank:last.rank, no:w.no, name:w.name, gen:w.gen, prize: prizes[last.rank-1]||'' }); $('#a-result').innerHTML = `<div class="muted">${last.rank}등 · 재추첨</div><div class="big">${esc(w.name)}</div><div class="muted">${esc(w.gen)} · 명찰 번호 ${esc(w.no)}</div>`; saveWinners(); };
   $('#a-reset').onclick = () => { if(!confirm('당첨 결과를 모두 지울까요?')) return; winners = []; $('#a-result').innerHTML=''; saveWinners(); };
   $('#a-sim').onclick = () => {
     if(!pool.length) buildPool(); if(pool.length<6){ say('시뮬레이션은 6명 이상 필요합니다'); return; }
     const N = 10000, wins = {}; pool.forEach(p=>wins[p.no]=0);
     for(let i=0;i<N;i++){ const ex = new Set(); for(let r=5;r>=1;r--){ const w = drawOne(ex); if(!w) break; ex.add(w.no); wins[w.no]++; } }
     const total = pool.reduce((s,p)=>s+p.tickets,0);
-    const rows = pool.slice().sort((a,b)=>b.tickets-a.tickets).slice(0,12).map(p=>`<tr><td>${p.no}</td><td>${esc(p.name)}</td><td>${p.tickets}</td><td>${(p.tickets/total*5*100).toFixed(1)}%</td><td>${(wins[p.no]/N*100).toFixed(1)}%</td></tr>`).join('');
+    const rows = pool.slice().sort((a,b)=>b.tickets-a.tickets).slice(0,12).map(p=>`<tr><td>${esc(p.no)}</td><td>${esc(p.name)}</td><td>${p.tickets}</td><td>${(p.tickets/total*5*100).toFixed(1)}%</td><td>${(wins[p.no]/N*100).toFixed(1)}%</td></tr>`).join('');
     $('#a-pool').insertAdjacentHTML('beforeend', `<p class="muted" style="margin-top:10px">1만 회 시뮬레이션 (5등→1등, 1인 1회). 기대 당첨률은 응모권 비율 × 5의 근사치</p><table class="t"><tr><th>번호</th><th>이름</th><th>응모권</th><th>기대</th><th>관측</th></tr>${rows}</table>`);
   };
   render.draw = () => { if(S.draw?.items && !winners.length){ winners = S.draw.items.slice(); renderWinners(); } };
