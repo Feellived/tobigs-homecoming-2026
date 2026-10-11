@@ -105,6 +105,9 @@ body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-templat
 .ov .roll{font-family:var(--display);font-weight:700;font-size:min(28vw,260px);line-height:1;letter-spacing:-.04em;margin:24px 0;font-variant-numeric:tabular-nums}
 .ov .nm{font-size:min(14vw,120px);font-weight:800;line-height:1.1;letter-spacing:-.02em;margin:16px 0 8px}
 .ov .meta{font-family:var(--display);font-size:32px;color:var(--peri)}
+.ov canvas{display:block;margin:10px auto 0;max-width:100%}
+.ov.pk .nm{font-size:min(8vw,72px);margin:4px 0 2px}
+.ov.pk .meta{font-size:24px}
 @media(max-width:900px){body.screen main{height:auto}.sb{grid-template-columns:1fr}.sc+.sc{border-left:0;border-top:1px solid var(--line)}.sh{flex-wrap:wrap}}
 </style>
 </head>
@@ -219,9 +222,39 @@ function screen(){
     if(items.length) box.innerHTML = `<h3>Lucky Draw</h3>` + items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win"><span class="rk">${esc(w.rank)}등</span><div><b>${esc(w.name)}</b> <span>${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('');
     else if(p) box.innerHTML = `<h3>투표${p.open?'':' · 마감'}</h3><div style="font-size:30px;font-weight:800;margin-bottom:18px">${esc(p.q)}</div>` + bars(p) + `<p class="se">${counts(p).total}명 참여</p>`;
     else box.innerHTML = `<h3>Big Then. Bigger Now.</h3>`; };
-  // 당첨자 공개 연출: 번호가 3초 돌아간 뒤 멈추고 이름 공개, 7초 뒤 닫힘
+  // 당첨자 공개 연출. 공 떨어뜨리기: 운영 화면이 뽑은 난수 u가 떨어지는 칸이 당첨자. 칸 너비는 응모권 수에 비례
   let seenSeq = null;
+  const plinko = lv => {
+    const pz = lv.prize && lv.prize !== lv.rank+'등' ? `<div class="pz">${esc(lv.prize)}</div>` : '';
+    const ov = document.createElement('div'); ov.className = 'ov pk';
+    ov.innerHTML = `<div class="rk">${esc(lv.rank)}등</div>${pz}<canvas id="pk"></canvas><div id="pkres"></div>`;
+    document.body.appendChild(ov);
+    const cv = ov.querySelector('#pk'), W = cv.width = Math.min(window.innerWidth - 80, 1400), H = cv.height = Math.min(window.innerHeight - 260, 620), ctx = cv.getContext('2d');
+    const L = 30, R = W - 30, BW = R - L, rows = 9, top = 40, bottom = H - 90, slotTop = H - 70, slotH = 50;
+    const total = lv.pool.reduce((s,p)=>s+p.t,0); let acc = 0;
+    const slots = lv.pool.map(p => { const x0 = L + acc/total*BW; acc += p.t; return { ...p, x0, x1: L + acc/total*BW }; });
+    const tx = L + lv.u*BW, win = slots.find(s => tx >= s.x0 && tx < s.x1) || slots[slots.length-1];
+    const xs = [W/2]; for(let i=1;i<=rows;i++){ const t = i/rows; const base = W/2 + (tx - W/2)*t*t; xs.push(i===rows ? tx : base + (rand()-.5)*2*110*(1-t)); }
+    const pegs = []; for(let i=1;i<rows;i++){ const y = top + (bottom-top)*i/rows, off = i%2 ? 28 : 0; for(let x = L + off; x <= R; x += 56) pegs.push({x,y}); }
+    const dur = 3400, t0 = performance.now(), trail = []; let done = false;
+    const easeOut = t => 1 - Math.pow(1-t, 3);
+    const draw = now => {
+      const p = Math.min(1, (now - t0)/dur);
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = 'rgba(157,176,255,.35)'; pegs.forEach(g => { ctx.beginPath(); ctx.arc(g.x, g.y, 3, 0, 7); ctx.fill(); });
+      slots.forEach((s,i) => { ctx.fillStyle = done && s===win ? '#3d5afe' : (i%2 ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.04)'); ctx.fillRect(s.x0, slotTop, s.x1-s.x0, slotH); ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.beginPath(); ctx.moveTo(s.x0, slotTop); ctx.lineTo(s.x0, slotTop+slotH); ctx.stroke(); if(s.x1-s.x0 >= 24){ ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.font = '600 12px Pretendard, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(s.no, (s.x0+s.x1)/2, slotTop+slotH-8); } });
+      const seg = p*rows, i = Math.min(rows-1, Math.floor(seg)), f = seg - i;
+      const bx = p >= 1 ? tx : xs[i] + (xs[i+1]-xs[i])*easeOut(f), by = p >= 1 ? slotTop + slotH/2 - 10 : top + (bottom-top)*p + Math.sin(f*Math.PI)*-10;
+      trail.push({x:bx,y:by}); if(trail.length > 18) trail.shift();
+      trail.forEach((t,k) => { ctx.fillStyle = `rgba(157,176,255,${k/trail.length*.5})`; ctx.beginPath(); ctx.arc(t.x, t.y, 6 + k/trail.length*6, 0, 7); ctx.fill(); });
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(bx, by, 14, 0, 7); ctx.fill();
+      if(p < 1) requestAnimationFrame(draw);
+      else if(!done){ done = true; requestAnimationFrame(draw); setTimeout(() => { ov.querySelector('#pkres').innerHTML = `<div class="nm">${esc(lv.name)}</div><div class="meta">${esc(lv.gen||'')} · No.${esc(lv.no)}</div>`; }, 500); setTimeout(() => ov.remove(), 8500); }
+    };
+    requestAnimationFrame(draw);
+  };
   const reveal = lv => {
+    if(Array.isArray(lv.pool) && lv.pool.length && typeof lv.u === 'number') return plinko(lv);
     const ov = document.createElement('div'); ov.className = 'ov';
     const pz = lv.prize && lv.prize !== lv.rank+'등' ? `<div class="pz">${esc(lv.prize)}</div>` : ''; ov.innerHTML = `<div class="rk">${esc(lv.rank)}등</div>${pz}<div class="roll" id="roll">00</div>`;
     document.body.appendChild(ov);
@@ -296,15 +329,15 @@ function adminMain(){
     pool = base.map(p => { let t = 1; if(p.t1!==undefined && qt.includes(String(p.t1))) t++; if(st.has(p.no)) t++; if(pc.has(p.no)) t++; return { ...p, tickets:Math.min(t,4) }; });
     const extra = pool.filter(p=>p.tickets>1);
     $('#a-pool').innerHTML = `<p>${pool.length}명 · 응모권 ${pool.reduce((s,p)=>s+p.tickets,0)}장</p>` + (extra.length ? `<table class="t">${extra.sort((a,b)=>b.tickets-a.tickets).map(p=>`<tr><td>${esc(p.no)}</td><td>${esc(p.name)}</td><td>${p.tickets}장</td></tr>`).join('')}</table>` : ''); };
-  const drawOne = ex => { const c = pool.filter(p=>!ex.has(p.no)), total = c.reduce((s,p)=>s+p.tickets,0); if(!total) return null; let r = rand()*total; for(const p of c){ r -= p.tickets; if(r<0) return p; } return c[c.length-1]; };
+  const drawOne = ex => { const c = pool.filter(p=>!ex.has(p.no)), total = c.reduce((s,p)=>s+p.tickets,0); if(!total) return null; const u = rand(); let r = u*total, w = c[c.length-1]; for(const p of c){ r -= p.tickets; if(r<0){ w = p; break; } } return { w, u, cands: c.map(p=>({ no:p.no, name:p.name, t:p.tickets })) }; };
   const show = (rank, w, note='') => { $('#a-res').innerHTML = `<div class="muted">${rank}등${note}</div><div class="big">${esc(w.name)}</div><div class="muted">${esc(w.gen)} · ${esc(w.no)}번</div>`; };
   const renderW = () => { $('#a-w').innerHTML = winners.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win"><span class="rk">${w.rank}등</span><div><b>${esc(w.name)}</b> <span class="muted">${esc(w.gen)} · ${esc(w.no)}번</span></div></div>`).join(''); };
   const save = async live => { renderW(); try { await setDoc(doc(db,'draw','results'), { items:winners, live: live ? { ...live, seq: ++seq } : null }); } catch(e){ say('오프라인: 화면에만 표시됨'); } };
   $('#a-build').onclick = build;
   $('#a-draw').addEventListener('click', e => { const b = e.target.closest('button[data-r]'); if(!b) return; const rank = Number(b.dataset.r); if(!pool.length) build(); if(!pool.length){ say('응모자 없음'); return; }
-    if(winners.some(w=>w.rank===rank)){ say(rank+'등은 이미 뽑았습니다'); return; } const w = drawOne(new Set(winners.map(x=>x.no))); if(!w){ say('남은 응모자 없음'); return; }
-    const item = { rank, no:w.no, name:w.name, gen:w.gen, prize:PRIZES[rank] }; winners.push(item); show(rank, w); save(item); });
-  $('#a-redo').onclick = () => { if(!winners.length) return; const last = winners[winners.length-1]; if(!confirm(`${last.rank}등 ${last.name} 취소하고 다시 뽑을까요?`)) return; winners.pop(); const w = drawOne(new Set(winners.map(x=>x.no))); if(!w) return; const item = { rank:last.rank, no:w.no, name:w.name, gen:w.gen, prize:PRIZES[last.rank] }; winners.push(item); show(last.rank, w, ' · 재추첨'); save(item); };
+    if(winners.some(w=>w.rank===rank)){ say(rank+'등은 이미 뽑았습니다'); return; } const d = drawOne(new Set(winners.map(x=>x.no))); if(!d){ say('남은 응모자 없음'); return; } const w = d.w;
+    const item = { rank, no:w.no, name:w.name, gen:w.gen, prize:PRIZES[rank] }; winners.push(item); show(rank, w); save({ ...item, u:d.u, pool:d.cands }); });
+  $('#a-redo').onclick = () => { if(!winners.length) return; const last = winners[winners.length-1]; if(!confirm(`${last.rank}등 ${last.name} 취소하고 다시 뽑을까요?`)) return; winners.pop(); const d = drawOne(new Set(winners.map(x=>x.no))); if(!d) return; const w = d.w; const item = { rank:last.rank, no:w.no, name:w.name, gen:w.gen, prize:PRIZES[last.rank] }; winners.push(item); show(last.rank, w, ' · 재추첨'); save({ ...item, u:d.u, pool:d.cands }); };
   $('#a-reset').onclick = () => { if(!confirm('결과를 모두 지울까요?')) return; winners = []; $('#a-res').innerHTML = ''; save(null); };
   render.draw = () => { if((S.draw?.live?.seq||0) > seq) seq = S.draw.live.seq; if(S.draw?.items && !winners.length){ winners = S.draw.items.slice(); renderW(); } };
 
