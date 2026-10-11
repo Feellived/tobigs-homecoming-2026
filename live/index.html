@@ -44,7 +44,6 @@ label.f{display:block;font-size:12px;color:var(--muted);margin-top:8px}
 .back{display:inline-block;font-size:13px;color:var(--muted);text-decoration:none;margin:4px 0 0}
 .entry{display:block;text-decoration:none;color:#fff}
 .entry h2{margin-bottom:4px}
-.entry .arrow{float:right;font-family:var(--display);color:var(--peri)}
 .q{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line)}
 .q:first-child{border-top:0}
 .q .t{font-size:15px;line-height:1.45;word-break:keep-all}
@@ -175,9 +174,9 @@ const bindNow = id => { render.program = () => { const i = info(); $('#'+id).hid
 // ---------- 허브 ----------
 function hub(){
   appEl.innerHTML = nowCard('h-now') + `
-  <a class="card entry" href="?qa" id="e-qa"><div class="eyebrow">ALUMNI SESSION</div><h2>질문 · 투표 <span class="arrow">→</span></h2><p class="muted">선배님께 묻고 싶은 것을 올리고 공감을 누르세요</p></a>
-  <a class="card entry" href="table/" id="e-table"><div class="eyebrow">TABLE TALK</div><h2>내 테이블 <span class="arrow">→</span></h2><p class="muted">1라운드 · 2라운드 테이블 번호</p></a>
-  <a class="card entry" href="?draw" id="e-draw"><div class="eyebrow">LUCKY DRAW</div><h2>당첨자 <span class="arrow">→</span></h2><p class="muted">응모 번호는 명찰 번호입니다</p></a>`;
+  <a class="card entry" href="?qa" id="e-qa"><div class="eyebrow">ALUMNI SESSION</div><h2>질문 · 투표</h2><p class="muted">좋은 질문에 투표해주세요</p></a>
+  <a class="card entry" href="table/" id="e-table"><div class="eyebrow">TABLE TALK</div><h2>내 테이블</h2><p class="muted">1라운드 · 2라운드 테이블 번호</p></a>
+  <a class="card entry" href="?draw" id="e-draw"><div class="eyebrow">LUCKY DRAW</div><h2>당첨자</h2></a>`;
   hubHi = hi => ['qa','table','draw'].forEach(k => $('#e-'+k).classList.toggle('primary', k===hi));
   bindNow('h-now'); listen.program();
 }
@@ -190,7 +189,7 @@ function qa(){
     <form id="g-form"><div class="row"><select id="g-gen" required style="flex:0 0 96px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><button class="btn btn-primary grow" type="submit" id="g-submit">질문 올리기</button></div><textarea id="g-text" maxlength="200" placeholder="질문" required></textarea></form>
     <div id="g-list" style="margin-top:8px"></div></section>`;
   bindNow('q-now');
-  render.questions = () => { const l = visible(); $('#g-list').innerHTML = l.map(x => { const n = x.voters?.length||0, on = x.voters?.includes(cid); return `<div class="q${x.answered?' done':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${x.answered?' · 답변 완료':''}</div></div><button class="vote${on?' on':''}" data-id="${esc(x.id)}" ${on||x.answered?'disabled':''}>👍 ${n}</button></div>`; }).join('') || '<p class="muted">아직 질문이 없습니다.</p>'; };
+  render.questions = () => { const l = visible(); $('#g-list').innerHTML = l.map(x => { const n = x.voters?.length||0, on = x.voters?.includes(cid); return `<div class="q${x.answered?' done':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${x.answered?' · 답변 완료':''}</div></div><button class="vote${on?' on':''}" data-id="${esc(x.id)}" ${on||x.answered?'disabled':''}>${on?'투표함':'투표'} ${n}</button></div>`; }).join('') || '<p class="muted">아직 질문이 없습니다.</p>'; };
   $('#g-list').addEventListener('click', async e => { const b = e.target.closest('.vote'); if(!b) return; b.disabled = true; try { await updateDoc(doc(db,'questions',b.dataset.id), { voters: arrayUnion(cid) }); } catch(err){ b.disabled = false; say('다시 시도해 주세요'); } });
   $('#g-form').addEventListener('submit', async e => { e.preventDefault(); const gen = $('#g-gen').value, text = $('#g-text').value.trim(); if(!gen||!text) return; const b = $('#g-submit'); b.disabled = true;
     try { await addDoc(collection(db,'questions'), { gen, text, name:'', voters:[], createdAt: serverTimestamp(), hidden:false, answered:false, client:cid }); $('#g-text').value=''; say('올렸습니다'); setTimeout(()=>b.disabled=false, 8000); } catch(err){ say('인터넷 연결을 확인해 주세요'); b.disabled = false; } });
@@ -204,7 +203,7 @@ function qa(){
 function drawView(){
   appEl.innerHTML = `<a class="back" href="./">← Live</a>` + nowCard('d-now') + `<section class="card"><div class="eyebrow">LUCKY DRAW</div><div id="g-draw"></div></section>`;
   bindNow('d-now');
-  render.draw = () => { const items = S.draw?.items||[]; $('#g-draw').innerHTML = items.length ? winnersHtml(items, S.draw?.live?.no) : '<p class="muted">16:15에 5등부터 추첨합니다. 응모 번호는 명찰 번호, 당첨은 1인 1회입니다.</p>'; };
+  render.draw = () => { const items = S.draw?.items||[]; $('#g-draw').innerHTML = items.length ? winnersHtml(items, S.draw?.live?.no) : '<p class="muted">추첨 전</p>'; };
   listen.program(); listen.draw();
 }
 
@@ -227,8 +226,8 @@ function screen(){
     const pz = lv.prize && lv.prize !== lv.rank+'등' ? `<div class="pz">${esc(lv.prize)}</div>` : ''; ov.innerHTML = `<div class="rk">${esc(lv.rank)}등</div>${pz}<div class="roll" id="roll">00</div>`;
     document.body.appendChild(ov);
     const maxNo = Math.max(80, ...(S.draw?.items||[]).map(w=>Number(w.no)||0));
-    const roll = ov.querySelector('#roll'); let n = 0;
-    const iv = setInterval(() => { roll.textContent = String(Math.floor(rand()*maxNo)+1).padStart(2,'0'); if(++n > 50){ clearInterval(iv); roll.textContent = String(lv.no).padStart(2,'0'); setTimeout(() => { roll.insertAdjacentHTML('afterend', `<div class="nm">${esc(lv.name)}</div><div class="meta">${esc(lv.gen||'')} · No.${esc(lv.no)}</div>`); setTimeout(() => ov.remove(), 7000); }, 600); } }, 60);
+    const roll = ov.querySelector('#roll'), t0 = Date.now();
+    const iv = setInterval(() => { if(Date.now() - t0 < 3000){ roll.textContent = String(Math.floor(rand()*maxNo)+1).padStart(2,'0'); return; } clearInterval(iv); roll.textContent = String(lv.no).padStart(2,'0'); setTimeout(() => roll.insertAdjacentHTML('afterend', `<div class="nm">${esc(lv.name)}</div><div class="meta">${esc(lv.gen||'')} · No.${esc(lv.no)}</div>`), 600); setTimeout(() => ov.remove(), 7600); }, 60);
   };
   render.polls = right;
   render.draw = () => { right(); const lv = S.draw?.live; const seq = lv?.seq || 0; if(seenSeq===null){ seenSeq = seq; return; } if(seq > seenSeq){ seenSeq = seq; reveal(lv); } };
