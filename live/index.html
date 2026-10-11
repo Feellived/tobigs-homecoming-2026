@@ -179,7 +179,8 @@ function hub(){
   appEl.innerHTML = nowCard('h-now') + `
   <a class="card entry" href="?qa" id="e-qa"><div class="eyebrow">ALUMNI SESSION</div><h2>질문 · 투표</h2><p class="muted">좋은 질문에 투표해주세요</p></a>
   <a class="card entry" href="table/" id="e-table"><div class="eyebrow">TABLE TALK</div><h2>내 테이블</h2><p class="muted">1라운드 · 2라운드 테이블 번호</p></a>
-  <a class="card entry" href="?draw" id="e-draw"><div class="eyebrow">LUCKY DRAW</div><h2>추첨 · 당첨자 확인</h2></a>`;
+  <a class="card entry" href="?draw" id="e-draw"><div class="eyebrow">LUCKY DRAW</div><h2>추첨 · 당첨자 확인</h2></a>
+  <a class="btn" href="../" style="width:100%;margin-top:20px">초대장 홈페이지로</a>`;
   hubHi = hi => ['qa','table','draw'].forEach(k => $('#e-'+k).classList.toggle('primary', k===hi));
   bindNow('h-now'); listen.program();
 }
