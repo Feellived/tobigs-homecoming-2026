@@ -37,12 +37,14 @@ select option{color:#0b1230}
 .num .v{font-family:var(--display);font-size:56px;font-weight:700;line-height:1.1;letter-spacing:-.02em}
 .name{font-size:22px;font-weight:800;margin-bottom:4px}
 .no{font-size:13px;color:var(--muted);margin-bottom:14px}
-.foot{margin-top:16px;display:flex;gap:16px;font-size:13px}
+.foot{margin-top:16px;font-size:13px}
+.back{display:inline-block;font-size:13px;color:var(--muted);text-decoration:none;margin:4px 0 0}
 </style>
 </head>
 <body>
 <header class="top"><a class="slogan" href="../">Big Then. <b>Bigger Now.</b></a><div class="brand">TOBIG'S HOMECOMING LIVE</div></header>
 <main>
+  <a class="back" href="../">← Live</a>
   <section class="card">
     <div class="eyebrow">MY TABLE</div>
     <div id="box"><p class="muted">불러오는 중</p></div>
@@ -57,7 +59,7 @@ let rows = [];
 const remember = (r, on) => { try { on ? localStorage.setItem('hc_me', JSON.stringify(r)) : localStorage.removeItem('hc_me'); } catch(e){} };
 const mine = () => { try { return JSON.parse(localStorage.getItem('hc_me')||'null'); } catch(e){ return null; } };
 function showForm(msg){
-  box.innerHTML = `<h2>내 테이블 찾기</h2><form id="f" class="row"><select id="g" required style="flex:0 0 96px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><input class="grow" type="text" id="n" placeholder="이름" required><button class="btn" type="submit">찾기</button></form>${msg?`<p class="muted" style="margin-top:10px">${msg}</p>`:''}<div class="foot"><a href="../">라이브 페이지로</a></div>`;
+  box.innerHTML = `<h2>내 테이블 찾기</h2><form id="f" class="row"><select id="g" required style="flex:0 0 96px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><input class="grow" type="text" id="n" placeholder="이름" required><button class="btn" type="submit">찾기</button></form>${msg?`<p class="muted" style="margin-top:10px">${msg}</p>`:''}`;
   document.getElementById('f').addEventListener('submit', e => {
     e.preventDefault();
     const n = norm(document.getElementById('n').value), g = document.getElementById('g').value;
@@ -70,11 +72,11 @@ function showMine(r){
   box.innerHTML = `<div class="name">${esc(r.name)} <span class="muted" style="font-size:14px;font-weight:500">${esc(r.gen)}</span></div><div class="no">명찰 번호 ${esc(r.no)}</div>
   <div class="nums"><div class="num"><div class="l">1라운드 테이블</div><div class="v">${esc(r.t1)}</div></div><div class="num"><div class="l">2라운드 테이블</div><div class="v">${esc(r.t2)}</div></div></div>
   <p class="muted" style="margin-top:12px">Table Talk 2라운드(15:25)에 두 번째 테이블로 이동합니다.</p>
-  <div class="foot"><a href="#" id="other">다른 사람 찾기</a><a href="../">라이브 페이지로</a></div>`;
+  <div class="foot"><a href="#" id="other">다른 사람 찾기</a></div>`;
   document.getElementById('other').onclick = e => { e.preventDefault(); remember(null,false); showForm(); };
 }
 fetch('../tables.json',{cache:'no-store'}).then(r=>r.json()).then(t => {
-  if(!t.published){ box.innerHTML = `<h2>내 테이블</h2><p class="muted">테이블 배정은 11월 16일 이후 이 페이지에서 확인할 수 있습니다. 당일에는 명찰에도 적혀 있습니다.</p><div class="foot"><a href="../">라이브 페이지로</a></div>`; return; }
+  if(!t.published){ box.innerHTML = `<h2>내 테이블</h2><p class="muted">배정 전</p>`; return; }
   rows = t.rows || [];
   const me = mine();
   const still = me && rows.find(r => String(r.no)===String(me.no) && r.name===me.name);
