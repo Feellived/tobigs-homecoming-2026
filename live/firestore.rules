@@ -15,7 +15,8 @@ service cloud.firestore {
     // 질문: 누구나 등록·공감, 수정·삭제는 운영진만
     match /questions/{qid} {
       allow read: if true;
-      allow create: if request.resource.data.keys().hasOnly(['gen','text','name','voters','createdAt','hidden','answered','client'])
+      allow create: if qid.matches('^[A-Za-z0-9]{20}$')
+        && request.resource.data.keys().hasOnly(['gen','text','name','voters','createdAt','hidden','answered','client'])
         && request.resource.data.text is string
         && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 200
         && request.resource.data.gen is string && request.resource.data.gen.size() <= 10
@@ -39,7 +40,8 @@ service cloud.firestore {
 
       match /votes/{vid} {
         allow read: if true;
-        allow create: if request.resource.data.keys().hasOnly(['option','at'])
+        allow create: if vid.matches('^[A-Za-z0-9-]{8,64}$')
+          && request.resource.data.keys().hasOnly(['option','at'])
           && request.resource.data.option is int
           && request.resource.data.option >= 0 && request.resource.data.option < 10
           && request.resource.data.at == request.time;
