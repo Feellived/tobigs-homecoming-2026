@@ -7,86 +7,95 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="../assets/favicon.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#0b1230;--accent:#3d5afe;--bg:#f4f5fa;--card:#fff;--text:#0f1215;--muted:#6b6f7b;--line:#e3e6f0}
+:root{--navy:#0b1230;--accent:#3d5afe;--peri:#9db0ff;--text:#ffffff;--muted:#9aa3c7;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--field:rgba(255,255,255,.08);--display:'Space Grotesk',sans-serif;--sans:'Pretendard Variable',Pretendard,-apple-system,system-ui,sans-serif}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:'Pretendard Variable',Pretendard,-apple-system,system-ui,sans-serif;line-height:1.5}
+body{margin:0;background:var(--navy);color:var(--text);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
 button,input,textarea,select{font:inherit;color:inherit}
 button{cursor:pointer}
-main{max-width:560px;margin:0 auto;padding:12px 16px 40px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
-h2{font-size:17px;margin:0 0 10px}
+a{color:var(--peri)}
+.top{display:flex;align-items:center;gap:12px;max-width:560px;margin:0 auto;padding:20px 16px 4px}
+.top img{height:15px;width:auto}
+.top span{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.22em;color:var(--peri)}
+main{max-width:560px;margin:0 auto;padding:8px 16px 48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:12px 0}
+.eyebrow{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.18em;color:var(--peri);margin-bottom:8px}
+h2{font-size:18px;margin:0 0 10px;letter-spacing:-.01em}
 p{margin:6px 0}
 .muted{color:var(--muted);font-size:13px}
-.step{font-size:22px;font-weight:800;line-height:1.3}
-.timer{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1;margin-top:4px}
-.timer.over{color:#d97706}
-.btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:#fff;border-radius:8px;padding:10px 14px;font-weight:600;font-size:14px;line-height:1.2}
-.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.btn-sm{padding:6px 10px;font-size:12px}
-.btn:disabled{opacity:.5;cursor:default}
+.step{font-size:24px;font-weight:800;line-height:1.25;letter-spacing:-.01em}
+.timer{font-family:var(--display);font-size:48px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1;margin-top:8px;letter-spacing:-.02em}
+.timer.over{color:#ffb86b}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:transparent;color:#fff;border-radius:10px;padding:11px 14px;font-weight:600;font-size:14px;line-height:1.2;text-decoration:none}
+.btn-primary{background:var(--accent);border-color:var(--accent)}
+.btn-sm{padding:6px 10px;font-size:12px;border-radius:8px}
+.btn:disabled{opacity:.45;cursor:default}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .grow{flex:1 1 auto;min-width:0}
-input[type=text],input[type=email],input[type=password],input[type=number],textarea,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;outline:none;margin:4px 0}
-textarea{min-height:64px;resize:vertical}
+input[type=text],input[type=email],input[type=password],input[type=number],textarea,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:#fff;outline:none;margin:4px 0}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,.4)}
+input:focus,textarea:focus,select:focus{border-color:var(--peri)}
+select option{color:#0b1230}
+textarea{min-height:68px;resize:vertical}
 label.f{display:block;font-size:12px;color:var(--muted);margin-top:8px}
 .q{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line)}
 .q:first-child{border-top:0}
 .q .t{font-size:15px;line-height:1.45;word-break:keep-all}
 .q .m{font-size:12px;color:var(--muted);margin-top:2px}
 .q.done .t{color:var(--muted);text-decoration:line-through}
-.vote{flex:0 0 auto;min-width:48px;padding:8px;border:1px solid var(--line);border-radius:8px;background:#fff;font-weight:700;font-size:15px}
-.vote.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.opt{display:block;width:100%;text-align:left;padding:12px;border:1px solid var(--line);border-radius:8px;background:#fff;margin:6px 0;font-size:15px}
+.vote{flex:0 0 auto;min-width:52px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:transparent;color:#fff;font-weight:700;font-size:14px}
+.vote.on{background:var(--accent);border-color:var(--accent)}
+.opt{display:block;width:100%;text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:#fff;margin:6px 0;font-size:15px}
 .res{margin:8px 0}
-.res .l{display:flex;justify-content:space-between;font-size:14px}
+.res .l{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}
 .res .bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
-.res .bar i{display:block;height:100%;background:var(--accent)}
+.res .bar i{display:block;height:100%;background:var(--peri)}
 .tabs{display:flex;gap:4px;overflow-x:auto;margin:8px 0}
-.tabs button{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;padding:6px 12px;font-size:13px}
-.tabs button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.tabs button{flex:0 0 auto;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:6px 12px;font-size:13px}
+.tabs button.on{background:#fff;border-color:#fff;color:var(--navy)}
 .list{margin:0;padding:0;list-style:none}
 .list li{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
 .list li:first-child{border-top:0}
 .win{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
 .win:first-child{border-top:0}
-.win .rk{font-weight:800;color:var(--accent);min-width:40px}
-.big{font-size:44px;font-weight:800;line-height:1.1}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+.win .rk{font-family:var(--display);font-weight:700;color:var(--peri);min-width:44px}
+.big{font-family:var(--display);font-size:48px;font-weight:700;line-height:1.1;letter-spacing:-.02em}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#fff;color:var(--navy);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.show{opacity:1}
 table.t{width:100%;border-collapse:collapse;font-size:13px}
 table.t td,table.t th{text-align:left;padding:5px 4px;border-bottom:1px solid var(--line)}
 /* screen */
-body.screen{background:var(--navy);color:#fff}
+body.screen .top{display:none}
 body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-template-rows:auto 1fr}
-.sh{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:24px 40px;border-bottom:1px solid #26305c}
+.sh{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:24px 40px;border-bottom:1px solid var(--line)}
 .sh .step{font-size:34px}
-.sh .next{font-size:16px;color:#9db0ff}
-.sh .timer{font-size:72px}
+.sh .next{font-size:16px;color:var(--peri)}
+.sh .timer{font-size:72px;margin:0}
 .sh .qr{display:flex;align-items:center;gap:14px}
 .sh .qr img{width:120px;height:120px;border-radius:8px;background:#fff;padding:6px}
-.sh .qr div{font-size:18px;font-weight:700;color:#9db0ff}
+.sh .qr div{font-family:var(--display);font-size:18px;font-weight:700;color:var(--peri)}
 .sb{display:grid;grid-template-columns:3fr 2fr;min-height:0}
 .sc{padding:28px 40px;overflow:hidden}
-.sc+.sc{border-left:1px solid #26305c}
-.sc h3{font-size:14px;letter-spacing:.1em;color:#9db0ff;margin:0 0 16px}
-.sq{display:flex;gap:18px;padding:14px 0;border-top:1px solid #26305c;font-size:26px;line-height:1.35;word-break:keep-all}
+.sc+.sc{border-left:1px solid var(--line)}
+.sc h3{font-family:var(--display);font-size:13px;letter-spacing:.2em;color:var(--peri);margin:0 0 16px}
+.sq{display:flex;gap:18px;padding:14px 0;border-top:1px solid var(--line);font-size:26px;line-height:1.35;word-break:keep-all}
 .sq:first-child{border-top:0}
-.sq .v{flex:0 0 auto;min-width:64px;font-weight:700;color:#9db0ff}
-.sq .m{font-size:15px;color:#9db0ff;margin-top:4px}
+.sq .v{flex:0 0 auto;min-width:64px;font-family:var(--display);font-weight:700;color:var(--peri)}
+.sq .m{font-size:15px;color:var(--peri);margin-top:4px}
 .sq.done{opacity:.4}
 .sc .res .l{font-size:22px}
-.sc .res .bar{height:18px;background:#26305c}
-.sc .res .bar i{background:#9db0ff}
-.sc .win{border-color:#26305c;padding:14px 0}
-.sc .win .rk{font-size:26px;min-width:64px;color:#9db0ff}
+.sc .res .bar{height:18px}
+.sc .win{padding:14px 0}
+.sc .win .rk{font-size:26px;min-width:64px}
 .sc .win b{font-size:30px}
-.sc .win span{font-size:16px;color:#9db0ff}
-.se{color:#9db0ff;font-size:20px}
-@media(max-width:900px){body.screen main{height:auto}.sb{grid-template-columns:1fr}.sc+.sc{border-left:0;border-top:1px solid #26305c}.sh{flex-wrap:wrap}}
+.sc .win span{font-size:16px;color:var(--peri)}
+.se{color:var(--peri);font-size:20px}
+@media(max-width:900px){body.screen main{height:auto}.sb{grid-template-columns:1fr}.sc+.sc{border-left:0;border-top:1px solid var(--line)}.sh{flex-wrap:wrap}}
 </style>
 </head>
 <body>
+<header class="top"><a href="../"><img src="../assets/wordmark-light.png" alt="TOBIG'S"></a><span>HOMECOMING LIVE</span></header>
 <main id="app"></main>
 <div class="toast" id="toast"></div>
 
@@ -133,7 +142,7 @@ const loadTables = () => fetch('tables.json',{cache:'no-store'}).then(r=>r.json(
 
 function info(){
   const p = S.program;
-  if(!p || typeof p.step !== 'number') return { step:null, name:'11월 21일(토) 12:30 입장 · 13:00 개회', next:'', remain:null };
+  if(!p || typeof p.step !== 'number') return { step:null, name:"TOBIG'S Homecoming Day 2026", next:'', remain:null };
   const st = STEPS[p.step] || STEPS[STEPS.length-1], nx = STEPS[p.step+1];
   return { step:p.step, name:st.n, next: nx ? `다음 ${nx.t} ${nx.n}` : '', remain: p.endsAt ? p.endsAt.toMillis() - Date.now() : null };
 }
@@ -147,26 +156,22 @@ const tick = () => setInterval(render.program, 1000);
 // ---------- 참가자 ----------
 function guest(){
   appEl.innerHTML = `
-  <section class="card"><div class="step" id="g-step"></div><div class="muted" id="g-next"></div><div class="timer" id="g-timer"></div></section>
+  <section class="card" id="g-now" hidden><div class="eyebrow">NOW</div><div class="step" id="g-step"></div><div class="muted" id="g-next"></div><div class="timer" id="g-timer"></div></section>
   <section class="card" id="g-poll" hidden></section>
-  <section class="card"><h2>선배님께 묻고 싶은 것</h2>
+  <section class="card"><div class="eyebrow">ALUMNI SESSION</div><h2>선배님께 묻고 싶은 것</h2>
     <form id="g-form"><div class="row"><select id="g-gen" required style="flex:0 0 96px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><button class="btn btn-primary grow" type="submit" id="g-submit">질문 올리기</button></div><textarea id="g-text" maxlength="200" placeholder="질문" required></textarea></form>
     <div id="g-list" style="margin-top:8px"></div></section>
-  <section class="card"><h2>내 테이블</h2><div id="g-table"></div></section>
+  <a class="btn" href="table/" style="width:100%;margin:12px 0">내 테이블 확인</a>
   <section class="card" id="g-draw" hidden></section>`;
-  render.program = () => { const i = info(); $('#g-step').textContent = i.name; $('#g-next').textContent = i.next; const t = $('#g-timer'); t.textContent = fmt(i.remain); t.classList.toggle('over', i.remain!==null && i.remain<0); };
+  render.program = () => { const i = info(); $('#g-now').hidden = i.step===null; $('#g-step').textContent = i.name; $('#g-next').textContent = i.next; const t = $('#g-timer'); t.textContent = fmt(i.remain); t.classList.toggle('over', i.remain!==null && i.remain<0); };
   render.questions = () => { const l = visible(); $('#g-list').innerHTML = l.map(q => { const n = q.voters?.length||0, on = q.voters?.includes(cid); return `<div class="q${q.answered?' done':''}"><div class="grow"><div class="t">${esc(q.text)}</div><div class="m">${esc(q.gen||'')}${q.answered?' · 답변 완료':''}</div></div><button class="vote${on?' on':''}" data-id="${esc(q.id)}" ${on||q.answered?'disabled':''}>👍 ${n}</button></div>`; }).join('') || '<p class="muted">아직 질문이 없습니다.</p>'; };
   $('#g-list').addEventListener('click', async e => { const b = e.target.closest('.vote'); if(!b) return; b.disabled = true; try { await updateDoc(doc(db,'questions',b.dataset.id), { voters: arrayUnion(cid) }); } catch(err){ b.disabled = false; say('다시 시도해 주세요'); } });
   $('#g-form').addEventListener('submit', async e => { e.preventDefault(); const gen = $('#g-gen').value, text = $('#g-text').value.trim(); if(!gen||!text) return; const b = $('#g-submit'); b.disabled = true;
     try { await addDoc(collection(db,'questions'), { gen, text, name:'', voters:[], createdAt: serverTimestamp(), hidden:false, answered:false, client:cid }); $('#g-text').value=''; say('올렸습니다'); setTimeout(()=>b.disabled=false, 8000); } catch(err){ say('인터넷 연결을 확인해 주세요'); b.disabled = false; } });
   render.polls = () => { const p = S.polls.find(x=>x.open), box = $('#g-poll'); if(!p){ box.hidden = true; return; } box.hidden = false; let v = null; try { v = localStorage.getItem('hc_vote_'+p.id); } catch(e){}
-    box.innerHTML = `<h2>${esc(p.q)}</h2>` + (v===null ? p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('') : bars(p) + `<p class="muted">${counts(p).total}명 참여</p>`); };
+    box.innerHTML = `<div class="eyebrow">LIVE POLL</div><h2>${esc(p.q)}</h2>` + (v===null ? p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('') : bars(p) + `<p class="muted">${counts(p).total}명 참여</p>`); };
   $('#g-poll').addEventListener('click', async e => { const b = e.target.closest('.opt'); if(!b) return; const p = S.polls.find(x=>x.open); if(!p) return; try { await setDoc(doc(db,'polls',p.id,'votes',cid), { option:Number(b.dataset.i), at: serverTimestamp() }); } catch(err){} try { localStorage.setItem('hc_vote_'+p.id, b.dataset.i); } catch(e){} render.polls(); });
-  render.draw = () => { const items = S.draw?.items||[], box = $('#g-draw'); box.hidden = !items.length; box.innerHTML = `<h2>Lucky Draw</h2>` + items.slice().sort((a,b)=>a.rank-b.rank).map(w=>`<div class="win"><span class="rk">${esc(w.rank)}등</span><div><b>${esc(w.name)}</b> <span class="muted">${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join(''); };
-  loadTables().then(() => { const box = $('#g-table'); if(!S.tables.published){ box.innerHTML = '<p class="muted">테이블 배정 후 공개됩니다.</p>'; return; }
-    box.innerHTML = `<form id="g-tf" class="row"><select id="g-tg" required style="flex:0 0 96px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><input class="grow" type="text" id="g-tn" placeholder="이름" required><button class="btn btn-primary" type="submit">찾기</button></form><div id="g-tr"></div>`;
-    $('#g-tf').addEventListener('submit', e => { e.preventDefault(); const n = norm($('#g-tn').value), g = $('#g-tg').value; const hit = S.tables.rows.filter(r=>norm(r.name)===n && r.gen===g);
-      $('#g-tr').innerHTML = hit.length ? hit.map(r=>`<div class="row" style="gap:24px;margin-top:10px"><div><div class="muted">1라운드</div><div class="big">${esc(r.t1)}</div></div><div><div class="muted">2라운드</div><div class="big">${esc(r.t2)}</div></div><div><div class="muted">명찰 번호</div><div class="big">${esc(r.no)}</div></div></div>`).join('') : '<p class="muted">찾지 못했습니다. 체크인 데스크에 문의해 주세요.</p>'; }); });
+  render.draw = () => { const items = S.draw?.items||[], box = $('#g-draw'); box.hidden = !items.length; box.innerHTML = `<div class="eyebrow">LUCKY DRAW</div><h2>당첨자</h2>` + items.slice().sort((a,b)=>a.rank-b.rank).map(w=>`<div class="win"><span class="rk">${esc(w.rank)}등</span><div><b>${esc(w.name)}</b> <span class="muted">${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join(''); };
   tick(); listen.program(); listen.questions(); listen.polls(); listen.draw();
 }
 
@@ -180,7 +185,7 @@ function screen(){
   const right = () => { const items = S.draw?.items||[], p = S.polls.find(x=>x.open||x.show), box = $('#s-r');
     if(items.length) box.innerHTML = `<h3>Lucky Draw</h3>` + items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win"><span class="rk">${esc(w.rank)}등</span><div><b>${esc(w.name)}</b> <span>${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('');
     else if(p) box.innerHTML = `<h3>투표${p.open?'':' · 마감'}</h3><div style="font-size:30px;font-weight:800;margin-bottom:18px">${esc(p.q)}</div>` + bars(p) + `<p class="se">${counts(p).total}명 참여</p>`;
-    else box.innerHTML = ''; };
+    else box.innerHTML = `<h3>Big Then. Bigger Now.</h3>`; };
   render.polls = right; render.draw = right;
   tick(); listen.program(); listen.questions(); listen.polls(); listen.draw();
 }
