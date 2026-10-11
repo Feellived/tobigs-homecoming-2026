@@ -56,9 +56,23 @@ git add -A && git commit -m "update" && git push
 2. Firebase 콘솔 → Authentication → 설정 → 승인된 도메인에 `homecoming.datamarket.ai.kr` 추가
 3. 운영진 계정(이메일/비밀번호)은 Authentication → Users에서 관리. 규칙의 `isAdmin()` 이메일과 같아야 함
 
+### 라이브에 필요한 데이터
+
+| 기능 | 데이터 | 어디에 | 언제 |
+| --- | --- | --- | --- |
+| 진행 순서·타이머 | 순서 목록 | `live/index.html`의 `STEPS` 상수 | 완료 |
+| 질문·투표 | 없음 (당일 생성) | Firestore `questions`, `polls/{id}/votes` | 운영 화면에서 당일 |
+| 내 테이블 | 참가자 명단 + 1·2라운드 테이블 | `live/tables.json` | 11/16 배정 후 |
+| 체크인 | 위 명단 | `tables.json` → 당일 체크 결과는 Firestore `checkins/{no}` | 당일 데스크 |
+| Lucky Draw | 위 명단 + 추가 응모(퀴즈 우승 테이블·스티커·사진) + 경품 이름 | 추가 응모는 운영 화면에 입력, 경품은 `PRIZES` 상수 | 당일 |
+
 ### 테이블 배정 (11/16)
 
-`live/tables.json`의 `published`를 `true`로 바꾸고 `rows`에 `{ "no": 명찰번호, "name": "이름", "gen": "25기", "t1": 1라운드, "t2": 2라운드 }`를 채운다. `/live/table/`의 내 테이블 조회와 운영진 체크인·추첨 풀이 이 파일을 쓴다.
+운영부장이 배정표를 `live/tables.template.csv` 형식(명찰 번호, 이름, 기수, 1라운드, 2라운드)으로 주면 `tables.json`으로 바꿔 배포한다. 명찰 번호는 1부터 순서대로 매기고 명찰 인쇄에도 같은 번호를 쓴다. 이름은 명찰과 동일한 표기(띄어쓰기 무관, 기수는 "25기" 형식). `published`를 `true`로 바꾸면 `/live/table/` 조회와 체크인 명단, 추첨 풀이 살아난다.
+
+```json
+{ "published": true, "rows": [ { "no": 1, "name": "홍길동", "gen": "25기", "t1": 3, "t2": 7 } ] }
+```
 
 ### 당일 흐름
 
