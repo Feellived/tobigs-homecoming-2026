@@ -179,7 +179,7 @@ function hub(){
   appEl.innerHTML = nowCard('h-now') + `
   <a class="card entry" href="?qa" id="e-qa"><div class="eyebrow">ALUMNI SESSION</div><h2>질문 · 투표</h2><p class="muted">좋은 질문에 투표해주세요</p></a>
   <a class="card entry" href="table/" id="e-table"><div class="eyebrow">TABLE TALK</div><h2>내 테이블</h2><p class="muted">1라운드 · 2라운드 테이블 번호</p></a>
-  <a class="card entry" href="?draw" id="e-draw"><div class="eyebrow">LUCKY DRAW</div><h2>당첨자</h2></a>`;
+  <a class="card entry" href="?draw" id="e-draw"><div class="eyebrow">LUCKY DRAW</div><h2>추첨 · 당첨자 확인</h2></a>`;
   hubHi = hi => ['qa','table','draw'].forEach(k => $('#e-'+k).classList.toggle('primary', k===hi));
   bindNow('h-now'); listen.program();
 }
@@ -189,10 +189,10 @@ function qa(){
   appEl.innerHTML = `<a class="back" href="./">← Live</a>` + nowCard('q-now') + `
   <section class="card" id="g-poll" hidden></section>
   <section class="card"><div class="eyebrow">ALUMNI SESSION</div><h2>선배님께 묻고 싶은 것</h2>
-    <form id="g-form"><div class="row"><select id="g-gen" required style="flex:0 0 96px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><button class="btn btn-primary grow" type="submit" id="g-submit">질문 올리기</button></div><textarea id="g-text" maxlength="200" placeholder="질문" required></textarea></form>
+    <form id="g-form"><div class="row"><select id="g-gen" required style="flex:0 0 96px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><button class="btn btn-primary grow" type="submit" id="g-submit">질문 올리기</button></div><textarea id="g-text" maxlength="200" placeholder="(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?" required></textarea></form>
     <div id="g-list" style="margin-top:8px"></div></section>`;
   bindNow('q-now');
-  render.questions = () => { const l = visible(); $('#g-list').innerHTML = l.map(x => { const n = x.voters?.length||0, on = x.voters?.includes(cid); return `<div class="q${x.answered?' done':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${x.answered?' · 답변 완료':''}</div></div><button class="vote${on?' on':''}" data-id="${esc(x.id)}" ${on||x.answered?'disabled':''}>${on?'투표함':'투표'} ${n}</button></div>`; }).join('') || '<p class="muted">아직 질문이 없습니다.</p>'; };
+  render.questions = () => { const l = visible(); $('#g-list').innerHTML = l.map(x => { const n = x.voters?.length||0, on = x.voters?.includes(cid); return `<div class="q${x.answered?' done':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${x.answered?' · 답변 완료':''}</div></div><button class="vote${on?' on':''}" data-id="${esc(x.id)}" ${on||x.answered?'disabled':''}>${on?'투표함':'투표'} ${n}</button></div>`; }).join('') || '<div class="q"><div class="grow"><div class="t" style="color:var(--muted)">(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">첫 질문을 올려주세요</div></div></div>'; };
   $('#g-list').addEventListener('click', async e => { const b = e.target.closest('.vote'); if(!b) return; b.disabled = true; try { await updateDoc(doc(db,'questions',b.dataset.id), { voters: arrayUnion(cid) }); } catch(err){ b.disabled = false; say('다시 시도해 주세요'); } });
   $('#g-form').addEventListener('submit', async e => { e.preventDefault(); const gen = $('#g-gen').value, text = $('#g-text').value.trim(); if(!gen||!text) return; const b = $('#g-submit'); b.disabled = true;
     try { await addDoc(collection(db,'questions'), { gen, text, name:'', voters:[], createdAt: serverTimestamp(), hidden:false, answered:false, client:cid }); $('#g-text').value=''; say('올렸습니다'); setTimeout(()=>b.disabled=false, 8000); } catch(err){ say('인터넷 연결을 확인해 주세요'); b.disabled = false; } });
@@ -217,7 +217,7 @@ function screen(){
   <div class="sb"><div class="sc"><h3>질문</h3><div id="s-q"></div></div><div class="sc" id="s-r"></div></div>`;
   render.program = () => { const i = info(); $('#s-step').textContent = i.name; $('#s-next').textContent = i.next; const t = $('#s-timer'); t.textContent = fmt(i.remain); t.classList.toggle('over', i.remain!==null && i.remain<0); };
   setInterval(render.program, 1000);
-  render.questions = () => { $('#s-q').innerHTML = visible().slice(0,8).map(x=>`<div class="sq${x.answered?' done':''}"><div class="v">👍 ${x.voters?.length||0}</div><div><div>${esc(x.text)}</div><div class="m">${esc(x.gen||'')}</div></div></div>`).join('') || '<p class="se">QR로 들어와 질문을 올려주세요.</p>'; };
+  render.questions = () => { $('#s-q').innerHTML = visible().slice(0,8).map(x=>`<div class="sq${x.answered?' done':''}"><div class="v">👍 ${x.voters?.length||0}</div><div><div>${esc(x.text)}</div><div class="m">${esc(x.gen||'')}</div></div></div>`).join('') || '<p class="se">QR로 들어와 질문을 올려주세요.</p><div class="sq" style="opacity:.5"><div class="v">👍 0</div><div><div>(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">25기</div></div></div>'; };
   const right = () => { const items = S.draw?.items||[], p = S.polls.find(x=>x.open||x.show), box = $('#s-r');
     if(items.length) box.innerHTML = `<h3>Lucky Draw</h3>` + items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win"><span class="rk">${esc(w.rank)}등</span><div><b>${esc(w.name)}</b> <span>${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('');
     else if(p) box.innerHTML = `<h3>투표${p.open?'':' · 마감'}</h3><div style="font-size:30px;font-weight:800;margin-bottom:18px">${esc(p.q)}</div>` + bars(p) + `<p class="se">${counts(p).total}명 참여</p>`;
