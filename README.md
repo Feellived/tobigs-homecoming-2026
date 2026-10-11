@@ -46,6 +46,7 @@ git add -A && git commit -m "update" && git push
 행사 당일 실시간 질문·공감·투표·진행 순서·내 테이블·Lucky Draw 결과. Firebase Firestore(프로젝트 `tobigshoco`)를 쓰고 서버는 없음.
 
 - 참가자: https://homecoming.datamarket.ai.kr/live/  (테이블 번호표·화면의 QR)
+- 내 테이블: https://homecoming.datamarket.ai.kr/live/table/  (이름·기수로 조회, 기기에 기억. Firebase 없이 tables.json만 읽음)
 - 프로젝터: https://homecoming.datamarket.ai.kr/live/?screen
 - 운영진: https://homecoming.datamarket.ai.kr/live/?admin  (Firebase Auth 이메일 로그인, 진행·질문·투표·체크인·추첨)
 
@@ -57,7 +58,7 @@ git add -A && git commit -m "update" && git push
 
 ### 테이블 배정 (11/16)
 
-`live/tables.json`의 `published`를 `true`로 바꾸고 `rows`에 `{ "no": 명찰번호, "name": "이름", "gen": "25기", "t1": 1라운드, "t2": 2라운드 }`를 채운다. 참가자 "내 테이블 찾기"와 운영진 체크인·추첨 풀이 이 파일을 쓴다.
+`live/tables.json`의 `published`를 `true`로 바꾸고 `rows`에 `{ "no": 명찰번호, "name": "이름", "gen": "25기", "t1": 1라운드, "t2": 2라운드 }`를 채운다. `/live/table/`의 내 테이블 조회와 운영진 체크인·추첨 풀이 이 파일을 쓴다.
 
 ### 당일 흐름
 
