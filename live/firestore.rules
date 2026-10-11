@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'tobigs2026hoco@gmail.com';
+    }
+
+    // 진행 순서 (state/program)
+    match /state/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 질문: 누구나 등록·공감, 수정·삭제는 운영진만
+    match /questions/{qid} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['gen','text','name','voters','createdAt','hidden','answered','client'])
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 200
+        && request.resource.data.gen is string && request.resource.data.gen.size() <= 10
+        && request.resource.data.name is string && request.resource.data.name.size() <= 20
+        && request.resource.data.client is string && request.resource.data.client.size() <= 64
+        && request.resource.data.voters is list && request.resource.data.voters.size() == 0
+        && request.resource.data.hidden == false
+        && request.resource.data.answered == false
+        && request.resource.data.createdAt == request.time;
+      allow update: if isAdmin()
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['voters'])
+            && request.resource.data.voters.size() == resource.data.voters.size() + 1
+            && request.resource.data.voters.size() <= 300);
+      allow delete: if isAdmin();
+    }
+
+    // 투표: 문항은 운영진만, 표는 1기기 1표(문서 ID = 기기 ID, 생성만 허용)
+    match /polls/{pid} {
+      allow read: if true;
+      allow write: if isAdmin();
+
+      match /votes/{vid} {
+        allow read: if true;
+        allow create: if request.resource.data.keys().hasOnly(['option','at'])
+          && request.resource.data.option is int
+          && request.resource.data.option >= 0 && request.resource.data.option < 10
+          && request.resource.data.at == request.time;
+        allow update, delete: if false;
+      }
+    }
+
+    // 체크인 명단, 추첨 결과: 읽기는 누구나, 쓰기는 운영진만
+    match /checkins/{no} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /draw/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

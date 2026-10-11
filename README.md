@@ -40,3 +40,25 @@ git add -A && git commit -m "update" && git push
 
 `assets/og.png`(1200×630)가 카톡 링크 미리보기로 쓰입니다. 카톡이 예전 미리보기를 캐시하면 링크 끝에 `?v=2`처럼 쿼리를 붙여 공유하세요.
 
+
+## 라이브 페이지 (`live/`)
+
+행사 당일 실시간 질문·공감·투표·진행 순서·내 테이블·Lucky Draw 결과. Firebase Firestore(프로젝트 `tobigshoco`)를 쓰고 서버는 없음.
+
+- 참가자: https://homecoming.datamarket.ai.kr/live/  (테이블 번호표·화면의 QR)
+- 프로젝터: https://homecoming.datamarket.ai.kr/live/?screen
+- 운영진: https://homecoming.datamarket.ai.kr/live/?admin  (Firebase Auth 이메일 로그인, 진행·질문·투표·체크인·추첨)
+
+### 처음 한 번 할 것
+
+1. Firebase 콘솔 → Firestore → 규칙 탭에 `live/firestore.rules` 내용을 붙여넣고 게시. 테스트 모드 규칙은 생성 30일 뒤 만료되므로 반드시 교체
+2. Firebase 콘솔 → Authentication → 설정 → 승인된 도메인에 `homecoming.datamarket.ai.kr` 추가
+3. 운영진 계정(이메일/비밀번호)은 Authentication → Users에서 관리. 규칙의 `isAdmin()` 이메일과 같아야 함
+
+### 테이블 배정 (11/16)
+
+`live/tables.json`의 `published`를 `true`로 바꾸고 `rows`에 `{ "no": 명찰번호, "name": "이름", "gen": "25기", "t1": 1라운드, "t2": 2라운드 }`를 채운다. 참가자 "내 테이블 찾기"와 운영진 체크인·추첨 풀이 이 파일을 쓴다.
+
+### 당일 흐름
+
+운영 화면 "진행" 탭에서 순서를 시작하면 모든 화면의 Now와 남은 시간이 바뀐다. 투표는 "열기"로 참가자 화면에 뜨고 "화면에 올리기"로 프로젝터에 결과가 뜬다. 체크인은 데스크 운영진이 휴대폰으로 체크하면 추첨 풀에 자동 반영. 추첨은 5등부터, 가중 추첨, 1인 1회. "1만 회 시뮬레이션" 버튼으로 리허설 때 확률 검증.
