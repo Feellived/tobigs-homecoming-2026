@@ -83,6 +83,20 @@ body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-templat
 .sh .qr img{width:120px;height:120px;border-radius:8px;background:#fff;padding:6px}
 .sh .qr div{font-family:var(--display);font-size:18px;font-weight:700;color:var(--peri)}
 .sb{display:grid;grid-template-columns:3fr 2fr;min-height:0}
+.sb.one{grid-template-columns:1fr}
+.sc.center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.bt{font-family:var(--display);font-weight:700;font-size:min(24vw,220px);line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.bn{font-size:28px;color:var(--peri);margin-top:16px}
+.idle{font-family:var(--display);font-weight:700;font-size:min(10vw,110px);letter-spacing:-.03em;line-height:1}
+.idle b{color:var(--peri)}
+.tg{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.tb{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;line-height:1.55}
+.tb .tn{font-family:var(--display);font-weight:700;font-size:28px;color:var(--peri);margin-bottom:4px}
+.tb span{font-size:13px;color:var(--muted)}
+.wl .win{padding:16px 0}
+.wl .win .rk{font-size:30px;min-width:80px}
+.wl .win b{font-size:36px}
+.wl .win span{font-size:18px;color:var(--peri)}
 .sc{padding:28px 40px;overflow:hidden}
 .sc+.sc{border-left:1px solid var(--line)}
 .sc h3{font-family:var(--display);font-size:13px;letter-spacing:.2em;color:var(--peri);margin:0 0 16px}
@@ -212,18 +226,31 @@ function drawView(){
 }
 
 // ---------- 프로젝터 ----------
+// 진행 순서에 따라 화면이 바뀐다: 체크인·Table Talk → 테이블 배치, Alumni → 질문·투표, Break → 타이머, Lucky Draw → 당첨자, 그 외 → 슬로건
 function screen(){
   document.body.classList.add('screen');
-  appEl.innerHTML = `<div class="sh"><div><div class="step" id="s-step"></div><div class="next" id="s-next"></div></div><div class="timer" id="s-timer"></div><div class="qr"><img src="qr.png" alt=""><div>homecoming.datamarket.ai.kr/live</div></div></div>
-  <div class="sb"><div class="sc"><h3>질문</h3><div id="s-q"></div></div><div class="sc" id="s-r"></div></div>`;
-  render.program = () => { const i = info(); $('#s-step').textContent = i.name; $('#s-next').textContent = i.next; const t = $('#s-timer'); t.textContent = fmt(i.remain); t.classList.toggle('over', i.remain!==null && i.remain<0); };
+  appEl.innerHTML = `<div class="sh"><div><div class="step" id="s-step"></div><div class="next" id="s-next"></div></div><div class="timer" id="s-timer"></div><div class="qr"><img src="qr.png" alt=""><div>homecoming.datamarket.ai.kr/live</div></div></div><div class="sb" id="s-body"></div>`;
+  let mode = null;
+  const modeOf = st => st===null ? 'idle' : (st===0||st===7) ? 'tables1' : (st===8||st===9) ? 'tables2' : st===4 ? 'qa' : (st===5||st===10) ? 'break' : st===11 ? 'draw' : 'idle';
+  const layout = () => { const m = modeOf(info().step); if(m===mode) return; mode = m; const b = $('#s-body'); b.className = 'sb ' + (m==='qa' ? 'two' : 'one');
+    if(m==='qa') b.innerHTML = `<div class="sc"><h3>질문</h3><div id="s-q"></div></div><div class="sc" id="s-r"></div>`;
+    else if(m==='tables1'||m==='tables2') b.innerHTML = `<div class="sc"><h3>${m==='tables1'?'1라운드 테이블':'2라운드 테이블'}</h3><div class="tg" id="s-t"></div></div>`;
+    else if(m==='break') b.innerHTML = `<div class="sc center"><div class="bt" id="s-bt"></div><div class="bn" id="s-bn"></div></div>`;
+    else if(m==='draw') b.innerHTML = `<div class="sc"><h3>Lucky Draw</h3><div id="s-w" class="wl"></div></div>`;
+    else b.innerHTML = `<div class="sc center"><div class="idle">Big Then. <b>Bigger Now.</b></div></div>`;
+    render.questions(); render.polls(); render.draw(); renderTables(); };
+  render.program = () => { const i = info(); $('#s-step').textContent = i.name; $('#s-next').textContent = i.next; const t = $('#s-timer'); t.textContent = fmt(i.remain); t.classList.toggle('over', i.remain!==null && i.remain<0); layout(); if(mode==='break'){ $('#s-bt').textContent = fmt(i.remain) || '—'; $('#s-bn').textContent = i.next; } };
   setInterval(render.program, 1000);
-  render.questions = () => { $('#s-q').innerHTML = visible().slice(0,8).map(x=>`<div class="sq${x.answered?' done':''}"><div class="v">👍 ${x.voters?.length||0}</div><div><div>${esc(x.text)}</div><div class="m">${esc(x.gen||'')}</div></div></div>`).join('') || '<p class="se">QR로 들어와 질문을 올려주세요.</p><div class="sq" style="opacity:.5"><div class="v">👍 0</div><div><div>(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">25기</div></div></div>'; };
-  const right = () => { const items = S.draw?.items||[], p = S.polls.find(x=>x.open||x.show), box = $('#s-r');
-    if(items.length) box.innerHTML = `<h3>Lucky Draw</h3>` + items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win"><span class="rk">${esc(w.rank)}등</span><div><b>${esc(w.name)}</b> <span>${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('');
-    else if(p) box.innerHTML = `<h3>투표${p.open?'':' · 마감'}</h3><div style="font-size:30px;font-weight:800;margin-bottom:18px">${esc(p.q)}</div>` + bars(p) + `<p class="se">${counts(p).total}명 참여</p>`;
+  const renderTables = () => { const el = $('#s-t'); if(!el) return; const key = mode==='tables2' ? 't2' : 't1'; const rows = S.tables.rows || [];
+    if(!S.tables.published || !rows.length){ el.innerHTML = '<p class="se">명찰에 적힌 테이블 번호로 앉아 주세요.</p>'; return; }
+    const g = {}; rows.forEach(r => { (g[r[key]] = g[r[key]] || []).push(r); });
+    el.innerHTML = Object.keys(g).sort((a,b)=>a-b).map(n => `<div class="tb"><div class="tn">${esc(n)}</div>${g[n].map(r=>`<div>${esc(r.name)} <span>${esc(r.gen)}</span></div>`).join('')}</div>`).join(''); };
+  render.questions = () => { const el = $('#s-q'); if(!el) return; el.innerHTML = visible().slice(0,8).map(x=>`<div class="sq${x.answered?' done':''}"><div class="v">👍 ${x.voters?.length||0}</div><div><div>${esc(x.text)}</div><div class="m">${esc(x.gen||'')}</div></div></div>`).join('') || '<p class="se">QR로 들어와 질문을 올려주세요.</p><div class="sq" style="opacity:.5"><div class="v">👍 0</div><div><div>(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">25기</div></div></div>'; };
+  const right = () => { const box = $('#s-r'); if(!box) return; const p = S.polls.find(x=>x.open||x.show);
+    if(p) box.innerHTML = `<h3>투표${p.open?'':' · 마감'}</h3><div style="font-size:30px;font-weight:800;margin-bottom:18px">${esc(p.q)}</div>` + bars(p) + `<p class="se">${counts(p).total}명 참여</p>`;
     else box.innerHTML = `<h3>Big Then. Bigger Now.</h3>`; };
-  // 당첨자 공개 연출. 공 떨어뜨리기: 운영 화면이 뽑은 난수 u가 떨어지는 칸이 당첨자. 칸 너비는 응모권 수에 비례
+  const winners = () => { const el = $('#s-w'); if(!el) return; const items = S.draw?.items||[]; el.innerHTML = items.length ? items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win"><span class="rk">${esc(w.rank)}등</span><div><b>${esc(w.name)}</b> <span>${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('') : '<p class="se">5등부터 추첨합니다.</p>'; };
+  // 당첨자 공개 연출. 공이 8초 동안 핀 사이를 이리저리 튕기다가 마지막에 이웃 칸을 오가며 뜸을 들인 뒤 당첨 칸에 안착한다.
   let seenSeq = null;
   const plinko = lv => {
     const pz = lv.prize && lv.prize !== lv.rank+'등' ? `<div class="pz">${esc(lv.prize)}</div>` : '';
@@ -231,41 +258,51 @@ function screen(){
     ov.innerHTML = `<div class="rk">${esc(lv.rank)}등</div>${pz}<canvas id="pk"></canvas><div id="pkres"></div>`;
     document.body.appendChild(ov);
     const cv = ov.querySelector('#pk'), W = cv.width = Math.min(window.innerWidth - 80, 1400), H = cv.height = Math.min(window.innerHeight - 260, 620), ctx = cv.getContext('2d');
-    const L = 30, R = W - 30, BW = R - L, rows = 9, top = 40, bottom = H - 90, slotTop = H - 70, slotH = 50;
+    const L = 30, R = W - 30, BW = R - L, rows = 12, top = 30, bottom = H - 90, slotTop = H - 70, slotH = 50;
     const total = lv.pool.reduce((s,p)=>s+p.t,0); let acc = 0;
     const slots = lv.pool.map(p => { const x0 = L + acc/total*BW; acc += p.t; return { ...p, x0, x1: L + acc/total*BW }; });
-    const tx = L + lv.u*BW, win = slots.find(s => tx >= s.x0 && tx < s.x1) || slots[slots.length-1];
-    const xs = [W/2]; for(let i=1;i<=rows;i++){ const t = i/rows; const base = W/2 + (tx - W/2)*t*t; xs.push(i===rows ? tx : base + (rand()-.5)*2*110*(1-t)); }
+    const tx = L + lv.u*BW, win = slots.find(s => tx >= s.x0 && tx < s.x1) || slots[slots.length-1], sw = Math.max(40, win.x1 - win.x0);
+    const clamp = x => Math.min(R-12, Math.max(L+12, x));
+    const xs = [W/2]; const side = rand() < .5 ? -1 : 1;
+    for(let i=1;i<=rows;i++){ let x;
+      if(i <= rows-3) x = xs[i-1] + (tx - xs[i-1]) * 0.22 + (rand()-.5) * 2 * 170 * (1 - i/rows*0.5);
+      else if(i === rows-2) x = tx + side * Math.max(sw*2.2, 90);
+      else if(i === rows-1) x = tx - side * Math.max(sw*1.1, 50);
+      else x = tx;
+      xs.push(clamp(x)); }
+    const segDur = []; for(let i=0;i<rows;i++) segDur.push(i < rows-3 ? 520 : i === rows-3 ? 900 : 1300);
+    const cum = [0]; segDur.forEach(d => cum.push(cum[cum.length-1] + d)); const dur = cum[rows];
     const pegs = []; for(let i=1;i<rows;i++){ const y = top + (bottom-top)*i/rows, off = i%2 ? 28 : 0; for(let x = L + off; x <= R; x += 56) pegs.push({x,y}); }
-    const dur = 3400, t0 = performance.now(), trail = []; let done = false;
-    const easeOut = t => 1 - Math.pow(1-t, 3);
+    const t0 = performance.now(), trail = []; let done = false;
+    const easeIO = t => t<.5 ? 2*t*t : -1+(4-2*t)*t;
     const draw = now => {
-      const p = Math.min(1, (now - t0)/dur);
+      const el = Math.min(dur, now - t0);
+      let i = 0; while(i < rows-1 && el >= cum[i+1]) i++;
+      const f = Math.min(1, (el - cum[i]) / segDur[i]), p = el / dur;
       ctx.clearRect(0,0,W,H);
       ctx.fillStyle = 'rgba(157,176,255,.35)'; pegs.forEach(g => { ctx.beginPath(); ctx.arc(g.x, g.y, 3, 0, 7); ctx.fill(); });
-      slots.forEach((s,i) => { ctx.fillStyle = done && s===win ? '#3d5afe' : (i%2 ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.04)'); ctx.fillRect(s.x0, slotTop, s.x1-s.x0, slotH); ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.beginPath(); ctx.moveTo(s.x0, slotTop); ctx.lineTo(s.x0, slotTop+slotH); ctx.stroke(); if(s.x1-s.x0 >= 24){ ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.font = '600 12px Pretendard, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(s.no, (s.x0+s.x1)/2, slotTop+slotH-8); } });
-      const seg = p*rows, i = Math.min(rows-1, Math.floor(seg)), f = seg - i;
-      const bx = p >= 1 ? tx : xs[i] + (xs[i+1]-xs[i])*easeOut(f), by = p >= 1 ? slotTop + slotH/2 - 10 : top + (bottom-top)*p + Math.sin(f*Math.PI)*-10;
-      trail.push({x:bx,y:by}); if(trail.length > 18) trail.shift();
-      trail.forEach((t,k) => { ctx.fillStyle = `rgba(157,176,255,${k/trail.length*.5})`; ctx.beginPath(); ctx.arc(t.x, t.y, 6 + k/trail.length*6, 0, 7); ctx.fill(); });
+      slots.forEach((sl,k) => { ctx.fillStyle = done && sl===win ? '#3d5afe' : (k%2 ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.04)'); ctx.fillRect(sl.x0, slotTop, sl.x1-sl.x0, slotH); ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.beginPath(); ctx.moveTo(sl.x0, slotTop); ctx.lineTo(sl.x0, slotTop+slotH); ctx.stroke(); if(sl.x1-sl.x0 >= 24){ ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.font = '600 12px Pretendard, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(sl.no, (sl.x0+sl.x1)/2, slotTop+slotH-8); } });
+      const bx = p >= 1 ? tx : xs[i] + (xs[i+1]-xs[i]) * easeIO(f);
+      const by = p >= 1 ? slotTop + slotH/2 - 10 : top + (bottom-top) * (i + f) / rows - Math.sin(f*Math.PI) * 14;
+      trail.push({x:bx,y:by}); if(trail.length > 22) trail.shift();
+      trail.forEach((t,k) => { ctx.fillStyle = `rgba(157,176,255,${k/trail.length*.5})`; ctx.beginPath(); ctx.arc(t.x, t.y, 5 + k/trail.length*7, 0, 7); ctx.fill(); });
       ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(bx, by, 14, 0, 7); ctx.fill();
       if(p < 1) requestAnimationFrame(draw);
-      else if(!done){ done = true; requestAnimationFrame(draw); setTimeout(() => { ov.querySelector('#pkres').innerHTML = `<div class="nm">${esc(lv.name)}</div><div class="meta">${esc(lv.gen||'')} · No.${esc(lv.no)}</div>`; }, 500); setTimeout(() => ov.remove(), 8500); }
+      else if(!done){ done = true; requestAnimationFrame(draw); setTimeout(() => { ov.querySelector('#pkres').innerHTML = `<div class="nm">${esc(lv.name)}</div><div class="meta">${esc(lv.gen||'')} · No.${esc(lv.no)}</div>`; }, 900); setTimeout(() => ov.remove(), 10000); }
     };
     requestAnimationFrame(draw);
   };
   const reveal = lv => {
     if(Array.isArray(lv.pool) && lv.pool.length && typeof lv.u === 'number') return plinko(lv);
-    const ov = document.createElement('div'); ov.className = 'ov';
-    const pz = lv.prize && lv.prize !== lv.rank+'등' ? `<div class="pz">${esc(lv.prize)}</div>` : ''; ov.innerHTML = `<div class="rk">${esc(lv.rank)}등</div>${pz}<div class="roll" id="roll">00</div>`;
+    const pz = lv.prize && lv.prize !== lv.rank+'등' ? `<div class="pz">${esc(lv.prize)}</div>` : ''; const ov = document.createElement('div'); ov.className = 'ov'; ov.innerHTML = `<div class="rk">${esc(lv.rank)}등</div>${pz}<div class="roll" id="roll">00</div>`;
     document.body.appendChild(ov);
     const maxNo = Math.max(80, ...(S.draw?.items||[]).map(w=>Number(w.no)||0));
     const roll = ov.querySelector('#roll'), t0 = Date.now();
     const iv = setInterval(() => { if(Date.now() - t0 < 3000){ roll.textContent = String(Math.floor(rand()*maxNo)+1).padStart(2,'0'); return; } clearInterval(iv); roll.textContent = String(lv.no).padStart(2,'0'); setTimeout(() => roll.insertAdjacentHTML('afterend', `<div class="nm">${esc(lv.name)}</div><div class="meta">${esc(lv.gen||'')} · No.${esc(lv.no)}</div>`), 600); setTimeout(() => ov.remove(), 7600); }, 60);
   };
   render.polls = right;
-  render.draw = () => { right(); const lv = S.draw?.live; const seq = lv?.seq || 0; if(seenSeq===null){ seenSeq = seq; return; } if(seq > seenSeq){ seenSeq = seq; reveal(lv); } };
-  listen.program(); listen.questions(); listen.polls(); listen.draw();
+  render.draw = () => { winners(); const lv = S.draw?.live; const seq = lv?.seq || 0; if(seenSeq===null){ seenSeq = seq; return; } if(seq > seenSeq){ seenSeq = seq; reveal(lv); } };
+  loadTables().then(renderTables); listen.program(); listen.questions(); listen.polls(); listen.draw();
 }
 
 // ---------- 운영 ----------
