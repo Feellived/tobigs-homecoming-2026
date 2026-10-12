@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>참가자 카드 · TOBIG'S Homecoming</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../assets/favicon.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0b1230;--accent:#3d5afe;--peri:#9db0ff;--muted:#9aa3c7;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--field:rgba(255,255,255,.08);--display:'Space Grotesk',sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--navy);color:#fff;font-family:'Pretendard Variable',Pretendard,-apple-system,system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--peri)}
+.top{max-width:720px;margin:0 auto;padding:28px 16px 8px}
+.top .slogan{display:block;font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.03em;line-height:1;color:#fff;text-decoration:none}
+.top .slogan b{color:var(--peri)}
+.top .brand{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.22em;color:var(--peri);margin-top:8px}
+main{max-width:720px;margin:0 auto;padding:8px 16px 48px}
+.back{display:inline-block;font-size:13px;color:var(--muted);text-decoration:none;margin:4px 0 10px}
+h1{font-size:22px;margin:0 0 4px}
+.muted{color:var(--muted);font-size:13px}
+.tools{display:flex;gap:8px;margin:14px 0 10px}
+input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:#fff;outline:none}
+input::placeholder{color:rgba(255,255,255,.4)}
+input:focus,select:focus{border-color:var(--peri)}
+select option{color:#0b1230}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:5px 11px;font-size:12px;cursor:pointer}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.grid{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:600px){.grid{grid-template-columns:1fr 1fr}}
+.p{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.p.me{border-color:var(--peri);box-shadow:0 0 0 1px var(--peri) inset}
+.p .nm{font-size:19px;font-weight:800}
+.p .nm span{font-size:13px;font-weight:500;color:var(--muted);margin-left:6px}
+.p .in{font-size:14px;margin:4px 0 8px}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.tag{font-size:11px;color:var(--peri);border:1px solid rgba(157,176,255,.35);border-radius:999px;padding:2px 8px}
+.links{display:flex;flex-wrap:wrap;gap:6px}
+.lk{display:inline-flex;align-items:center;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:600;text-decoration:none}
+.lk.g{background:transparent;color:var(--peri)}
+.tb{font-size:12px;color:var(--muted);margin-top:10px}
+.tb b{color:#fff;font-family:var(--display);font-size:14px}
+.empty{color:var(--muted);text-align:center;padding:30px 0}
+.cnt{font-size:12px;color:var(--muted);margin:0 0 8px}
+</style>
+</head>
+<body>
+<header class="top"><a class="slogan" href="../">Big Then. <b>Bigger Now.</b></a><div class="brand">TOBIG'S HOMECOMING LIVE</div></header>
+<main>
+  <a class="back" href="../live/">← Live</a>
+  <h1>참가자 카드</h1>
+  <p class="muted" id="sub">관심사가 맞는 분을 찾아 먼저 인사해 보세요. 명찰의 QR을 찍으면 그분의 카드가 바로 열립니다.</p>
+  <div id="box"></div>
+</main>
+<script>
+const TOPICS = ['LLM · NLP · 에이전트','컴퓨터 비전 · 생성 모델 · 멀티모달','데이터 분석 · 통계 · BI','추천 · 검색 · MLOps · 데이터 엔지니어링','ML/DL 연구 · 논문 · 대학원','데이터·AI 직군 취업·이직·현업 적응','서비스 기획 · 비즈니스 · 창업','산업 이야기 (금융 · 제조 · 의료 · 커머스)'];
+const SHORT = ['LLM·NLP','CV·생성','데이터 분석','추천·MLOps','연구·대학원','취업·이직','기획·창업','산업'];
+const LINKS = { linkedin:'LinkedIn', remember:'리멤버', instagram:'Instagram', other:'링크' };
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const okUrl = u => /^https?:\/\/[^\s"'<>]+$/i.test(String(u||''));
+const norm = s => String(s||'').replace(/\s+/g,'').toLowerCase();
+const box = document.getElementById('box');
+const meNo = new URLSearchParams(location.search).get('no');
+let rows = [], tables = {}, gen = '', topic = null, q = '';
+
+const card = (r, me=false) => {
+  const links = Object.entries(r.links||{}).filter(([k,u])=>okUrl(u)).map(([k,u],i)=>`<a class="lk${i?' g':''}" href="${esc(u)}" target="_blank" rel="noopener">${esc(LINKS[k]||k)}</a>`).join('');
+  const t = tables[String(r.no)];
+  return `<div class="p${me?' me':''}"><div class="nm">${esc(r.name)}<span>${esc(r.gen)}</span></div>${r.intro?`<div class="in">${esc(r.intro)}</div>`:''}
+  <div class="tags">${(r.topics||[]).map(i=>`<span class="tag">${esc(TOPICS[i-1]||i)}</span>`).join('')}</div>
+  ${links?`<div class="links">${links}</div>`:'<div class="muted">프로필 링크 없음 · 직접 말을 걸어 주세요</div>'}
+  ${t?`<div class="tb">1라운드 <b>${esc(t.t1)}</b> · 2라운드 <b>${esc(t.t2)}</b> 테이블</div>`:''}</div>`;
+};
+function render(){
+  const me = meNo && rows.find(r=>String(r.no)===String(meNo));
+  const list = rows.filter(r => (!gen || r.gen===gen) && (!topic || (r.topics||[]).includes(topic)) && (!q || norm(r.name).includes(norm(q)) || norm(r.intro).includes(norm(q))));
+  box.innerHTML = (me ? card(me, true) + `<p class="muted" style="margin:10px 0 18px">명찰 QR로 연 카드입니다. 아래에서 다른 참가자도 찾아보세요.</p>` : '') +
+  `<div class="tools"><input type="search" id="q" placeholder="이름 · 하는 일 검색" value="${esc(q)}"><select id="g" style="flex:0 0 110px"><option value="">모든 기수</option>${[...new Set(rows.map(r=>r.gen))].sort((a,b)=>parseInt(a)-parseInt(b)).map(g=>`<option${g===gen?' selected':''}>${esc(g)}</option>`).join('')}</select></div>
+  <div class="chips">${SHORT.map((s,i)=>`<button class="chip${topic===i+1?' on':''}" data-t="${i+1}">${esc(s)}</button>`).join('')}</div>
+  <p class="cnt">${list.length}명</p>
+  <div class="grid">${list.map(r=>card(r)).join('')}</div>${list.length?'':'<p class="empty">조건에 맞는 분이 없습니다</p>'}`;
+  box.querySelector('#q').oninput = e => { q = e.target.value; render(); box.querySelector('#q').focus(); const el = box.querySelector('#q'); el.setSelectionRange(el.value.length, el.value.length); };
+  box.querySelector('#g').onchange = e => { gen = e.target.value; render(); };
+  box.querySelectorAll('.chip').forEach(b => b.onclick = () => { const t = Number(b.dataset.t); topic = topic===t ? null : t; render(); });
+}
+Promise.all([
+  fetch('../people.json',{cache:'no-store'}).then(r=>r.json()),
+  fetch('../live/tables.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>({published:false}))
+]).then(([p, t]) => {
+  if(!p.published){ box.innerHTML = '<p class="empty">공개 전입니다. 테이블 배정이 끝나는 11월 16일 이후에 열립니다.</p>'; return; }
+  rows = (p.rows||[]).slice().sort((a,b)=>parseInt(a.gen)-parseInt(b.gen) || String(a.name).localeCompare(String(b.name),'ko'));
+  if(t.published) (t.rows||[]).forEach(r => tables[String(r.no)] = r);
+  render();
+}).catch(() => { box.innerHTML = '<p class="empty">명단을 불러오지 못했습니다. 잠시 후 다시 열어주세요.</p>'; });
+</script>
+</body>
+</html>
