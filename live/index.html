@@ -168,9 +168,10 @@ const voteSubs = {};
 const listen = {
   program: () => onSnapshot(doc(db,'state','program'), s => { S.program = s.exists() ? s.data() : null; render.program(); }),
   questions: () => onSnapshot(collection(db,'questions'), s => { S.questions = s.docs.map(d => ({ id:d.id, ...d.data() })); render.questions(); }),
-  polls: () => onSnapshot(collection(db,'polls'), s => {
+  // withVotes: 집계(votes 하위 컬렉션)까지 구독. 프로젝터·운영 화면만 켠다. 참가자 휴대폰 70대가 표 하나마다 읽지 않게 하기 위함
+  polls: (withVotes=false) => onSnapshot(collection(db,'polls'), s => {
     S.polls = s.docs.map(d => ({ id:d.id, ...d.data() })).sort((a,b)=>(b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0));
-    S.polls.forEach(p => { if(!voteSubs[p.id]) voteSubs[p.id] = onSnapshot(collection(db,'polls',p.id,'votes'), v => { S.votes[p.id] = v.docs.map(x=>x.data().option); render.polls(); }); });
+    if(withVotes) S.polls.forEach(p => { if(!voteSubs[p.id]) voteSubs[p.id] = onSnapshot(collection(db,'polls',p.id,'votes'), v => { S.votes[p.id] = v.docs.map(x=>x.data().option); render.polls(); }); });
     render.polls();
   }),
   draw: () => onSnapshot(doc(db,'draw','results'), s => { S.draw = s.exists() ? s.data() : null; render.draw(); }),
@@ -219,7 +220,7 @@ function qa(){
   $('#g-form').addEventListener('submit', async e => { e.preventDefault(); const gen = $('#g-gen').value, text = $('#g-text').value.trim(); if(!gen||!text) return; const b = $('#g-submit'); b.disabled = true;
     try { await addDoc(collection(db,'questions'), { gen, text, name:'', voters:[], createdAt: serverTimestamp(), hidden:false, answered:false, client:cid }); $('#g-text').value=''; say('올렸습니다'); setTimeout(()=>b.disabled=false, 8000); } catch(err){ say('인터넷 연결을 확인해 주세요'); b.disabled = false; } });
   render.polls = () => { const p = S.polls.find(x=>x.open), box = $('#g-poll'); if(!p){ box.hidden = true; return; } box.hidden = false; let v = null; try { v = localStorage.getItem('hc_vote_'+p.id); } catch(e){}
-    box.innerHTML = `<div class="eyebrow">LIVE POLL</div><h2>${esc(p.q)}</h2>` + (v===null ? p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('') : bars(p) + `<p class="muted">${counts(p).total}명 참여</p>`); };
+    box.innerHTML = `<div class="eyebrow">LIVE POLL</div><h2>${esc(p.q)}</h2>` + (v===null ? p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('') : `<p class="muted">투표 완료 · ${esc(p.options[Number(v)] ?? '')}</p><p class="muted">결과는 화면에서 공개됩니다</p>`); };
   $('#g-poll').addEventListener('click', async e => { const b = e.target.closest('.opt'); if(!b) return; const p = S.polls.find(x=>x.open); if(!p) return; try { await setDoc(doc(db,'polls',p.id,'votes',cid), { option:Number(b.dataset.i), at: serverTimestamp() }); } catch(err){} try { localStorage.setItem('hc_vote_'+p.id, b.dataset.i); } catch(e){} render.polls(); });
   listen.program(); listen.questions(); listen.polls();
 }
@@ -309,7 +310,7 @@ function screen(){
   };
   render.polls = right;
   render.draw = () => { winners(); const lv = S.draw?.live; const seq = lv?.seq || 0; if(seenSeq===null){ seenSeq = seq; return; } if(seq > seenSeq){ seenSeq = seq; reveal(lv); } };
-  loadTables().then(renderTables); listen.program(); listen.questions(); listen.polls(); listen.draw();
+  loadTables().then(renderTables); listen.program(); listen.questions(); listen.polls(true); listen.draw();
 }
 
 // ---------- 운영 ----------
@@ -390,7 +391,7 @@ function adminMain(){
   renderBtns();
   render.draw = () => { if((S.draw?.live?.seq||0) > seq) seq = S.draw.live.seq; if(S.draw?.items && !winners.length){ winners = S.draw.items.slice(); renderW(); } };
 
-  loadTables().then(render.checkins); listen.program(); listen.questions(); listen.polls(); listen.checkins(); listen.draw();
+  loadTables().then(render.checkins); listen.program(); listen.questions(); listen.polls(true); listen.checkins(); listen.draw();
 }
 
 ({ hub, qa, draw: drawView, screen, admin })[view]();
