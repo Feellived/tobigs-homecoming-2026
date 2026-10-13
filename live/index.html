@@ -139,15 +139,15 @@ const firebaseConfig = { apiKey:"AIzaSyBKDlddQRA1mLotV2V2R-39GhwTrSQ8zVE", authD
 const ADMIN_EMAIL = "tobigs2026hoco@gmail.com";
 const STEPS = [
   { t:'12:30', n:'입장 · 체크인', d:30, hi:'qa' }, { t:'13:00', n:'Opening · Yesterday', d:10, hi:'qa' }, { t:'13:10', n:'개회사', d:10, hi:'qa' }, { t:'13:20', n:'Today', d:10, hi:'qa' },
-  { t:'13:30', n:'Alumni Session', d:40, hi:'qa' }, { t:'14:10', n:'Table Talk 1', d:25, hi:'table' }, { t:'14:35', n:'Break 1', d:15, hi:'table' }, { t:'14:50', n:"TOBIG'S Quiz", d:30, hi:'table' },
-  { t:'15:20', n:'2라운드 테이블로 이동', d:5, hi:'table' }, { t:'15:25', n:'Table Talk 2', d:30, hi:'table' },
-  { t:'15:55', n:'Break 2', d:15, hi:'people' }, { t:'16:10', n:'Lucky Draw · Closing', d:20, hi:'draw' }, { t:'16:30', n:'단체사진', d:10, hi:'draw' }, { t:'16:40', n:'행사 종료 · 17:30 뒤풀이', d:0, hi:'draw' },
+  { t:'13:30', n:'Alumni Session', d:40, hi:'qa' }, { t:'14:10', n:'Table Talk 1', d:25, hi:'table' }, { t:'14:35', n:'Break 1', d:10, hi:'table' }, { t:'14:45', n:"TOBIG'S Quiz", d:30, hi:'table' },
+  { t:'15:15', n:'2라운드 테이블로 이동', d:5, hi:'table' }, { t:'15:20', n:'Table Talk 2', d:30, hi:'table' },
+  { t:'15:50', n:'Break 2', d:25, hi:'people' }, { t:'16:15', n:'Lucky Draw · Closing', d:15, hi:'draw' }, { t:'16:30', n:'단체사진', d:10, hi:'draw' }, { t:'16:40', n:'행사 종료 · 17:30 뒤풀이', d:0, hi:'draw' },
 ];
-// 추첨 순서대로 13개. rank = 순서(1 = 첫 추첨), 마지막이 1등
+// 추첨 순서대로 7개. rank = 순서(1 = 첫 추첨), 마지막이 1등
 const AWARDS = [
-  ...[1,2,3].map(()=>({ l:'Big 상', p:'스타벅스 5,000원' })), ...[1,2,3].map(()=>({ l:'Big 상', p:'올리브영 5,000원' })),
-  ...[1,2,3,4].map(()=>({ l:'Bigger 상', p:'편의점 10,000원' })),
-  { l:'3등', p:'CGV 1인 패키지' }, { l:'2등', p:'배달의민족 30,000원' }, { l:'1등', p:'백화점상품권 50,000원' },
+  { l:'Homecoming 상', p:'편의점 10,000원' }, { l:'Homecoming 상', p:'편의점 10,000원' },
+  { l:'Welcome 상', p:'스타벅스 5,000원' }, { l:'Welcome 상', p:'올리브영 5,000원' },
+  { l:'3등', p:'CGV 1인 패키지' }, { l:'2등', p:'배달의민족 30,000원' }, { l:'1등', p:'백화점상품권 100,000원' },
 ];
 const awardLabel = w => w.label || (w.rank + '등');
 const GENS = Array.from({length:26},(_,i)=>(i+1)+'기');
@@ -257,7 +257,7 @@ function screen(){
   const right = () => { const box = $('#s-r'); if(!box) return; const p = S.polls.find(x=>x.open||x.show);
     if(p) box.innerHTML = `<h3>투표${p.open?'':' · 마감'}</h3><div style="font-size:30px;font-weight:800;margin-bottom:18px">${esc(p.q)}</div>` + bars(p) + `<p class="se">${counts(p).total}명 참여</p>`;
     else box.innerHTML = `<h3>Big Then. Bigger Now.</h3>`; };
-  const winners = () => { const el = $('#s-w'); if(!el) return; const items = S.draw?.items||[]; el.innerHTML = items.length ? items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win"><span class="rk">${esc(awardLabel(w))}</span><div><b>${esc(w.name)}</b> <span>${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('') : '<p class="se">Big 상부터 추첨합니다.</p>'; };
+  const winners = () => { const el = $('#s-w'); if(!el) return; const items = S.draw?.items||[]; el.innerHTML = items.length ? items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win"><span class="rk">${esc(awardLabel(w))}</span><div><b>${esc(w.name)}</b> <span>${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('') : '<p class="se">Homecoming 상부터 추첨합니다.</p>'; };
   // 당첨자 공개 연출. 공이 8초 동안 핀 사이를 이리저리 튕기다가 마지막에 이웃 칸을 오가며 뜸을 들인 뒤 당첨 칸에 안착한다.
   let seenSeq = null;
   const plinko = lv => {
@@ -365,14 +365,14 @@ function adminMain(){
   // 추첨
   let pool = [], winners = [], seq = 0;
   $('#a-draw').innerHTML = `<section class="card"><div class="row"><label><input type="radio" name="src" value="ci" checked> 체크인 완료자</label><label><input type="radio" name="src" value="all"> 전체 명단</label></div>
-    <label class="f">퀴즈 우승 테이블 (1라운드 번호)</label><input type="text" id="a-xq"><label class="f">스티커 5개 이상 · 명찰 번호 (쉼표)</label><input type="text" id="a-xs"><label class="f">사진 제공 · 명찰 번호 (쉼표)</label><input type="text" id="a-xp">
+    <label class="f">퀴즈 우승 테이블 (1라운드 번호)</label><input type="text" id="a-xq"><label class="f">회고 사진 제공 · 명찰 번호 (쉼표)</label><input type="text" id="a-xp">
     <button class="btn" id="a-build">응모권 계산</button><div id="a-pool" style="margin-top:8px"></div></section>
     <section class="card"><div class="row" id="a-btns"></div><div id="a-res" style="margin:14px 0"></div><div class="row"><button class="btn btn-sm" id="a-redo">다시 뽑기</button><button class="btn btn-sm" id="a-reset">초기화</button></div><div id="a-w" style="margin-top:10px"></div></section>`;
   const nos = s => String(s||'').split(/[,\s]+/).filter(Boolean);
   const build = () => { const src = document.querySelector('input[name=src]:checked').value, rs = rows();
     const base = (src==='ci' ? Object.values(S.checkins).map(c=>({ no:String(c.no), name:c.name, gen:c.gen })) : rs.map(r=>({ no:String(r.no), name:r.name, gen:r.gen }))).map(p => { const r = rs.find(x=>String(x.no)===p.no); return { ...p, name:p.name||r?.name||'', gen:p.gen||r?.gen||'', t1:r?.t1 }; });
-    const qt = nos($('#a-xq').value), st = new Set(nos($('#a-xs').value)), pc = new Set(nos($('#a-xp').value));
-    pool = base.map(p => { let t = 1; if(p.t1!==undefined && qt.includes(String(p.t1))) t++; if(st.has(p.no)) t++; if(pc.has(p.no)) t++; return { ...p, tickets:Math.min(t,4) }; });
+    const qt = nos($('#a-xq').value), pc = new Set(nos($('#a-xp').value));
+    pool = base.map(p => { let t = 1; if(p.t1!==undefined && qt.includes(String(p.t1))) t++; if(pc.has(p.no)) t++; return { ...p, tickets:Math.min(t,3) }; });
     const extra = pool.filter(p=>p.tickets>1);
     $('#a-pool').innerHTML = `<p>${pool.length}명 · 응모권 ${pool.reduce((s,p)=>s+p.tickets,0)}장</p>` + (extra.length ? `<table class="t">${extra.sort((a,b)=>b.tickets-a.tickets).map(p=>`<tr><td>${esc(p.no)}</td><td>${esc(p.name)}</td><td>${p.tickets}장</td></tr>`).join('')}</table>` : ''); };
   const drawOne = ex => { const c = pool.filter(p=>!ex.has(p.no)), total = c.reduce((s,p)=>s+p.tickets,0); if(!total) return null; const u = rand(); let r = u*total, w = c[c.length-1]; for(const p of c){ r -= p.tickets; if(r<0){ w = p; break; } } return { w, u, cands: c.map(p=>({ no:p.no, name:p.name, t:p.tickets })) }; };
