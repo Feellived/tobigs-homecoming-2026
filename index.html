@@ -15,7 +15,7 @@
   const RSVP_URL    = "https://docs.google.com/forms/d/e/1FAIpQLSdzdNeDuhDAeZp2ic9w6S6oRYSQ-GDEIRNNS56Mx-okHmIuYQ/viewform";  // 참석 신청 구글폼 링크
   const CONTACT_URL = "https://open.kakao.com/o/sW8KJKQi";  // 운영부 카카오톡 오픈채팅
   const SITE_URL    = "https://homecoming.datamarket.ai.kr/";  // 배포 주소
-  const RSVP_DEADLINE = "2026년 11월 1일(일)";    // 1차 신청 마감
+  const RSVP_DEADLINE = "2026년 11월 1일(일)";    // 신청 마감
   const SURVEY_URL  = "#";                       // 행사 후 만족도 설문 링크 (행사 다음날부터 히어로 버튼으로 표시)
   const PHOTOS_URL  = "#";                       // 행사 사진 공유 폴더 링크 (행사 후 표시)
   const STAT_MEMBERS  = "400+";                  // 누적 학회원 수 (공식 홈페이지 기준). 비우면 항목 숨김
@@ -486,7 +486,7 @@
     <p class="fine" id="rsvp-note"></p>
     <div class="facts">
       <div><b>뒤풀이</b><span>17:30 방이동. 희망자 참석, 신청 폼에서 체크</span></div>
-      <div><b>추가 접수</b><span>1차 마감 후에도 추가 접수가 가능합니다. 카카오톡 <a class="js-contact" href="#">운영부 오픈채팅</a>으로 문의해 주세요</span></div>
+      <div><b>추가 접수</b><span>마감 후에도 추가 접수가 가능합니다. 카카오톡 <a class="js-contact" href="#">운영부 오픈채팅</a>으로 문의해 주세요</span></div>
       <div><b>기록</b><span>행사 사진·영상은 TOBIG'S 기록과 홍보에 사용됩니다</span></div>
     </div>
   </div>
@@ -556,7 +556,7 @@
   });
   const dl = document.getElementById('deadline');
   const note = document.getElementById('rsvp-note');
-  if(rsvpReady){ dl.textContent = '1차 신청 마감 ' + RSVP_DEADLINE; }
+  if(rsvpReady){ dl.textContent = '신청 마감 ' + RSVP_DEADLINE; }
   else {
     dl.textContent = '';
     document.querySelectorAll('.rsvp .js-rsvp').forEach(a=>{ a.setAttribute('aria-disabled','true'); a.textContent='참석 신청 (10월 오픈)'; a.addEventListener('click',e=>e.preventDefault()); });
