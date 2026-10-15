@@ -18,6 +18,7 @@
   const RSVP_DEADLINE = "2026년 11월 1일(일)";    // 신청 마감
   const SURVEY_URL  = "#";                       // 행사 후 만족도 설문 링크 (행사 다음날부터 히어로 버튼으로 표시)
   const PHOTOS_URL  = "#";                       // 행사 사진 공유 폴더 링크 (행사 후 표시)
+  const ARCHIVE_URL = "https://drive.google.com/drive/folders/1Yodl9eUD0lTIndH7xzSa_Y5JlGECGXi4";  // 회고 사진 수집 폴더 (기수별 하위 폴더)
   const STAT_MEMBERS  = "400+";                  // 누적 동아리원 수 (공식 홈페이지 기준). 비우면 항목 숨김
   const STAT_GEN26    = "21";                    // 26기 인원
   // 개회사(1기 선배). name을 채우면 개회사 항목에 카드가 나타남. photo는 assets/speakers/opener.jpg 식, 없으면 "".
@@ -221,6 +222,8 @@
   .confs{background:var(--bg-2)}
   .conf-cta{margin-top:8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   .conf-cta .hint{font-size:13px;color:var(--muted)}
+  .archive-cta{margin:18px 0 28px}
+  .archive-cta .hint{flex:1;min-width:240px;line-height:1.55}
   .posters figure a{display:block;text-decoration:none;color:inherit}
   .posters figure a:hover img{border-color:var(--accent-deep)}
   .posters figure a:hover figcaption{color:var(--accent-deep)}
@@ -463,6 +466,10 @@
         <figure><img src="assets/photos/then/03.jpg" alt="2018 · 신년회" loading="lazy"><figcaption>2018 · 신년회</figcaption></figure>
         <figure><img src="assets/photos/then/05.jpg" alt="2024 · 제18회 컨퍼런스" loading="lazy"><figcaption>2024 · 제18회 컨퍼런스</figcaption></figure>
     </div>
+    <div class="conf-cta archive-cta">
+      <a class="btn btn-ink js-archive" href="https://drive.google.com/drive/folders/1Yodl9eUD0lTIndH7xzSa_Y5JlGECGXi4" target="_blank" rel="noopener">그때 사진 보내기</a>
+      <span class="hint">휴대폰에 남아 있는 활동 사진을 모읍니다. 폴더에서 본인 기수 폴더를 열어 올려 주시고, 파일명에는 어떤 활동인지만 적어 주세요. 11월 8일(일)까지, 보내주신 참석자께는 Lucky Draw 응모권 1장 추가</span>
+    </div>
     <div class="era"><span class="era-tag now">Now</span><span class="era-sub">25기 · 26기 · 2026년의 TOBIG'S</span><a class="era-btn" href="https://www.datamarket.ai.kr/" target="_blank" rel="noopener">공식 홈페이지 ↗</a></div>
     <div class="grid now">
         <figure><img src="assets/photos/now/01.jpg" alt="2026 · 제22회 컨퍼런스" loading="lazy"><figcaption>2026 · 제22회 컨퍼런스</figcaption></figure>
@@ -504,6 +511,7 @@
     <details><summary>뒤풀이는 어디서, 어떻게 하나요?</summary><p>본행사가 16:35에 끝난 뒤, 희망자에 한해 방이동 식당가로 함께 걸어가(약 10분) 17:30부터 진행합니다. 장소는 참석 인원이 확정된 뒤 리마인드 안내로 보내드립니다. 신청 폼에서 뒤풀이 참석 여부를 미리 알려주시면 자리 예약에 큰 도움이 됩니다. 뒤풀이만 참석하시는 것도 가능하니 신청 시 기재해 주세요.</p></details>
     <details><summary>신청 후 못 가게 되면 어떻게 하나요?</summary><p>알게 되시는 즉시 알려주세요. 명찰 인쇄, 간식 수량, 테이블 배정, 뒤풀이 예약이 모두 신청 인원 기준으로 확정되기 때문에 하루 전 연락은 이미 반영이 어렵습니다. 늦어도 행사 3일 전인 11월 18일(수)까지 운영부 카카오톡 오픈채팅으로 말씀해 주시면 됩니다. 참석 여부가 불확실하면 일단 신청하지 마시고, 확정되는 대로 신청해주시기 바랍니다. 추가 접수 기간을 따로 두고 있습니다.</p></details>
     <details><summary>사진 촬영이 있나요?</summary><p>포토존 촬영, 행사 스냅, 전원 단체사진이 있고 무대 프로그램은 영상으로 기록합니다. 촬영본은 행사 후 일주일 안에 참석자 전원에게 공유하고, 일부는 TOBIG'S 기록과 홍보에 사용됩니다. 촬영을 원치 않으시면 체크인 때 말씀해 주시면 스냅에서 제외해 드립니다.</p></details>
+    <details><summary>그때 찍은 사진을 보내고 싶어요. 어디에 올리나요?</summary><p>회고 슬라이드와 TOBIG'S Quiz에 쓸 활동 당시 사진을 모으고 있습니다. <a class="js-archive" href="https://drive.google.com/drive/folders/1Yodl9eUD0lTIndH7xzSa_Y5JlGECGXi4" target="_blank" rel="noopener">사진 수집 폴더</a>에서 본인 기수 폴더를 열어 올려 주시면 됩니다. 로그인 없이 올릴 수 있고, 파일명에는 어떤 활동인지만 적어 주세요(예: 컨퍼런스, MT, 정규세션). 11월 8일(일)까지 보내주신 참석자께는 Lucky Draw 응모권을 1장 더 드립니다. 올리신 사진은 회고 슬라이드, 퀴즈, 홈페이지와 당일 화면에 쓰이고 행사 후 참석자 사진 묶음에도 들어갑니다. 공개를 원치 않는 사진은 올리지 말아 주시고, 뺀 사진이 있으면 운영부 오픈채팅으로 말씀해 주세요.</p></details>
     <details><summary>어떻게 가나요? 주차할 수 있나요?</summary><p>행사장은 서울 송파구 올림픽로 424, 올림픽공원 평화의 문 옆 올림픽회관(국민체육진흥공단) 지하 1층 KSPO 연수원 대강당입니다. 8호선 몽촌토성역 1번 출구에서 평화의 문을 지나 걸어서 5분이고, 위의 네이버 지도, 카카오맵 버튼으로 길찾기를 열 수 있습니다. 행사장 주차 등록이 되지 않아 대중교통을 권장하며, 꼭 차량이 필요하시면 올림픽공원 공영주차장(유료)을 이용하셔야 합니다.</p></details>
     <p class="faq-more">여기 없는 질문이나 신청 변경, 추가 접수, 당일 연락은 <a class="js-contact" href="#">카카오톡 운영부 오픈채팅</a>으로 문의해 주세요.</p>
   </div>
@@ -544,6 +552,7 @@
 (function(){
   // ---- links from EDIT HERE ----
   const rsvpReady = RSVP_URL && RSVP_URL !== "#";
+  document.querySelectorAll('.js-archive').forEach(a=>{ if(ARCHIVE_URL && ARCHIVE_URL !== '#'){ a.href = ARCHIVE_URL; } });
   const contactReady = CONTACT_URL && CONTACT_URL !== "#";
   document.querySelectorAll('.js-rsvp').forEach(a=>{
     if(rsvpReady){ a.href = RSVP_URL; a.target="_blank"; a.rel="noopener"; }
