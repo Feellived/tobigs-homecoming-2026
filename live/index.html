@@ -140,8 +140,8 @@ const ADMIN_EMAIL = "tobigs2026hoco@gmail.com";
 const STEPS = [
   { t:'12:30', n:'입장 · 체크인', d:30, hi:'qa' }, { t:'13:00', n:'Opening · Yesterday', d:10, hi:'qa' }, { t:'13:10', n:'개회사', d:10, hi:'qa' }, { t:'13:20', n:'Today', d:10, hi:'qa' },
   { t:'13:30', n:'Alumni Session', d:40, hi:'qa' }, { t:'14:10', n:'Table Talk 1', d:25, hi:'table' }, { t:'14:35', n:'Break 1', d:10, hi:'table' }, { t:'14:45', n:"TOBIG'S Quiz", d:30, hi:'table' },
-  { t:'15:15', n:'2라운드 테이블로 이동', d:5, hi:'table' }, { t:'15:20', n:'Table Talk 2', d:30, hi:'table' },
-  { t:'15:50', n:'Break 2', d:25, hi:'people' }, { t:'16:15', n:'Lucky Draw · Closing', d:15, hi:'draw' }, { t:'16:30', n:'단체사진', d:10, hi:'draw' }, { t:'16:40', n:'행사 종료 · 17:30 뒤풀이', d:0, hi:'draw' },
+  { t:'15:15', n:'2라운드 테이블로 이동', d:5, hi:'table' }, { t:'15:20', n:'Table Talk 2', d:40, hi:'people' },
+  { t:'16:00', n:'Lucky Draw · Closing', d:20, hi:'draw' }, { t:'16:20', n:'단체사진', d:15, hi:'draw' }, { t:'16:35', n:'행사 종료 · 17:30 뒤풀이', d:0, hi:'draw' },
 ];
 // 추첨 순서대로 7개. rank = 순서(1 = 첫 추첨), 마지막이 1등
 const AWARDS = [
@@ -239,7 +239,7 @@ function screen(){
   document.body.classList.add('screen');
   appEl.innerHTML = `<div class="sh"><div><div class="step" id="s-step"></div><div class="next" id="s-next"></div></div><div class="timer" id="s-timer"></div><div class="qr"><img src="qr.png" alt=""><div>homecoming.datamarket.ai.kr/live</div></div></div><div class="sb" id="s-body"></div>`;
   let mode = null;
-  const modeOf = st => st===null ? 'idle' : (st===0||st===5) ? 'tables1' : (st===8||st===9) ? 'tables2' : st===4 ? 'qa' : (st===6||st===10) ? 'break' : st===11 ? 'draw' : 'idle';
+  const modeOf = st => st===null ? 'idle' : (st===0||st===5) ? 'tables1' : (st===8||st===9) ? 'tables2' : st===4 ? 'qa' : st===6 ? 'break' : st===10 ? 'draw' : 'idle';
   const layout = () => { const m = modeOf(info().step); if(m===mode) return; mode = m; const b = $('#s-body'); b.className = 'sb ' + (m==='qa' ? 'two' : 'one');
     if(m==='qa') b.innerHTML = `<div class="sc"><h3>질문</h3><div id="s-q"></div></div><div class="sc" id="s-r"></div>`;
     else if(m==='tables1'||m==='tables2') b.innerHTML = `<div class="sc"><h3>${m==='tables1'?'1라운드 테이블':'2라운드 테이블'}</h3><div class="tg" id="s-t"></div></div>`;
