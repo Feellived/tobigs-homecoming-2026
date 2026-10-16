@@ -564,9 +564,9 @@
   });
   const dl = document.getElementById('deadline');
   const note = document.getElementById('rsvp-note');
-  if(rsvpReady){ dl.textContent = '신청 마감 ' + RSVP_DEADLINE; }
+  if(rsvpReady){ if(dl) dl.textContent = '신청 마감 ' + RSVP_DEADLINE; }
   else {
-    dl.textContent = '';
+    if(dl) dl.textContent = '';
     document.querySelectorAll('.rsvp .js-rsvp').forEach(a=>{ a.setAttribute('aria-disabled','true'); a.textContent='참석 신청 (10월 오픈)'; a.addEventListener('click',e=>e.preventDefault()); });
   }
 
