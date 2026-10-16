@@ -195,7 +195,7 @@
   .spk.mc{background:var(--bg);border-style:dashed}
   .spk.tbd{background:transparent;border:1.5px dashed var(--line);color:var(--muted)}
   .spk.tbd .ph{background:transparent;border:1.5px dashed var(--line)}
-  .spk.tbd .nm{color:var(--muted)}
+  .spk.tbd .nm{color:var(--muted);font-size:14px;white-space:normal}
   .spk{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);min-height:96px}
   .spk .ph{width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--dark);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:20px;overflow:hidden}
   .spk .ph img{width:100%;height:100%;object-fit:cover}
@@ -673,7 +673,7 @@
   const spk=document.getElementById('speakers'), spl=document.getElementById('spk-label');
   const guests = Array.isArray(SPEAKERS) ? SPEAKERS.filter(x=>x && x.name) : [];
   if(spk && (guests.length || (MC && MC.name))){
-    const tbd = guests.length < 4 ? '<div class="spk tbd" aria-label="연사 섭외 중"><div class="ph"></div><div></div></div>' : '';
+    const tbd = guests.length < 4 ? '<div class="spk tbd" aria-label="연사 추가 공개 예정"><div class="ph"></div><div><div class="nm">11월 중 공개</div></div></div>' : '';
     spk.innerHTML = (MC && MC.name ? card(MC,'Host','mc') : '') + guests.map(x=>card(x,'Guest')).join('') + tbd;
     spk.classList.toggle('four', spk.children.length>=4);
     spk.hidden=false; if(spl) spl.hidden=false;
