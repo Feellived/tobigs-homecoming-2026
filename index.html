@@ -246,16 +246,15 @@
   .era-tag.now{background:var(--primary);color:#fff}
   .era-sub{font-size:14px;color:var(--muted)}
   .photos .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-  .photos .grid.then{display:flex;gap:10px;overflow-x:auto;padding:4px 0 14px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
-  .photos .grid.then::-webkit-scrollbar{height:6px}.photos .grid.then::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
-  .photos .grid.then figure{flex:0 0 320px;scroll-snap-align:start}
-  .photos .grid.now{grid-template-columns:repeat(3,1fr)}
+  .photos .grid.then,.photos .grid.now{display:flex;gap:10px;overflow-x:auto;padding:4px 0 14px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .photos .grid.then::-webkit-scrollbar,.photos .grid.now::-webkit-scrollbar{height:6px}.photos .grid.then::-webkit-scrollbar-thumb,.photos .grid.now::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .photos .grid.then figure,.photos .grid.now figure{flex:0 0 320px;scroll-snap-align:start}
   .photos figure{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:8px;background:var(--bg-2)}
   .photos img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
   .photos figure:hover img{transform:scale(1.03)}
   .photos .grid.then img{filter:saturate(.75) contrast(.98)}
   .photos figcaption{position:absolute;left:0;right:0;bottom:0;padding:28px 12px 10px;font-size:12px;color:#fff;background:linear-gradient(to top,rgba(11,18,48,.75),transparent);letter-spacing:.02em}
-  @media (max-width:760px){.stats{grid-template-columns:repeat(3,1fr)}.photos .grid,.photos .grid.now{grid-template-columns:1fr 1fr}.photos .grid.then figure{flex-basis:260px}}
+  @media (max-width:760px){.stats{grid-template-columns:repeat(3,1fr)}.photos .grid{grid-template-columns:1fr 1fr}.photos .grid.then figure,.photos .grid.now figure{flex-basis:260px}}
   .posters{display:flex;gap:12px;overflow-x:auto;padding:4px 0 14px;margin:28px 0 24px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
   .posters::-webkit-scrollbar{height:6px}.posters::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
   .posters figure{flex:0 0 150px;scroll-snap-align:start}
@@ -478,9 +477,13 @@
     </div>
     <div class="era"><span class="era-tag now">Now</span><span class="era-sub">25기 · 26기 · 2026년의 TOBIG'S</span><a class="era-btn" href="https://www.datamarket.ai.kr/" target="_blank" rel="noopener">공식 홈페이지 ↗</a></div>
     <div class="grid now">
+        <figure><img src="assets/photos/now/05.jpg" alt="2026 · 25·26기 OT" loading="lazy"><figcaption>2026 · 25·26기 OT</figcaption></figure>
         <figure><img src="assets/photos/now/01.jpg" alt="2026 · 제22회 컨퍼런스" loading="lazy"><figcaption>2026 · 제22회 컨퍼런스</figcaption></figure>
         <figure><img src="assets/photos/now/04.jpg" alt="2026 · 코덱스 커뮤니티 해커톤" loading="lazy"><figcaption>2026 · 코덱스 커뮤니티 해커톤</figcaption></figure>
-        <figure><img src="assets/photos/now/05.jpg" alt="2026 · 25·26기 OT" loading="lazy"><figcaption>2026 · 25·26기 OT</figcaption></figure>
+        <figure><img src="assets/photos/now/06.jpg" alt="2026 · 25·26기 MT" loading="lazy"><figcaption>2026 · 25·26기 MT</figcaption></figure>
+        <figure><img src="assets/photos/now/07.jpg" alt="2026 · 동아AI포럼" loading="lazy"><figcaption>2026 · 동아AI포럼</figcaption></figure>
+        <figure><img src="assets/photos/now/08.jpg" alt="2026 · 문화·생활 소모임" loading="lazy"><figcaption>2026 · 문화·생활 소모임</figcaption></figure>
+        <figure><img src="assets/photos/now/09.jpg" alt="2026 · 정규세션" loading="lazy"><figcaption>2026 · 정규세션</figcaption></figure>
     </div>
   </div>
 </section>
@@ -637,7 +640,7 @@
   // ---- scroll reveal ----
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   if('IntersectionObserver' in window && !reduce){
-    const targets = document.querySelectorAll('section .eyebrow, section h2, section .lead, .card, .photos .grid.now figure, .photos .grid.then, .stats > div, .faq details, .conf-cta, .posters, .era, .rsvp .facts > div, .rsvp .cta');
+    const targets = document.querySelectorAll('section .eyebrow, section h2, section .lead, .card, .photos .grid.now, .photos .grid.then, .stats > div, .faq details, .conf-cta, .posters, .era, .rsvp .facts > div, .rsvp .cta');
     targets.forEach(el=>{ el.setAttribute('data-reveal',''); const sib=[...el.parentElement.children].filter(c=>c.hasAttribute('data-reveal')); el.style.transitionDelay = Math.min(sib.indexOf(el),6)*70+'ms'; });
     const ro = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target);} }),{threshold:0.12, rootMargin:'0px 0px -6% 0px'});
     targets.forEach(el=>ro.observe(el));
