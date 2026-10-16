@@ -675,7 +675,7 @@
   const spk=document.getElementById('speakers'), spl=document.getElementById('spk-label');
   const guests = Array.isArray(SPEAKERS) ? SPEAKERS.filter(x=>x && x.name) : [];
   if(spk && (guests.length || (MC && MC.name))){
-    const tbd = guests.length < 4 ? '<div class="spk tbd" aria-label="연사 섭외 중"><div class="ph"></div><div><div class="nm">섭외 중</div><div class="org">곧 소개해 드리겠습니다</div></div></div>' : '';
+    const tbd = guests.length < 4 ? '<div class="spk tbd" aria-label="연사 섭외 중"><div class="ph"></div><div></div></div>' : '';
     spk.innerHTML = (MC && MC.name ? card(MC,'Host','mc') : '') + guests.map(x=>card(x,'Guest')).join('') + tbd;
     spk.classList.toggle('four', spk.children.length>=4);
     spk.hidden=false; if(spl) spl.hidden=false;
