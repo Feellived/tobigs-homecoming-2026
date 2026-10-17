@@ -15,7 +15,7 @@ CSV 열(헤더 이름 기준, 순서 무관): no,name,gen,t1,t2,intro,topic1,top
 """
 import csv, json, sys, re, datetime, pathlib
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-TOPICS = ['LLM · NLP · 에이전트','컴퓨터 비전 · 생성 모델 · 멀티모달','데이터 분석 · 통계 · BI','추천 · 검색 · MLOps · 데이터 엔지니어링','ML/DL 연구 · 논문 · 대학원','데이터·AI 직군 취업과 이직, 현업 적응','서비스 기획 · 비즈니스 · 창업','산업 이야기 (금융 · 제조 · 의료 · 커머스)']
+TOPICS = ['국내 취업 · 이직 · 현업 적응','대학원 진학 · 연구 생활','해외 취업 · 유학','커리어 준비 · 진로 비교','LLM · NLP · 에이전트','데이터 분석 · 통계 · BI','비전 · 생성 모델 · 강화학습','산업 도메인 · 비즈니스']
 def topic_no(v):
     v = (v or '').strip()
     if not v: return None
