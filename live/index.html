@@ -212,17 +212,18 @@ const bars = p => p.options.map((o,i)=>{ const { c, total } = counts(p); return 
 const winnersHtml = (items, newNo) => items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win${String(w.no)===String(newNo)?' new':''}"><span class="rk">${esc(awardLabel(w))}</span><div><b>${esc(w.name)}</b> <span class="muted">${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('');
 const nowCard = id => `<section class="card" id="${id}" hidden><div class="eyebrow">NOW</div><div class="step" id="${id}-step"></div><div class="muted" id="${id}-next"></div><div class="timer" id="${id}-timer"></div></section>`;
 let hubHi = () => {};
-const bindNow = id => { render.program = () => { const i = info(); $('#'+id).hidden = i.step===null; $('#'+id+'-step').textContent = i.name; $('#'+id+'-next').textContent = i.next; $('#'+id+'-timer').textContent = clock(); hubHi(i.hi); }; setInterval(render.program, 1000); };
+const bindNow = id => { render.program = () => { const i = info(); $('#'+id).hidden = i.step===null; $('#'+id+'-step').textContent = i.name; $('#'+id+'-next').textContent = i.next; $('#'+id+'-timer').textContent = clock(); hubHi(i.hi, i.step===null); }; setInterval(render.program, 1000); };
 
 // ---------- 허브 ----------
 function hub(){
   appEl.innerHTML = nowCard('h-now') + `
   <a class="card entry" href="?qa" id="e-qa"><div class="eyebrow">ALUMNI SESSION</div><h2>질문 · 투표</h2><p class="muted">좋은 질문에 투표해주세요</p></a>
-  <a class="card entry" href="table/" id="e-table"><div class="eyebrow">TABLE TALK</div><h2>내 테이블</h2><p class="muted">1라운드 · 2라운드 테이블 번호</p></a>
-  <a class="card entry" href="../people/" id="e-people"><div class="eyebrow">NETWORKING</div><h2>참가자 카드</h2><p class="muted">관심사가 맞는 사람 찾기</p></a>
-  <a class="card entry" href="?draw" id="e-draw"><div class="eyebrow">LUCKY DRAW</div><h2>추첨 · 당첨자 확인</h2></a>
+  <p class="muted" id="h-pre" hidden style="margin:4px 4px 16px">지금은 질문 · 투표만 미리 열려 있습니다. 나머지 메뉴는 행사 당일 열립니다.</p>
+  <a class="card entry" href="table/" id="e-table" hidden><div class="eyebrow">TABLE TALK</div><h2>내 테이블</h2><p class="muted">1라운드 · 2라운드 테이블 번호</p></a>
+  <a class="card entry" href="../people/" id="e-people" hidden><div class="eyebrow">NETWORKING</div><h2>참가자 카드</h2><p class="muted">관심사가 맞는 사람 찾기</p></a>
+  <a class="card entry" href="?draw" id="e-draw" hidden><div class="eyebrow">LUCKY DRAW</div><h2>추첨 · 당첨자 확인</h2></a>
   <a class="btn" href="../" style="width:100%;margin-top:20px">초대장 홈페이지로</a>`;
-  hubHi = hi => ['qa','table','people','draw'].forEach(k => $('#e-'+k).classList.toggle('primary', k===hi));
+  hubHi = (hi, idle) => { ['qa','table','people','draw'].forEach(k => $('#e-'+k).classList.toggle('primary', k===hi)); ['table','people','draw'].forEach(k => $('#e-'+k).hidden = idle); $('#h-pre').hidden = !idle; };
   bindNow('h-now'); listen.program();
 }
 
@@ -249,7 +250,8 @@ function qa(){
 function drawView(){
   appEl.innerHTML = `<a class="back" href="./">← Live</a>` + nowCard('d-now') + `<section class="card"><div class="eyebrow">LUCKY DRAW</div><div id="g-draw"></div></section>`;
   bindNow('d-now');
-  render.draw = () => { const items = S.draw?.items||[]; $('#g-draw').innerHTML = items.length ? winnersHtml(items, S.draw?.live?.no) : '<p class="muted">추첨 전</p>'; };
+  const rp = render.program; render.program = () => { rp(); render.draw(); };
+  render.draw = () => { if(info().step===null){ $('#g-draw').innerHTML = '<p class="muted">추첨은 행사 당일 열립니다.</p><a class="btn" href="?qa" style="width:100%;margin-top:12px">질문 · 투표로 가기</a>'; return; } const items = S.draw?.items||[]; $('#g-draw').innerHTML = items.length ? winnersHtml(items, S.draw?.live?.no) : '<p class="muted">추첨 전</p>'; };
   listen.program(); listen.draw();
 }
 
@@ -259,7 +261,7 @@ function screen(){
   document.body.classList.add('screen');
   appEl.innerHTML = `<div class="sh"><div><div class="step" id="s-step"></div><div class="next" id="s-next"></div></div><div class="timer" id="s-timer"></div><div class="qr"><img src="qr.png" alt=""><div>homecoming.datamarket.ai.kr/live</div></div></div><div class="sb" id="s-body"></div>`;
   let mode = null;
-  const modeOf = st => st===null ? 'idle' : (st===0||st===5) ? 'tables1' : (st===8||st===9) ? 'tables2' : st===4 ? 'qa' : st===6 ? 'break' : st===10 ? 'draw' : 'idle';
+  const modeOf = st => st===null ? 'qa' : (st===0||st===5) ? 'tables1' : (st===8||st===9) ? 'tables2' : st===4 ? 'qa' : st===6 ? 'break' : st===10 ? 'draw' : 'idle';
   const layout = () => { const m = modeOf(info().step); if(m===mode) return; mode = m; const b = $('#s-body'); b.className = 'sb ' + (m==='qa' ? 'two' : 'one');
     if(m==='qa') b.innerHTML = `<div class="sc"><h3>질문</h3><div id="s-q"></div></div><div class="sc" id="s-r"></div>`;
     else if(m==='tables1'||m==='tables2') b.innerHTML = `<div class="sc"><h3>${m==='tables1'?'1라운드 테이블':'2라운드 테이블'}</h3><div class="tg" id="s-t"></div></div>`;
