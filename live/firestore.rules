@@ -28,7 +28,8 @@ service cloud.firestore {
         && request.resource.data.createdAt == request.time;
       allow update: if isAdmin()
         || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['voters'])
-            && request.resource.data.voters.size() == resource.data.voters.size() + 1
+            && (request.resource.data.voters.size() == resource.data.voters.size() + 1
+                || request.resource.data.voters.size() == resource.data.voters.size() - 1)
             && request.resource.data.voters.size() <= 300);
       allow delete: if isAdmin();
     }
