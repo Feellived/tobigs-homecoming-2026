@@ -48,6 +48,7 @@ label.f{display:block;font-size:12px;color:var(--muted);margin-top:8px}
 .q:first-child{border-top:0}
 .q .t{font-size:15px;line-height:1.45;word-break:keep-all}
 .q .m{font-size:12px;color:var(--muted);margin-top:2px}
+.to{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}.to .tl{font-size:12px;color:var(--muted);width:100%}.to button{padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:#fff;font-size:13px}.to button.on{background:var(--accent);border-color:var(--accent)}
 .q.done .t{color:var(--muted);text-decoration:line-through}
 .vote{flex:0 0 auto;min-width:52px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:transparent;color:#fff;font-weight:700;font-size:14px}
 .vote.on{background:var(--accent);border-color:var(--accent)}
@@ -167,6 +168,8 @@ const SPEAKERS = [
   { name:'임지영', gen:'19기', role:'학계',   org:'KAIST 석박통합과정', photo:'' },
   { name:'경민수', gen:'20기', role:'학계',   org:'서울시립대학교 석사과정', photo:'' },
 ];
+// 질문의 name 칸 = 질문 대상 연사 이름 (''이면 모두에게). 보안 규칙 변경 없이 기존 칸 재사용
+const toLbl = x => x.name ? ' · ' + esc(x.name) + ' 선배님께' : '';
 const speakerCards = () => { const l = SPEAKERS.filter(x=>x&&x.name); if(!l.length) return ''; return `<section class="card"><div class="eyebrow">TALK GUESTS</div><div class="spks">` + l.map(x=>`<div class="spk"><div class="ph">${x.photo?`<img src="${esc(x.photo)}" alt="">`:esc(x.name[0])}</div><div><div class="role">${esc(x.role||'')}</div><div class="nm">${esc(x.name)}<em>${esc(x.gen||'')}</em></div><div class="org">${esc(x.org||'')}</div></div></div>`).join('') + `</div></section>`; };
 
 const app = initializeApp(firebaseConfig), db = getFirestore(app), auth = getAuth(app);
@@ -229,13 +232,14 @@ function qa(){
   appEl.innerHTML = `<a class="back" href="./">← Live</a>` + nowCard('q-now') + `
   <section class="card" id="g-poll" hidden></section>` + speakerCards() + `
   <section class="card"><div class="eyebrow">ALUMNI SESSION</div><h2>선배님께 묻고 싶은 것</h2>
-    <form id="g-form"><div class="row"><select id="g-gen" required style="flex:0 0 96px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><button class="btn btn-primary grow" type="submit" id="g-submit">질문 올리기</button></div><textarea id="g-text" maxlength="200" placeholder="(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?" required></textarea></form>
+    <form id="g-form"><div class="row"><select id="g-gen" required style="flex:0 0 96px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><button class="btn btn-primary grow" type="submit" id="g-submit">질문 올리기</button></div><textarea id="g-text" maxlength="200" placeholder="(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?" required></textarea><div class="to" id="g-to"><span class="tl">누구에게 묻나요?</span><button type="button" class="on" data-to="">모두에게</button>${SPEAKERS.filter(x=>x&&x.name).map(x=>`<button type="button" data-to="${esc(x.name)}">${esc(x.name)}</button>`).join('')}</div></form>
     <div id="g-list" style="margin-top:8px"></div></section>`;
   bindNow('q-now');
-  render.questions = () => { const l = visible(); $('#g-list').innerHTML = l.map(x => { const n = x.voters?.length||0, on = x.voters?.includes(cid); return `<div class="q${x.answered?' done':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${x.answered?' · 답변 완료':''}</div></div><button class="vote${on?' on':''}" data-id="${esc(x.id)}" ${on||x.answered?'disabled':''}>${on?'투표함':'투표'} ${n}</button></div>`; }).join('') || '<div class="q"><div class="grow"><div class="t" style="color:var(--muted)">(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">첫 질문을 올려주세요</div></div></div>'; };
+  render.questions = () => { const l = visible(); $('#g-list').innerHTML = l.map(x => { const n = x.voters?.length||0, on = x.voters?.includes(cid); return `<div class="q${x.answered?' done':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${toLbl(x)}${x.answered?' · 답변 완료':''}</div></div><button class="vote${on?' on':''}" data-id="${esc(x.id)}" ${on||x.answered?'disabled':''}>${on?'투표함':'투표'} ${n}</button></div>`; }).join('') || '<div class="q"><div class="grow"><div class="t" style="color:var(--muted)">(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">첫 질문을 올려주세요</div></div></div>'; };
   $('#g-list').addEventListener('click', async e => { const b = e.target.closest('.vote'); if(!b) return; b.disabled = true; try { await updateDoc(doc(db,'questions',b.dataset.id), { voters: arrayUnion(cid) }); } catch(err){ b.disabled = false; say('다시 시도해 주세요'); } });
+  let to = ''; $('#g-to').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; to = b.dataset.to; $('#g-to').querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b)); });
   $('#g-form').addEventListener('submit', async e => { e.preventDefault(); const gen = $('#g-gen').value, text = $('#g-text').value.trim(); if(!gen||!text) return; const b = $('#g-submit'); b.disabled = true;
-    try { await addDoc(collection(db,'questions'), { gen, text, name:'', voters:[], createdAt: serverTimestamp(), hidden:false, answered:false, client:cid }); $('#g-text').value=''; say('올렸습니다'); setTimeout(()=>b.disabled=false, 8000); } catch(err){ say('인터넷 연결을 확인해 주세요'); b.disabled = false; } });
+    try { await addDoc(collection(db,'questions'), { gen, text, name:to, voters:[], createdAt: serverTimestamp(), hidden:false, answered:false, client:cid }); $('#g-text').value=''; say('올렸습니다'); setTimeout(()=>b.disabled=false, 8000); } catch(err){ say('인터넷 연결을 확인해 주세요'); b.disabled = false; } });
   render.polls = () => { const p = S.polls.find(x=>x.open), box = $('#g-poll'); if(!p){ box.hidden = true; return; } box.hidden = false; let v = null; try { v = localStorage.getItem('hc_vote_'+p.id); } catch(e){}
     box.innerHTML = `<div class="eyebrow">LIVE POLL</div><h2>${esc(p.q)}</h2>` + (v===null ? p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('') : `<p class="muted">투표 완료 · ${esc(p.options[Number(v)] ?? '')}</p><p class="muted">결과는 화면에서 공개됩니다</p>`); };
   $('#g-poll').addEventListener('click', async e => { const b = e.target.closest('.opt'); if(!b) return; const p = S.polls.find(x=>x.open); if(!p) return; try { await setDoc(doc(db,'polls',p.id,'votes',cid), { option:Number(b.dataset.i), at: serverTimestamp() }); } catch(err){} try { localStorage.setItem('hc_vote_'+p.id, b.dataset.i); } catch(e){} render.polls(); });
@@ -270,7 +274,7 @@ function screen(){
     if(!S.tables.published || !rows.length){ el.innerHTML = '<p class="se">명찰에 적힌 테이블 번호로 앉아 주세요.</p>'; return; }
     const g = {}; rows.forEach(r => { (g[r[key]] = g[r[key]] || []).push(r); });
     el.innerHTML = Object.keys(g).sort((a,b)=>a-b).map(n => `<div class="tb"><div class="tn">${esc(n)}</div>${g[n].map(r=>`<div>${esc(r.name)} <span>${esc(r.gen)}</span></div>`).join('')}</div>`).join(''); };
-  render.questions = () => { const el = $('#s-q'); if(!el) return; el.innerHTML = visible().slice(0,8).map(x=>`<div class="sq${x.answered?' done':''}"><div class="v">👍 ${x.voters?.length||0}</div><div><div>${esc(x.text)}</div><div class="m">${esc(x.gen||'')}</div></div></div>`).join('') || '<p class="se">QR로 들어와 질문을 올려주세요.</p><div class="sq" style="opacity:.5"><div class="v">👍 0</div><div><div>(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">25기</div></div></div>'; };
+  render.questions = () => { const el = $('#s-q'); if(!el) return; el.innerHTML = visible().slice(0,8).map(x=>`<div class="sq${x.answered?' done':''}"><div class="v">👍 ${x.voters?.length||0}</div><div><div>${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${toLbl(x)}</div></div></div>`).join('') || '<p class="se">QR로 들어와 질문을 올려주세요.</p><div class="sq" style="opacity:.5"><div class="v">👍 0</div><div><div>(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">25기</div></div></div>'; };
   const right = () => { const box = $('#s-r'); if(!box) return; const p = S.polls.find(x=>x.open||x.show);
     if(p) box.innerHTML = `<h3>투표${p.open?'':' · 마감'}</h3><div style="font-size:30px;font-weight:800;margin-bottom:18px">${esc(p.q)}</div>` + bars(p) + `<p class="se">${counts(p).total}명 참여</p>`;
     else box.innerHTML = `<h3>Big Then. Bigger Now.</h3>`; };
@@ -355,7 +359,7 @@ function adminMain(){
 
   // 질문
   $('#a-q').innerHTML = `<section class="card"><div id="a-ql"></div></section>`;
-  render.questions = () => { $('#a-ql').innerHTML = S.questions.slice().sort((a,b)=>(b.voters?.length||0)-(a.voters?.length||0)).map(x=>`<div class="q${x.answered?' done':''}" style="${x.hidden?'opacity:.4':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">👍 ${x.voters?.length||0} · ${esc(x.gen||'')}${x.hidden?' · 숨김':''}</div><div class="row" style="margin-top:6px"><button class="btn btn-sm" data-a="ans" data-id="${esc(x.id)}">${x.answered?'답변 취소':'답변 완료'}</button><button class="btn btn-sm" data-a="hide" data-id="${esc(x.id)}">${x.hidden?'표시':'숨김'}</button><button class="btn btn-sm" data-a="del" data-id="${esc(x.id)}">삭제</button></div></div></div>`).join('') || '<p class="muted">질문 없음</p>'; };
+  render.questions = () => { $('#a-ql').innerHTML = S.questions.slice().sort((a,b)=>(b.voters?.length||0)-(a.voters?.length||0)).map(x=>`<div class="q${x.answered?' done':''}" style="${x.hidden?'opacity:.4':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">👍 ${x.voters?.length||0} · ${esc(x.gen||'')}${toLbl(x)}${x.hidden?' · 숨김':''}</div><div class="row" style="margin-top:6px"><button class="btn btn-sm" data-a="ans" data-id="${esc(x.id)}">${x.answered?'답변 취소':'답변 완료'}</button><button class="btn btn-sm" data-a="hide" data-id="${esc(x.id)}">${x.hidden?'표시':'숨김'}</button><button class="btn btn-sm" data-a="del" data-id="${esc(x.id)}">삭제</button></div></div></div>`).join('') || '<p class="muted">질문 없음</p>'; };
   $('#a-ql').addEventListener('click', async e => { const b = e.target.closest('button'); if(!b) return; const x = S.questions.find(y=>y.id===b.dataset.id); if(!x) return; const ref = doc(db,'questions',x.id);
     if(b.dataset.a==='ans') await updateDoc(ref,{answered:!x.answered}); if(b.dataset.a==='hide') await updateDoc(ref,{hidden:!x.hidden}); if(b.dataset.a==='del' && confirm('삭제?')) await deleteDoc(ref); });
 
