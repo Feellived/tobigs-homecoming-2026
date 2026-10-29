@@ -28,7 +28,6 @@ p{margin:6px 0}
 .muted{color:var(--muted);font-size:13px}
 .step{font-size:24px;font-weight:800;line-height:1.25;letter-spacing:-.01em}
 .timer{font-family:var(--display);font-size:48px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1;margin-top:8px;letter-spacing:-.02em}
-.timer.over{color:#ffb86b}
 .btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:transparent;color:#fff;border-radius:10px;padding:11px 14px;font-weight:600;font-size:14px;line-height:1.2;text-decoration:none;white-space:nowrap}
 .btn-primary{background:var(--accent);border-color:var(--accent)}
 .btn-sm{padding:6px 10px;font-size:12px;border-radius:8px}
@@ -142,7 +141,7 @@ body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-templat
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp, arrayUnion, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp, arrayUnion, arrayRemove, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 const firebaseConfig = { apiKey:"AIzaSyBKDlddQRA1mLotV2V2R-39GhwTrSQ8zVE", authDomain:"tobigshoco.firebaseapp.com", projectId:"tobigshoco", storageBucket:"tobigshoco.firebasestorage.app", messagingSenderId:"973817861716", appId:"1:973817861716:web:48c2fdd252eab5edf83fc1" };
@@ -205,7 +204,7 @@ function info(){
   const st = STEPS[p.step] || STEPS[STEPS.length-1], nx = STEPS[p.step+1];
   return { step:p.step, name:st.n, next: nx ? `다음 ${nx.t} ${nx.n}` : '', remain: p.endsAt ? p.endsAt.toMillis() - Date.now() : null, hi:st.hi };
 }
-const fmt = ms => { if(ms===null) return ''; const neg = ms<0; ms = Math.abs(ms); return (neg?'+':'') + Math.floor(ms/60000) + ':' + String(Math.floor(ms%60000/1000)).padStart(2,'0'); };
+const clock = () => { const d = new Date(); return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); };
 const counts = p => { const v = S.votes[p.id] || [], c = p.options.map(()=>0); v.forEach(o => { if(c[o]!==undefined) c[o]++; }); return { c, total:v.length }; };
 const visible = () => S.questions.filter(x=>!x.hidden).sort((a,b)=>(b.voters?.length||0)-(a.voters?.length||0) || (b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0));
 const norm = s => String(s||'').replace(/\s+/g,'').toLowerCase();
@@ -213,7 +212,7 @@ const bars = p => p.options.map((o,i)=>{ const { c, total } = counts(p); return 
 const winnersHtml = (items, newNo) => items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win${String(w.no)===String(newNo)?' new':''}"><span class="rk">${esc(awardLabel(w))}</span><div><b>${esc(w.name)}</b> <span class="muted">${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('');
 const nowCard = id => `<section class="card" id="${id}" hidden><div class="eyebrow">NOW</div><div class="step" id="${id}-step"></div><div class="muted" id="${id}-next"></div><div class="timer" id="${id}-timer"></div></section>`;
 let hubHi = () => {};
-const bindNow = id => { render.program = () => { const i = info(); $('#'+id).hidden = i.step===null; $('#'+id+'-step').textContent = i.name; $('#'+id+'-next').textContent = i.next; const t = $('#'+id+'-timer'); t.textContent = fmt(i.remain); t.classList.toggle('over', i.remain!==null && i.remain<0); hubHi(i.hi); }; setInterval(render.program, 1000); };
+const bindNow = id => { render.program = () => { const i = info(); $('#'+id).hidden = i.step===null; $('#'+id+'-step').textContent = i.name; $('#'+id+'-next').textContent = i.next; $('#'+id+'-timer').textContent = clock(); hubHi(i.hi); }; setInterval(render.program, 1000); };
 
 // ---------- 허브 ----------
 function hub(){
@@ -235,8 +234,8 @@ function qa(){
     <form id="g-form"><div class="row"><select id="g-gen" required style="flex:0 0 96px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><button class="btn btn-primary grow" type="submit" id="g-submit">질문 올리기</button></div><div class="to" id="g-to"><span class="tl">누구에게 묻나요?</span><button type="button" class="on" data-to="">모두에게</button>${SPEAKERS.filter(x=>x&&x.name).map(x=>`<button type="button" data-to="${esc(x.name)}">${esc(x.name)}</button>`).join('')}</div><textarea id="g-text" maxlength="200" placeholder="(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?" required></textarea></form>
     <div id="g-list" style="margin-top:8px"></div></section>`;
   bindNow('q-now');
-  render.questions = () => { const l = visible(); $('#g-list').innerHTML = l.map(x => { const n = x.voters?.length||0, on = x.voters?.includes(cid); return `<div class="q${x.answered?' done':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${toLbl(x)}${x.answered?' · 답변 완료':''}</div></div><button class="vote${on?' on':''}" data-id="${esc(x.id)}" ${on||x.answered?'disabled':''}>${on?'투표함':'투표'} ${n}</button></div>`; }).join('') || '<div class="q"><div class="grow"><div class="t" style="color:var(--muted)">(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">첫 질문을 올려주세요</div></div></div>'; };
-  $('#g-list').addEventListener('click', async e => { const b = e.target.closest('.vote'); if(!b) return; b.disabled = true; try { await updateDoc(doc(db,'questions',b.dataset.id), { voters: arrayUnion(cid) }); } catch(err){ b.disabled = false; say('다시 시도해 주세요'); } });
+  render.questions = () => { const l = visible(); $('#g-list').innerHTML = l.map(x => { const n = x.voters?.length||0, on = x.voters?.includes(cid); return `<div class="q${x.answered?' done':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${toLbl(x)}${x.answered?' · 답변 완료':''}</div></div><button class="vote${on?' on':''}" data-id="${esc(x.id)}" data-on="${on?1:0}" ${x.answered?'disabled':''}>${on?'추천함':'추천'} ${n}</button></div>`; }).join('') || '<div class="q"><div class="grow"><div class="t" style="color:var(--muted)">(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">첫 질문을 올려주세요</div></div></div>'; };
+  $('#g-list').addEventListener('click', async e => { const b = e.target.closest('.vote'); if(!b) return; if(b.dataset.busy) return; b.dataset.busy = 1; b.disabled = true; try { await updateDoc(doc(db,'questions',b.dataset.id), { voters: b.dataset.on==='1' ? arrayRemove(cid) : arrayUnion(cid) }); } catch(err){ say('다시 시도해 주세요'); } finally { b.disabled = false; delete b.dataset.busy; } });
   let to = ''; $('#g-to').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; to = b.dataset.to; $('#g-to').querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b)); });
   $('#g-form').addEventListener('submit', async e => { e.preventDefault(); const gen = $('#g-gen').value, text = $('#g-text').value.trim(); if(!gen||!text) return; const b = $('#g-submit'); b.disabled = true;
     try { await addDoc(collection(db,'questions'), { gen, text, name:to, voters:[], createdAt: serverTimestamp(), hidden:false, answered:false, client:cid }); $('#g-text').value=''; say('올렸습니다'); setTimeout(()=>b.disabled=false, 8000); } catch(err){ say('인터넷 연결을 확인해 주세요'); b.disabled = false; } });
@@ -268,7 +267,7 @@ function screen(){
     else if(m==='draw') b.innerHTML = `<div class="sc"><h3>Lucky Draw</h3><div id="s-w" class="wl"></div></div>`;
     else b.innerHTML = `<div class="sc center"><div class="idle">Big Then. <b>Bigger Now.</b></div></div>`;
     render.questions(); render.polls(); render.draw(); renderTables(); };
-  render.program = () => { const i = info(); $('#s-step').textContent = i.name; $('#s-next').textContent = i.next; const t = $('#s-timer'); t.textContent = fmt(i.remain); t.classList.toggle('over', i.remain!==null && i.remain<0); layout(); if(mode==='break'){ $('#s-bt').textContent = fmt(i.remain) || '—'; $('#s-bn').textContent = i.next; } };
+  render.program = () => { const i = info(); $('#s-step').textContent = i.name; $('#s-next').textContent = i.next; $('#s-timer').textContent = clock(); layout(); if(mode==='break'){ $('#s-bt').textContent = clock(); $('#s-bn').textContent = i.next; } };
   setInterval(render.program, 1000);
   const renderTables = () => { const el = $('#s-t'); if(!el) return; const key = mode==='tables2' ? 't2' : 't1'; const rows = S.tables.rows || [];
     if(!S.tables.published || !rows.length){ el.innerHTML = '<p class="se">명찰에 적힌 테이블 번호로 앉아 주세요.</p>'; return; }
@@ -348,13 +347,13 @@ function adminMain(){
   $('#a-tabs').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; document.querySelectorAll('#a-tabs button').forEach(x=>x.classList.toggle('on', x===b)); ['prog','q','poll','ci','draw'].forEach(t => $('#a-'+t).hidden = t!==b.dataset.t); });
 
   // 진행
-  $('#a-prog').innerHTML = `<section class="card"><div class="step" id="a-step"></div><div class="timer" id="a-timer"></div><div class="row" style="margin-top:10px"><button class="btn btn-primary" id="a-next">다음 순서</button><button class="btn" id="a-plus">+5분</button></div></section>
+  $('#a-prog').innerHTML = `<section class="card"><div class="step" id="a-step"></div><div class="timer" id="a-timer"></div><div class="row" style="margin-top:10px"><button class="btn btn-primary" id="a-next">다음 순서</button><button class="btn" id="a-reset">진행 초기화</button></div></section>
     <section class="card"><ul class="list" id="a-steps">${STEPS.map((s,i)=>`<li><span class="muted" style="min-width:44px">${s.t}</span><span class="grow">${esc(s.n)}</span><button class="btn btn-sm" data-i="${i}">시작</button></li>`).join('')}</ul></section>`;
   const setStep = async i => { const st = STEPS[i]; if(!st) return; await setDoc(doc(db,'state','program'), { step:i, endsAt: st.d ? Timestamp.fromMillis(Date.now()+st.d*60000) : null }); };
   $('#a-steps').addEventListener('click', e => { const b = e.target.closest('button'); if(b) setStep(Number(b.dataset.i)); });
   $('#a-next').onclick = () => setStep((S.program?.step ?? -1) + 1);
-  $('#a-plus').onclick = () => { const e = S.program?.endsAt; if(e) updateDoc(doc(db,'state','program'), { endsAt: Timestamp.fromMillis(e.toMillis()+300000) }); };
-  render.program = () => { const i = info(); $('#a-step').textContent = i.name; $('#a-timer').textContent = fmt(i.remain); document.querySelectorAll('#a-steps li').forEach((li,k)=> li.style.fontWeight = k===i.step?'800':'400'); };
+  $('#a-reset').onclick = async () => { if(confirm('진행 상태를 시작 전으로 되돌릴까요? 질문·투표는 그대로 남습니다.')) await setDoc(doc(db,'state','program'), { step:null, endsAt:null }); };
+  render.program = () => { const i = info(); $('#a-step').textContent = i.name; $('#a-timer').textContent = clock(); document.querySelectorAll('#a-steps li').forEach((li,k)=> li.style.fontWeight = k===i.step?'800':'400'); };
   setInterval(render.program, 1000);
 
   // 질문
