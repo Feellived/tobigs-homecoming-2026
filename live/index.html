@@ -371,7 +371,7 @@ function adminMain(){
   $('#a-steps').addEventListener('click', e => { const b = e.target.closest('button'); if(b) setStep(Number(b.dataset.i)); });
   $('#a-next').onclick = () => setStep((S.program?.step ?? -1) + 1);
   $('#a-progreset').onclick = async () => { if(confirm('진행 상태를 시작 전으로 되돌릴까요? 질문·투표는 그대로 남습니다.')) await setDoc(doc(db,'state','program'), { step:null, endsAt:null }); };
-  render.program = () => { const i = info(); $('#a-step').textContent = i.name; $('#a-timer').textContent = clock(); document.querySelectorAll('#a-steps li').forEach((li,k)=> li.style.fontWeight = k===i.step?'800':'400'); };
+  render.program = () => { const i = info(); $('#a-step').textContent = i.step===null ? '시작 전 · 질문 · 투표만 공개 중' : '진행 중 · ' + i.name; $('#a-timer').textContent = clock(); document.querySelectorAll('#a-steps li').forEach((li,k)=> { const on = k===i.step; li.style.fontWeight = on?'800':'400'; li.style.background = on?'rgba(61,90,254,.22)':''; li.style.borderRadius = '8px'; }); };
   setInterval(render.program, 1000);
 
   // 질문
