@@ -22,12 +22,12 @@
   const STAT_MEMBERS  = "400+";                  // 누적 동아리원 수 (공식 홈페이지 기준). 비우면 항목 숨김
   const STAT_GEN26    = "21";                    // 26기 인원
   // 개회사(1기 선배). name을 채우면 개회사 항목에 카드가 나타남. photo는 assets/speakers/opener.jpg 식, 없으면 "".
-  const OPENER   = { name:"", gen:"1기", org:"", photo:"" };
-  // Alumni Session 토크 게스트. 확정 후 채우면 카드가 나타남(비우면 숨김). topic은 한 줄 소개나 비워도 됨.
+  const OPENER   = { name:"김강진", gen:"1기", org:"가천대학교 조교수", photo:"" };
+  // Alumni Session 토크 게스트. 확정 후 채우면 카드가 나타남(비우면 숨김). role은 산업계/학계 구분, topic은 한 줄 소개나 비워도 됨.
   const SPEAKERS = [
-    { name:"정세영", gen:"14기", org:"", topic:"", photo:"" },
-    { name:"임지영", gen:"19기", org:"", topic:"", photo:"" },
-    { name:"경민수", gen:"20기", org:"", topic:"", photo:"" },
+    { name:"정세영", gen:"14기", role:"산업계", org:"코오롱베니트 데이터분석", topic:"", photo:"" },
+    { name:"임지영", gen:"19기", role:"학계", org:"KAIST 석박통합과정", topic:"", photo:"" },
+    { name:"경민수", gen:"20기", role:"학계", org:"서울시립대학교 석사과정", topic:"", photo:"" },
   ];
   // 토크 진행 Host. name을 채우면 게스트 카드 맨 앞에 Host 카드가 붙음. 비우면 숨김.
   const MC       = { name:"", gen:"25기", org:"", photo:"" };
@@ -681,7 +681,7 @@
   const guests = Array.isArray(SPEAKERS) ? SPEAKERS.filter(x=>x && x.name) : [];
   if(spk && (guests.length || (MC && MC.name))){
     const tbd = guests.length < 4 ? '<div class="spk tbd" aria-label="연사 추가 공개 예정"><div class="ph"></div><div><div class="nm">11월 중 공개</div></div></div>' : '';
-    spk.innerHTML = (MC && MC.name ? card(MC,'Host','mc') : '') + guests.map(x=>card(x,'Guest')).join('') + tbd;
+    spk.innerHTML = (MC && MC.name ? card(MC,'Host','mc') : '') + guests.map(x=>card(x,x.role||'Guest')).join('') + tbd;
     spk.classList.toggle('four', spk.children.length>=4);
     spk.hidden=false; if(spl) spl.hidden=false;
   }
