@@ -97,5 +97,14 @@ Promise.all([
   render();
 }).catch(() => { box.innerHTML = '<p class="empty">명단을 불러오지 못했습니다. 잠시 후 다시 열어주세요.</p>'; });
 </script>
+<script type="module">
+// 강제 전환: 투표 결과 공개 · 추첨 연출이 시작되면 라이브 화면으로 이동 (라이브 화면이 전체 화면으로 띄움)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getFirestore, collection, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+const db = getFirestore(initializeApp({ apiKey:"AIzaSyBKDlddQRA1mLotV2V2R-39GhwTrSQ8zVE", authDomain:"tobigshoco.firebaseapp.com", projectId:"tobigshoco", storageBucket:"tobigshoco.firebasestorage.app", messagingSenderId:"973817861716", appId:"1:973817861716:web:48c2fdd252eab5edf83fc1" }));
+let showId, seq = null;
+onSnapshot(collection(db,'polls'), s => { const p = s.docs.find(d => d.data().show), id = p ? p.id : null; if(showId === undefined){ showId = id; return; } if(id && id !== showId) location.href = '../live/?qa'; showId = id; });
+onSnapshot(doc(db,'draw','results'), s => { const q = s.exists() ? (s.data().live?.seq || 0) : 0; if(seq === null){ seq = q; return; } if(q > seq) location.href = '../live/?draw'; seq = q; });
+</script>
 </body>
 </html>
