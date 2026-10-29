@@ -365,12 +365,12 @@ function adminMain(){
   $('#a-tabs').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; document.querySelectorAll('#a-tabs button').forEach(x=>x.classList.toggle('on', x===b)); ['prog','q','poll','ci','draw'].forEach(t => $('#a-'+t).hidden = t!==b.dataset.t); });
 
   // 진행
-  $('#a-prog').innerHTML = `<section class="card"><div class="step" id="a-step"></div><div class="timer" id="a-timer"></div><div class="row" style="margin-top:10px"><button class="btn btn-primary" id="a-next">다음 순서</button><button class="btn" id="a-reset">진행 초기화</button></div></section>
+  $('#a-prog').innerHTML = `<section class="card"><div class="step" id="a-step"></div><div class="timer" id="a-timer"></div><div class="row" style="margin-top:10px"><button class="btn btn-primary" id="a-next">다음 순서</button><button class="btn" id="a-progreset">진행 초기화</button></div></section>
     <section class="card"><ul class="list" id="a-steps">${STEPS.map((s,i)=>`<li><span class="muted" style="min-width:44px">${s.t}</span><span class="grow">${esc(s.n)}</span><button class="btn btn-sm" data-i="${i}">시작</button></li>`).join('')}</ul></section>`;
   const setStep = async i => { const st = STEPS[i]; if(!st) return; await setDoc(doc(db,'state','program'), { step:i, endsAt: st.d ? Timestamp.fromMillis(Date.now()+st.d*60000) : null }); };
   $('#a-steps').addEventListener('click', e => { const b = e.target.closest('button'); if(b) setStep(Number(b.dataset.i)); });
   $('#a-next').onclick = () => setStep((S.program?.step ?? -1) + 1);
-  $('#a-reset').onclick = async () => { if(confirm('진행 상태를 시작 전으로 되돌릴까요? 질문·투표는 그대로 남습니다.')) await setDoc(doc(db,'state','program'), { step:null, endsAt:null }); };
+  $('#a-progreset').onclick = async () => { if(confirm('진행 상태를 시작 전으로 되돌릴까요? 질문·투표는 그대로 남습니다.')) await setDoc(doc(db,'state','program'), { step:null, endsAt:null }); };
   render.program = () => { const i = info(); $('#a-step').textContent = i.name; $('#a-timer').textContent = clock(); document.querySelectorAll('#a-steps li').forEach((li,k)=> li.style.fontWeight = k===i.step?'800':'400'); };
   setInterval(render.program, 1000);
 
