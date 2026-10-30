@@ -28,6 +28,7 @@ h2{font-size:18px;margin:0 0 10px}
 input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:#fff;outline:none}
 input::placeholder{color:rgba(255,255,255,.4)}
 input:focus,select:focus{border-color:var(--peri)}
+select{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%239db0ff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px !important}
 select option{color:#0b1230}
 .btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:10px;padding:11px 16px;font-weight:600;font-size:14px;line-height:1.2;cursor:pointer;text-decoration:none;white-space:nowrap}
 .btn-ghost{background:transparent;border-color:var(--line)}
@@ -59,7 +60,7 @@ let rows = [];
 const remember = (r, on) => { try { on ? localStorage.setItem('hc_me', JSON.stringify(r)) : localStorage.removeItem('hc_me'); } catch(e){} };
 const mine = () => { try { return JSON.parse(localStorage.getItem('hc_me')||'null'); } catch(e){ return null; } };
 function showForm(msg){
-  box.innerHTML = `<h2>내 테이블 찾기</h2><form id="f" class="row"><select id="g" required style="flex:0 0 96px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><input class="grow" type="text" id="n" placeholder="이름" required><button class="btn" type="submit">찾기</button></form>${msg?`<p class="muted" style="margin-top:10px">${msg}</p>`:''}`;
+  box.innerHTML = `<h2>내 테이블 찾기</h2><form id="f" class="row"><select id="g" required style="flex:0 0 108px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><input class="grow" type="text" id="n" placeholder="이름" required><button class="btn" type="submit">찾기</button></form>${msg?`<p class="muted" style="margin-top:10px">${msg}</p>`:''}`;
   document.getElementById('f').addEventListener('submit', e => {
     e.preventDefault();
     const n = norm(document.getElementById('n').value), g = document.getElementById('g').value;

@@ -26,6 +26,7 @@ h1{font-size:22px;margin:0 0 4px}
 input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:#fff;outline:none}
 input::placeholder{color:rgba(255,255,255,.4)}
 input:focus,select:focus{border-color:var(--peri)}
+select{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%239db0ff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px !important}
 select option{color:#0b1230}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 .chip{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:5px 11px;font-size:12px;cursor:pointer}
@@ -53,7 +54,7 @@ select option{color:#0b1230}
 <main>
   <a class="back" href="../live/">← Live</a>
   <h1>참가자 카드</h1>
-  <p class="muted" id="sub">관심사가 맞는 분을 찾아 먼저 인사해 보세요. 명찰의 QR을 찍으면 그분의 카드가 바로 열립니다.</p>
+  <p class="muted" id="sub">관심사가 맞는 분을 찾아 먼저 인사해 보세요.</p>
   <div id="box"></div>
 </main>
 <script>
