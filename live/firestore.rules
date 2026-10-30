@@ -26,11 +26,16 @@ service cloud.firestore {
         && request.resource.data.hidden == false
         && request.resource.data.answered == false
         && request.resource.data.createdAt == request.time;
+      // 추천: 한 번에 정확히 한 명 추가(기존 목록 유지 + 끝에 pid 형식 1개, 중복 없음) 또는 한 명 제거(남은 목록은 기존의 일부)
       allow update: if isAdmin()
         || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['voters'])
-            && (request.resource.data.voters.size() == resource.data.voters.size() + 1
-                || request.resource.data.voters.size() == resource.data.voters.size() - 1)
-            && request.resource.data.voters.size() <= 300);
+            && request.resource.data.voters.size() <= 300
+            && ((request.resource.data.voters.size() == resource.data.voters.size() + 1
+                 && request.resource.data.voters.hasAll(resource.data.voters)
+                 && request.resource.data.voters.toSet().size() == request.resource.data.voters.size()
+                 && request.resource.data.voters[request.resource.data.voters.size() - 1].matches('^p[0-9a-f]{32}$'))
+             || (request.resource.data.voters.size() == resource.data.voters.size() - 1
+                 && resource.data.voters.hasAll(request.resource.data.voters))));
       allow delete: if isAdmin();
     }
 
@@ -45,7 +50,10 @@ service cloud.firestore {
           && request.resource.data.keys().hasOnly(['option','at'])
           && request.resource.data.option is int
           && request.resource.data.option >= 0 && request.resource.data.option < 10
-          && request.resource.data.at == request.time;
+          && request.resource.data.at == request.time
+          // 열려 있는 투표에만, 실제 선택지 범위 안에서
+          && get(/databases/$(database)/documents/polls/$(pid)).data.open == true
+          && request.resource.data.option < get(/databases/$(database)/documents/polls/$(pid)).data.options.size();
         allow update: if false;
         allow delete: if isAdmin();
       }
