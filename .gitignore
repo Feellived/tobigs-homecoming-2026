@@ -1,2 +1,12 @@
 .DS_Store
 qr/badge/
+# 실제 명단은 커밋하지 않는다(운영 화면 '명단' 탭으로 Firestore에 올림)
+*.csv
+*.xlsx
+*.xls
+!tools/people.template.csv
+!live/tables.template.csv
+!tests/fixtures/*.csv
+live/tables.json
+people.json
+qr/

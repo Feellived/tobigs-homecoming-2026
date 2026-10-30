@@ -41,7 +41,7 @@ export async function newDevice(browser, kind = PHONE, opts = {}) {
   const page = await context.newPage();
   page.__errors = [];
   page.on('pageerror', e => page.__errors.push(String(e.message || e)));
-  page.on('dialog', d => d.accept());
+  page.on('dialog', d => d.type() === 'prompt' ? d.accept(page.__prompt ?? '') : d.accept()); // 확인 창은 모두 '확인', 입력 창은 page.__prompt
   return { context, page };
 }
 
@@ -83,4 +83,19 @@ let _env;
 export async function seed(fn) {
   _env ||= await initializeTestEnvironment({ projectId: PROJECT, firestore: { host: '127.0.0.1', port: 8080, rules: readFileSync(new URL('../../live/firestore.rules', import.meta.url), 'utf8') } });
   await _env.withSecurityRulesDisabled(ctx => fn(ctx.firestore()));
+}
+
+export const FIXTURE = name => new URL('../fixtures/' + name, import.meta.url).pathname;
+// 운영 화면 '명단' 탭에서 CSV 올리기(로그인된 운영 화면 page)
+export async function uploadRoster(page, file = FIXTURE('people.csv'), expectCount = 40) {
+  await adminTab(page, 'roster');
+  await page.setInputFiles('#a-rf', file);
+  await expect(page.locator('#a-rsum')).toContainText(`${expectCount}명`);
+  await expect(page.locator('#a-ru')).toBeEnabled();
+  await page.click('#a-ru');
+  await expect(page.locator('#a-rs')).toHaveText(`공개 중 · ${expectCount}명`);
+}
+// 다른 기기 없이 명단만 미리 올려 두기
+export async function seedRoster(browser, file, n) {
+  const adm = await newDevice(browser, LAPTOP); await adminLogin(adm.page); await uploadRoster(adm.page, file, n); await adm.context.close();
 }

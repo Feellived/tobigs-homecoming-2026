@@ -1,5 +1,0 @@
-{
-  "published": false,
-  "note": "11/16 테이블 배정 확정 후 published를 true로 바꾸고 rows를 채운다. no=명찰 번호(응모 번호), t1=1라운드 테이블, t2=2라운드 테이블",
-  "rows": []
-}
