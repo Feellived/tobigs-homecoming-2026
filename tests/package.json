@@ -1,0 +1,21 @@
+{
+  "name": "hoco-tests",
+  "description": "TOBIG'S Homecoming 2026 행사 전 점검: E2E 시나리오 + Firestore 규칙 테스트 (에뮬레이터 전용)",
+  "scripts": {
+    "pretest": "node -e \"require('fs').copyFileSync('../live/firestore.rules','.firestore.rules')\"",
+    "test": "firebase emulators:exec --only firestore,auth --project demo-hoco \"npx playwright test\"",
+    "preemulators": "node -e \"require('fs').copyFileSync('../live/firestore.rules','.firestore.rules')\"",
+    "emulators": "firebase emulators:start --only firestore,auth --project demo-hoco",
+    "pretest:rules": "node -e \"require('fs').copyFileSync('../live/firestore.rules','.firestore.rules')\"",
+    "test:rules": "firebase emulators:exec --only firestore,auth --project demo-hoco \"npx playwright test rules\"",
+    "load": "node load/simulate.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@firebase/rules-unit-testing": "^4.0.1",
+    "@playwright/test": "^1.63.0",
+    "firebase": "^11.6.0",
+    "firebase-tools": "^14.27.0"
+  },
+  "private": true
+}
