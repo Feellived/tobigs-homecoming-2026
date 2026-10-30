@@ -31,6 +31,7 @@ body.hk-has-fab{padding-bottom:92px}
 .hk-x{position:absolute;top:10px;right:12px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#9aa3c7;font-size:20px;line-height:1;cursor:pointer}
 .hk{color:#fff;font-family:'Pretendard Variable',Pretendard,-apple-system,system-ui,sans-serif;line-height:1.5;text-align:left}
 .hk *{box-sizing:border-box}
+.hk [hidden]{display:none!important}
 .hk .hk-eb{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;letter-spacing:.18em;color:#9db0ff;margin-bottom:8px}
 .hk h2{font-size:18px;margin:0 0 10px;letter-spacing:-.01em;color:#fff}
 .hk .hk-m{color:#9aa3c7;font-size:13px;margin:0;word-break:keep-all}
