@@ -266,27 +266,26 @@ const cid = (() => { try { let v = localStorage.getItem('hc_cid'); if(!v){ v = c
 
 // ---------- 참여자 식별 (사람 기준) ----------
 // 기수+이름 → 되돌릴 수 없는 코드(pid). 같은 사람이면 휴대폰·노트북에서 같은 pid → 추천·투표는 사람당 1번.
-// 서버에는 pid만 저장, 화면에는 기수만 표시. 내 테이블 페이지(hc_me)에서 찾은 정보가 있으면 그대로 쓴다.
+// 서버에는 pid만 저장(추천 voters·투표 문서 id), 화면에는 기수만 표시. 질문 작성자 칸(client)은 이름과 무관한 기기 난수(cid)를 그대로 쓴다.
+// 내 테이블 페이지(hc_me)에서 찾은 값은 확인 창에 미리 채우기만 하고, 본인이 확인해야 참여 정보가 된다.
 const lsGet = k => { try { return JSON.parse(localStorage.getItem(k)||'null'); } catch(e){ return null; } };
 const lsSet = (k, v) => { try { v===null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
 let me = lsGet('hc_id');
-const fnv = (str, seed) => { let h = seed >>> 0; for(let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16).padStart(8,'0'); };
 async function pidOf(gen, name){
   const key = 'tobigs-hoco-2026|' + gen + '|' + String(name||'').replace(/\s+/g,'').toLowerCase();
-  try { const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(key)); return 'p' + [...new Uint8Array(h)].slice(0,16).map(b=>b.toString(16).padStart(2,'0')).join(''); }
-  catch(e){ return 'p' + [2166136261, 33554467, 16777619, 3735928559].map(sd => fnv(key, sd)).join(''); }
+  const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(key)); // 보안 연결(https)에서만 동작. 없으면 예외 → 참여 정보 저장 안 함
+  return 'p' + [...new Uint8Array(h)].slice(0,16).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 const findRow = (gen, name) => { const rows = (S.tables && S.tables.published) ? (S.tables.rows||[]) : []; const n = String(name||'').replace(/\s+/g,'').toLowerCase(); return rows.find(r => r.gen===gen && String(r.name||'').replace(/\s+/g,'').toLowerCase()===n) || null; };
 async function makeMe(gen, name, row){ me = { gen, name: String(name).trim(), pid: await pidOf(gen, name), no: row ? row.no : null }; lsSet('hc_id', me); if(row) lsSet('hc_me', row); return me; }
 async function initMe(){
-  if(!me){ const hc = lsGet('hc_me'); if(hc && hc.gen && hc.name) await makeMe(hc.gen, hc.name, hc); }
-  else if(!me.no){ const r = findRow(me.gen, me.name); if(r){ me.no = r.no; lsSet('hc_id', me); lsSet('hc_me', r); } }
+  if(me && !me.no){ const r = findRow(me.gen, me.name); if(r){ me.no = r.no; lsSet('hc_id', me); lsSet('hc_me', r); } }
   return me;
 }
 function askMe(){ return new Promise(res => {
   const bg = document.createElement('div'); bg.className = 'sheet-bg';
   bg.innerHTML = `<form class="sheet" id="me-f"><div class="eyebrow">참여 정보</div><h2>기수와 이름을 알려 주세요</h2>
-    <p class="muted">추천과 투표를 한 사람당 한 번만 세기 위해 처음 한 번만 확인해요. 휴대폰과 노트북에서 같은 이름으로 들어오면 같은 사람으로 셉니다. 이름은 공개되지 않고 기수만 보여요.</p>
+    <p class="muted">추천과 투표를 한 사람당 한 번만 세기 위해 처음 한 번만 확인해요. 휴대폰과 노트북에서 같은 이름으로 들어오면 같은 사람으로 셉니다. 이름은 화면에 표시되지 않고 기수만 보여요.</p>
     <div class="row" style="margin-top:10px"><select id="me-g" required style="flex:0 0 108px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><input type="text" id="me-n" class="grow" placeholder="이름" maxlength="20" required autocomplete="name" style="width:auto;flex:1 1 0"></div>
     <p class="err" id="me-e"></p><div class="row" style="margin-top:6px"><button type="button" class="btn" id="me-x">취소</button><button class="btn btn-primary grow" type="submit">확인</button></div></form>`;
   document.body.appendChild(bg);
@@ -298,7 +297,8 @@ function askMe(){ return new Promise(res => {
     const gen = bg.querySelector('#me-g').value, name = bg.querySelector('#me-n').value.trim(); if(!gen || !name) return;
     const listed = S.tables && S.tables.published && (S.tables.rows||[]).length, row = findRow(gen, name), key = gen + name;
     if(listed && !row && warned !== key){ warned = key; bg.querySelector('#me-e').textContent = '참석자 명단에서 찾지 못했어요. 맞다면 한 번 더 누르면 이 이름으로 참여합니다.'; return; }
-    done(await makeMe(gen, name, row)); };
+    try { done(await makeMe(gen, name, row)); } catch(err){ bg.querySelector('#me-e').textContent = '이 브라우저에서는 참여 정보를 만들 수 없어요. 주소가 https로 시작하는지 확인해 주세요.'; } };
+  const hc = lsGet('hc_me'); if(hc && hc.gen && hc.name){ bg.querySelector('#me-g').value = hc.gen; bg.querySelector('#me-n').value = hc.name; } // 내 테이블에서 찾은 값은 미리 채우기만, 확인은 본인이
   setTimeout(() => bg.querySelector('#me-g').focus(), 60);
 }); }
 const ensureMe = async () => me || await askMe();
@@ -424,7 +424,7 @@ function qa(){
   let to = ''; $('#g-to').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; to = b.dataset.to; $('#g-to').querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b)); });
   $('#g-form').addEventListener('submit', async e => { e.preventDefault(); const text = $('#g-text').value.trim(); if(!text) return;
     const m = await ensureMe(); if(!m) return; renderWho(); const b = $('#g-submit'); b.disabled = true;
-    try { await addDoc(collection(db,'questions'), { gen:m.gen, text, name:to, voters:[], createdAt: serverTimestamp(), hidden:false, answered:false, client:m.pid }); $('#g-text').value=''; say('게시했습니다'); setTimeout(()=>b.disabled=false, 8000); } catch(err){ say('인터넷 연결을 확인해 주세요'); b.disabled = false; } });
+    try { await addDoc(collection(db,'questions'), { gen:m.gen, text, name:to, voters:[], createdAt: serverTimestamp(), hidden:false, answered:false, client:cid }); $('#g-text').value=''; say('게시했습니다'); setTimeout(()=>b.disabled=false, 8000); } catch(err){ say('인터넷 연결을 확인해 주세요'); b.disabled = false; } });
   // 투표: 사람당 1표 (표 문서 id = pid, 서버 규칙상 생성만 가능)
   const myVote = {};
   const checkVote = async p => { if(!me || myVote[p.id] !== undefined) return; myVote[p.id] = null; try { const d = await getDoc(doc(db,'polls',p.id,'votes',me.pid)); myVote[p.id] = d.exists() ? d.data().option : null; } catch(err){} render.polls(); };
