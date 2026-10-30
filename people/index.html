@@ -107,5 +107,6 @@ let showId, seq = null;
 onSnapshot(collection(db,'polls'), s => { const p = s.docs.find(d => d.data().show), id = p ? p.id : null; if(showId === undefined){ showId = id; return; } if(id && id !== showId) location.href = '../live/?qa'; showId = id; });
 onSnapshot(doc(db,'draw','results'), s => { const q = s.exists() ? (s.data().live?.seq || 0) : 0; if(seq === null){ seq = q; return; } if(q > seq) location.href = '../live/?draw'; seq = q; });
 </script>
+<script src="../assets/ask.js" defer></script>
 </body>
 </html>
