@@ -1,82 +1,67 @@
-# TOBIG'S Homecoming Day 2026 — 웹 초대장
+# TOBIG'S Homecoming Day 2026
 
-정적 원페이지 초대장. 서버 없음, GitHub Pages로 배포.
+빅데이터 동아리 TOBIG'S의 1기~26기 전·현 기수 80여 명이 모이는 홈커밍데이(2026.11.21)를 위해 만든 웹 초대장과 당일 라이브 운영 시스템입니다. 별도 서버 없이 GitHub Pages(정적 호스팅)와 Firebase Firestore만으로 실시간 기능을 구현했고, 행사 안내용 AI 도우미는 Vercel 서버리스 함수로 분리했습니다.
 
-- 배포 주소: https://homecoming.datamarket.ai.kr/
-- 파일: `index.html` 하나 + `assets/`
+- 초대장: https://homecoming.datamarket.ai.kr/
+- 라이브: https://homecoming.datamarket.ai.kr/live/
+- AI 행사 도우미 서버: 별도 저장소 `hoco-assistant` (Vercel 서버리스 함수)
 
-## 링크 바꾸기 (10/19 RSVP 오픈 전)
+## 무엇을 만들었나
 
-`index.html` 상단의 `EDIT HERE` 블록 4줄만 수정:
+**웹 초대장** (`index.html`)
+- 일정 · 장소(지도 · 캘린더 연동) · 프로그램 · 연사 카드 · 컨퍼런스 아카이브 · 회고 사진 · FAQ를 한 페이지에
+- 참석 신청 마감 자동 표시, 행사 후 설문 · 사진 링크 자동 노출, 카카오톡 공유 미리보기
 
-```js
-const RSVP_URL    = "#";   // → 참석 신청 구글폼 링크
-const CONTACT_URL = "#";   // → 운영부 오픈채팅 링크
-const SURVEY_URL  = "#";   // 행사 후 설문 링크 (행사 다음날부터 자동 표시)
-const PHOTOS_URL  = "#";   // 행사 후 사진 폴더 링크
-const SITE_URL    = "https://homecoming.datamarket.ai.kr/";
-const RSVP_DEADLINE = "2026년 11월 1일(일)";
+**라이브 페이지** (`live/index.html`, 단일 파일)
+- 진행 동기화: 운영진이 단계를 바꾸면 모든 참가자 휴대폰의 현재 순서 · 강조 메뉴가 몇 초 안에 바뀜. 행사 전에는 질문 · 도우미만 열리는 사전 공개 모드
+- 질문 · 추천: 대상 연사 선택, 추천순 · 최신순 정렬, 연사별 필터, 답변 완료 표시
+- 사람 기준 참여: 기수+이름에서 만든 코드로 추천 · 투표를 한 사람당 한 번만 집계(휴대폰 · 노트북 중복 방지). 화면에는 기수만 표시
+- 실시간 투표: 진행자가 결과를 공개하면 참가자 휴대폰 전체 화면에 결과(막대 연출 · 1위 · 내 선택)를 강제로 표시
+- 체크인 · 응모권: 명단 체크박스로 체크인, 퀴즈 우승 테이블 · 회고 사진 제공자 보너스가 응모권에 자동 반영
+- 경품 추첨: 응모권 가중 추첨, 슬롯머신 방식 공개 연출이 모든 휴대폰에 동시에 재생, 본인 당첨 시 축하 화면
+- 내 테이블 · 참가자 카드(명찰 QR), 운영진 현황 화면, 홈 화면 추가(PWA)
+- 행사 도우미: 일정 · 길찾기 · 신청 · 라이브 사용법을 답하는 AI 챗봇(답변에 지도 · 폼 버튼)
+
+## 구조
+
+```
+참가자 휴대폰 ──(정적 페이지)── GitHub Pages: index.html, live/, people/
+      │
+      ├──(실시간 구독 · 쓰기)── Firebase Firestore: 진행 상태 · 질문 · 투표 · 체크인 · 추첨 결과
+      │                         └ 보안 규칙(live/firestore.rules)으로 운영진 쓰기 · 참가자 허용 범위 제한
+      │
+      └──(질문 POST)── Vercel 함수 hoco-assistant ── Claude API
+                        └ API 키는 서버 환경 변수에만 존재
+운영진 노트북 ── live/?admin (Firebase Auth 로그인)
 ```
 
-`#`인 동안은 신청 버튼이 "10월 오픈" 상태로 비활성 표시됩니다. 링크를 넣는 순간 자동으로 활성화됩니다.
+## 설계에서 신경 쓴 점
 
-## 과거 사진 넣기
+- **서버 없는 실시간**: Firestore 구독만으로 진행 · 질문 · 투표 · 추첨을 동기화. 참가자 휴대폰은 투표 집계를 구독하지 않고 결과 공개 때만 읽어 무료 플랜 읽기 한도 안에서 동작
+- **권한은 규칙으로**: 질문 생성 필드 · 길이 검증, 추천은 한 번에 ±1만, 투표는 문서 생성만(수정 불가), 진행 · 체크인 · 추첨은 운영진만
+- **개인정보 최소화**: 질문 작성자는 이름과 무관한 기기 난수로 저장, 화면에는 기수만. 참가자 카드는 공개 동의자만
+- **AI 도우미 보안**: 키는 서버에만, 허용 출처만 응답, 입력 길이 · 대화 길이 제한, 답변 속 링크는 미리 정한 목록의 이름으로만 받아 화면에서 주소로 변환(모델이 임의 링크를 만들 수 없음), 대화 내용 미저장
+- **현장 안정성**: 당일 코드 배포 금지(정적 파일 캐시 10분), 진행 조작은 실시간 데이터라 즉시 반영, 오프라인 대안(손들기 · 사회자 호명) 준비
 
-`assets/photos/01.jpg` ~ `09.jpg` 이름으로 넣으면 "그때의 TOBIG'S" 섹션이 자동으로 나타납니다. 한 장도 없으면 섹션이 숨겨집니다.
+## 폴더
 
-- 가로형, 긴 변 1600px 이상, 1장당 500KB 이하 권장
-- 01.jpg가 가장 크게 보입니다 (대표 단체사진)
-- 서로 다른 기수를 섞어서, 개인 클로즈업 대신 단체·활동 사진
+| 경로 | 내용 |
+| --- | --- |
+| `index.html` | 초대장. 상단 `EDIT HERE` 블록에 신청 · 문의 · 설문 · 사진 링크와 마감일 |
+| `live/index.html` | 라이브 전체(허브 `/live/`, 질문 `?qa`, 도우미 `?ask`, 추첨 `?draw`, 현황 `?screen`, 운영 `?admin`) |
+| `live/table/` | 내 테이블 조회 (`live/tables.json`) |
+| `people/` | 참가자 카드 (`people.json`), 명찰 QR은 `/people/?no=번호` |
+| `live/firestore.rules` | Firestore 보안 규칙 (Firebase 콘솔에 게시) |
+| `live/manifest.webmanifest`, `live/icon-*.png` | 홈 화면 추가 |
+| `tools/make_people.py` | RSVP 정리 CSV → `tables.json` · `people.json` |
+| `tools/make_qr.py` | 명찰 QR 이미지 생성 (`qr/badge/`, git 제외) |
 
-## 재배포
+## 운영 메모
 
-```bash
-git add -A && git commit -m "update" && git push
-```
+- **명단 · 테이블 공개**: `tools/people.template.csv` 열(no, name, gen, t1, t2, intro, topic1, topic2, card, 링크들, photo)로 CSV를 만들고 `python3 tools/make_people.py 명단.csv --publish` → `python3 tools/make_qr.py`
+- **진행**: 운영 화면 진행 탭에서 단계 시작 · 진행 초기화. 투표는 열기 → 닫기 → 결과 공개 → 결과 내리기
+- **추첨**: 체크인 탭에서 체크인 · 사진 제공 · 퀴즈 우승 테이블 지정 → 추첨 탭에서 응모권 계산 → 상 순서대로 버튼
+- **Firebase 최초 설정**: Firestore 규칙 게시, Authentication 승인 도메인에 사이트 도메인 추가, 운영 계정 이메일을 규칙의 `isAdmin()`과 일치
+- **배포**: `main`에 푸시하면 GitHub Pages가 1~2분 안에 반영
 
-푸시 후 1~2분이면 반영됩니다.
-
-## 카톡 미리보기
-
-`assets/og.png`(1200×630)가 카톡 링크 미리보기로 쓰입니다. 카톡이 예전 미리보기를 캐시하면 링크 끝에 `?v=2`처럼 쿼리를 붙여 공유하세요.
-
-
-## 라이브 페이지 (`live/`)
-
-행사 당일 실시간 질문·투표·진행 순서·내 테이블·참가자 카드·Lucky Draw 결과. Firebase Firestore(프로젝트 `tobigshoco`)를 쓰고 서버는 없음.
-
-- 참가자: https://homecoming.datamarket.ai.kr/live/  (테이블 번호표·화면의 QR)
-- 내 테이블: https://homecoming.datamarket.ai.kr/live/table/  (이름·기수로 조회, 기기에 기억. Firebase 없이 tables.json만 읽음)
-- 참가자 카드: https://homecoming.datamarket.ai.kr/people/  (`people.json`, 명찰 QR은 `/people/?no=번호`. 검색 엔진 제외, 11/16 공개 → 12/21 삭제)
-- 프로젝터: https://homecoming.datamarket.ai.kr/live/?screen
-- 운영진: https://homecoming.datamarket.ai.kr/live/?admin  (Firebase Auth 이메일 로그인, 진행·질문·투표·체크인·추첨)
-
-### 처음 한 번 할 것
-
-1. Firebase 콘솔 → Firestore → 규칙 탭에 `live/firestore.rules` 내용을 붙여넣고 게시. 테스트 모드 규칙은 생성 30일 뒤 만료되므로 반드시 교체
-2. Firebase 콘솔 → Authentication → 설정 → 승인된 도메인에 `homecoming.datamarket.ai.kr` 추가
-3. 운영진 계정(이메일/비밀번호)은 Authentication → Users에서 관리. 규칙의 `isAdmin()` 이메일과 같아야 함
-
-### 라이브에 필요한 데이터
-
-| 기능 | 데이터 | 어디에 | 언제 |
-| --- | --- | --- | --- |
-| 진행 순서·타이머 | 순서 목록 | `live/index.html`의 `STEPS` 상수 | 완료 |
-| 질문·투표 | 없음 (당일 생성) | Firestore `questions`, `polls/{id}/votes` | 운영 화면에서 당일 |
-| 내 테이블 | 참가자 명단 + 1·2라운드 테이블 | `live/tables.json` | 11/16 배정 후 |
-| 체크인 | 위 명단 | `tables.json` → 당일 체크 결과는 Firestore `checkins/{no}` | 당일 데스크 |
-| 참가자 카드 | 공개 동의자의 이름·기수·하는 일·관심 분야·프로필 링크 | `people.json` (`tools/make_people.py`가 CSV에서 생성) | 11/16 |
-| 명찰 QR | 번호별 PNG | `tools/make_qr.py` → `qr/badge/` (git 제외) | 11/16 |
-| Lucky Draw | 위 명단 + 추가 응모(퀴즈 우승 테이블·회고 사진, 최대 3장) + 경품 7종 | 추가 응모는 운영 화면에 입력, 경품은 `AWARDS` 상수(추첨 순서대로 Homecoming 상 2 → Welcome 상 2 → 3·2·1등) | 당일 |
-
-### 테이블 배정 (11/16)
-
-RSVP 시트에서 `tools/people.template.csv` 열 이름(명찰 번호, 이름, 기수, 1·2라운드, 하는 일, 관심 분야 1·2, 카드 공개 여부, 프로필 링크)으로 CSV를 만들고 `python3 tools/make_people.py 명단.csv --publish`를 돌리면 `live/tables.json`과 `people.json`이 함께 만들어진다. 이어서 `python3 tools/make_qr.py`로 명찰 QR PNG를 뽑아 명찰 디자인에 넣는다. 명찰 번호는 1부터 순서대로 매기고 명찰 인쇄에도 같은 번호를 쓴다. 이름은 명찰과 동일한 표기(띄어쓰기 무관, 기수는 "25기" 형식). `published`를 `true`로 바꾸면 `/live/table/` 조회와 체크인 명단, 추첨 풀이 살아난다.
-
-```json
-{ "published": true, "rows": [ { "no": 1, "name": "홍길동", "gen": "25기", "t1": 3, "t2": 7 } ] }
-```
-
-### 당일 흐름
-
-운영 화면 "진행" 탭에서 순서를 시작하면 모든 화면의 Now와 남은 시간이 바뀌고, 프로젝터 화면의 내용도 순서에 맞게 바뀐다. 입장·Table Talk 1 = 1라운드 테이블 명단, 이동·Table Talk 2 = 2라운드 명단, Alumni Session = 질문·투표, Break 1 = 큰 타이머, Lucky Draw = 당첨자 목록과 공 떨어뜨리기, 그 외(개회·퀴즈·단체사진 등 PPT를 쓰는 순서) = 슬로건만. 투표는 "열기"로 참가자 화면에 뜨고 "화면에 올리기"로 프로젝터에 결과가 뜬다. 참가자 휴대폰은 투표 후 "투표 완료"만 보이고 집계를 구독하지 않는다(무료 플랜 하루 읽기 5만 건 안에 들기 위해; 집계 구독은 프로젝터·운영 화면만). 체크인은 데스크 운영진이 휴대폰으로 체크하면 추첨 풀에 자동 반영. 추첨은 Homecoming 상부터 7회, 응모권 수만큼 가중, 1인 1회. 경품은 `live/index.html`의 `AWARDS` 배열(추첨 순서).
+행사 종료 후 30일 안에 참가자 데이터(명단 · 카드 · Firestore 기록)를 삭제합니다.
