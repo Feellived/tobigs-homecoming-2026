@@ -463,7 +463,6 @@ function qa(){
 // ---------- 행사 도우미 ----------
 // 질문은 중계 서버(Vercel)로만 보낸다. API 키는 서버에만 있다. 링크는 서버가 고른 이름을 아래 허용 목록 주소로만 바꾼다(모델이 주소를 만들 수 없음).
 const ASK_URL = 'https://hoco-assistant.vercel.app/api/chat';
-const ASK_LIMIT = 20;
 const ASK_LINKS = {
   map_kakao: ['카카오맵에서 보기', 'https://map.kakao.com/?q=%EC%98%AC%EB%A6%BC%ED%94%BD%ED%9A%8C%EA%B4%80'],
   map_naver: ['네이버 지도에서 보기', 'https://map.naver.com/p/search/%EC%98%AC%EB%A6%BC%ED%94%BD%ED%9A%8C%EA%B4%80'],
@@ -482,12 +481,11 @@ function ask(){
     <div class="chips" id="k-sug">${ASK_SUG.map(t=>`<button type="button">${esc(t)}</button>`).join('')}</div>
     <div class="chat" id="k-log"></div>
     <form id="k-f" class="row" style="flex-wrap:nowrap;margin-top:10px"><input type="text" id="k-in" maxlength="300" placeholder="궁금한 것을 입력하세요" autocomplete="off" enterkeyhint="send" style="flex:1 1 0;width:auto"><button class="btn btn-primary" id="k-go" type="submit">보내기</button></form>
-    <p class="muted" id="k-left" style="font-size:12px;margin-top:6px"></p></section>`;
+    </section>`;
   forceWatch();
   let hist = []; try { hist = JSON.parse(sessionStorage.getItem('hc_ask')||'[]'); } catch(e){}
-  let left = (() => { try { const v = localStorage.getItem('hc_ask_left'); return v===null ? ASK_LIMIT : Number(v); } catch(e){ return ASK_LIMIT; } })();
   let busy = false;
-  const save = () => { try { sessionStorage.setItem('hc_ask', JSON.stringify(hist.slice(-30))); localStorage.setItem('hc_ask_left', String(left)); } catch(e){} };
+  const save = () => { try { sessionStorage.setItem('hc_ask', JSON.stringify(hist.slice(-30))); } catch(e){} };
   const linkHtml = keys => { const l = (keys||[]).filter(k => ASK_LINKS[k]); if(!l.length) return '';
     return `<div class="lk">${l.map(k => { const [label, url] = ASK_LINKS[k], ext = /^https:/.test(url); return `<a href="${esc(url)}"${ext?' target="_blank" rel="noopener noreferrer"':''}>${esc(label)}${ext?' ↗':''}</a>`; }).join('')}</div>`; };
   const draw = (typing) => { const log = $('#k-log');
@@ -495,18 +493,16 @@ function ask(){
       + hist.map(m => m.role==='user' ? `<div class="bub u">${esc(m.content)}</div>` : m.role==='err' ? `<div class="bub e">${esc(m.content)}</div>${linkHtml(m.links)}` : `<div class="bub a">${esc(m.content)}${linkHtml(m.links)}</div>`).join('')
       + (typing ? '<div class="bub a"><span class="dots"><i></i><i></i><i></i></span></div>' : '');
     log.scrollTop = log.scrollHeight;
-    $('#k-left').textContent = left > 0 ? `남은 질문 ${left} / ${ASK_LIMIT}` : '질문 20회를 모두 사용했어요. 더 궁금한 점은 운영부 오픈채팅으로 문의해 주세요.';
-    $('#k-in').disabled = $('#k-go').disabled = busy || left <= 0; $('#k-sug').hidden = hist.length > 0; };
-  const sendQ = async q => { q = String(q||'').trim().slice(0, 300); if(!q || busy || left <= 0) return;
+    $('#k-in').disabled = $('#k-go').disabled = busy; $('#k-sug').hidden = hist.length > 0; };
+  const sendQ = async q => { q = String(q||'').trim().slice(0, 300); if(!q || busy) return;
     busy = true; hist = hist.filter(m => m.role !== 'err'); hist.push({ role:'user', content:q }); $('#k-in').value = ''; draw(true);
     let msgs = hist.filter(m => m.role==='user' || m.role==='assistant').map(m => ({ role:m.role, content:String(m.content).slice(0, m.role==='user'?300:1500) }));
     while(msgs.length > 11) msgs.shift(); while(msgs.length && msgs[0].role !== 'user') msgs.shift();
     try {
       const r = await fetch(ASK_URL, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ deviceId: cid, messages: msgs }) });
       const d = await r.json().catch(() => ({}));
-      if(r.ok && typeof d.answer === 'string'){ hist.push({ role:'assistant', content:d.answer, links:d.links||[] }); if(typeof d.remaining === 'number') left = d.remaining; }
-      else { hist.pop(); if(d.error === 'device_limit'){ left = 0; hist.push({ role:'err', content:'이 기기에서 물을 수 있는 20회를 모두 사용했어요.', links:['openchat'] }); }
-        else hist.push({ role:'err', content: d.error==='busy' ? '지금 질문이 몰려 있어요. 잠시 후 다시 시도해 주세요.' : '답변을 가져오지 못했어요. 잠시 후 다시 시도해 주세요.', links:['openchat'] }); }
+      if(r.ok && typeof d.answer === 'string'){ hist.push({ role:'assistant', content:d.answer, links:d.links||[] }); }
+      else { hist.pop(); hist.push({ role:'err', content: d.error==='busy' ? '지금 질문이 몰려 있어요. 잠시 후 다시 시도해 주세요.' : '답변을 가져오지 못했어요. 잠시 후 다시 시도해 주세요.', links:['openchat'] }); }
     } catch(e){ hist.pop(); hist.push({ role:'err', content:'인터넷 연결을 확인해 주세요.', links:[] }); }
     busy = false; save(); draw(false); };
   $('#k-f').addEventListener('submit', e => { e.preventDefault(); sendQ($('#k-in').value); });
