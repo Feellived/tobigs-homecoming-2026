@@ -56,7 +56,8 @@ label.f{display:block;font-size:12px;color:var(--muted);margin-top:8px}
 .q .t{font-size:15px;line-height:1.45;word-break:keep-all}
 .q .m{font-size:12px;color:var(--muted);margin-top:2px}
 .to{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.to .tl{font-size:12px;color:var(--muted);width:100%}.to button{padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:#fff;font-size:13px}.to button.on{background:var(--accent);border-color:var(--accent)}
-.q.done .t{color:var(--muted);text-decoration:line-through}
+.ans-b{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--accent);color:#fff;margin-left:6px;vertical-align:1px}
+.sq .ans-b{font-size:13px;padding:2px 10px}
 .vote{flex:0 0 auto;min-width:64px;padding:8px 12px;white-space:nowrap;border:1px solid var(--line);border-radius:10px;background:transparent;color:#fff;font-weight:700;font-size:14px}
 .vote.on{background:var(--accent);border-color:var(--accent);font-size:13px}
 .spks{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:4px}
@@ -127,7 +128,6 @@ table.t td,table.t th{text-align:left;padding:5px 4px;border-bottom:1px solid va
 .tgc.ind{color:var(--ind)}.tgc.aca{color:var(--aca)}
 .sq .tgc{font-size:14px;line-height:22px}
 /* speaker colors */
-.spk.ind{box-shadow:inset 3px 0 0 var(--ind)}.spk.aca{box-shadow:inset 3px 0 0 var(--aca)}
 .spk.ind .role,.spd.ind .role{color:var(--ind)!important}.spk.aca .role,.spd.aca .role{color:var(--aca)!important}
 .spk.ind .ph{color:var(--ind);background:rgba(111,227,217,.14)}.spk.aca .ph{color:var(--aca);background:rgba(196,181,253,.16)}
 /* poll results */
@@ -141,8 +141,7 @@ table.t td,table.t th{text-align:left;padding:5px 4px;border-bottom:1px solid va
 .youwin{font-size:30px;font-weight:800;margin-top:18px;line-height:1.3;animation:pop2 .7s cubic-bezier(.2,1.4,.4,1)}
 .youwin small{display:block;font-size:16px;font-weight:600;color:var(--peri);margin-top:6px}
 @keyframes pop2{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
-.ov.me #pk{max-height:34vh;width:auto}
-.ov.pk{overflow:auto;padding:16px 0}
+.ov.rl{overflow:auto;padding:16px}
 .ov canvas.cf{position:fixed;inset:0;margin:0;max-width:none;pointer-events:none;z-index:9}
 /* hub timeline */
 .dd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
@@ -157,6 +156,10 @@ table.t td,table.t th{text-align:left;padding:5px 4px;border-bottom:1px solid va
 .tl li.done{opacity:.45}
 .tl li.now{color:#fff;font-weight:700}.tl li.now:before{background:var(--accent);box-shadow:0 0 0 4px rgba(61,90,254,.3)}
 .tip{font-size:12px;text-align:center;margin-top:14px}
+.ci{padding:8px 0;border-top:1px solid var(--line);flex-wrap:nowrap}.ci.in b{color:var(--peri)}
+.ph-t{border:1px solid var(--line);background:transparent;border-radius:8px;padding:3px 7px;opacity:.3;filter:grayscale(1);font-size:13px}.ph-t.on{opacity:1;filter:none;border-color:var(--peri)}
+.tk{font-family:var(--display);font-size:12px;color:var(--muted);min-width:28px;text-align:right}
+#a-qt button.on{background:var(--accent);border-color:var(--accent);color:#fff}
 /* screen */
 body.screen .top{display:none}
 body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-template-rows:auto 1fr}
@@ -189,7 +192,7 @@ body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-templat
 .sq:first-child{border-top:0}
 .sq .v{flex:0 0 auto;min-width:64px;font-family:var(--display);font-weight:700;color:var(--peri)}
 .sq .m{font-size:15px;color:var(--peri);margin-top:4px}
-.sq.done{opacity:.4}
+.sq.done{opacity:.75}
 .sc .res .l{font-size:22px}
 .sc .res .bar{height:18px}
 .sc .win{padding:14px 0}
@@ -206,8 +209,14 @@ body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-templat
 .ov .meta{font-family:var(--display);font-size:32px;color:var(--peri)}
 .ov canvas{display:block;margin:10px auto 0;max-width:100%}
 .ov.fv{z-index:6;padding:24px;overflow:auto}.ov.fv .rk{font-size:14px}.ov.fv .fq{font-size:22px;font-weight:800;margin:14px 0 18px;max-width:640px;word-break:keep-all}.ov.fv .fb{width:100%;max-width:640px;text-align:left}.ov.fv .btn{margin-top:18px}
-.ov.pk .nm{font-size:min(8vw,72px);margin:4px 0 2px}
-.ov.pk .meta{font-size:24px}
+.reel{position:relative;width:min(88vw,560px);height:192px;overflow:hidden;margin:22px auto 6px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.04);-webkit-mask-image:linear-gradient(transparent,#000 30%,#000 70%,transparent);mask-image:linear-gradient(transparent,#000 30%,#000 70%,transparent)}
+.reel .strip{will-change:transform}
+.reel .it{height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
+.reel .it b{font-size:24px;font-weight:800}.reel .it span{font-family:var(--display);font-size:12px;color:var(--muted)}
+.reel .wl2{position:absolute;left:10px;right:10px;top:64px;height:64px;border-top:2px solid var(--accent);border-bottom:2px solid var(--accent);border-radius:10px;background:rgba(61,90,254,.12);pointer-events:none}
+.reel.done .it.hit b{color:var(--peri)}.reel.done .wl2{box-shadow:0 0 0 4px rgba(61,90,254,.25);transition:box-shadow .3s}
+.ov.rl .nm{font-size:min(10vw,72px);margin:10px 0 2px}.ov.rl .meta{font-size:22px}
+body.screen .reel{width:min(70vw,900px);height:330px}body.screen .reel .it{height:110px}body.screen .reel .it b{font-size:52px}body.screen .reel .it span{font-size:18px}body.screen .reel .wl2{top:110px;height:110px}
 @media(max-width:900px){body.screen main{height:auto}.sb{grid-template-columns:1fr}.sc+.sc{border-left:0;border-top:1px solid var(--line)}.sh{flex-wrap:wrap}}
 </style>
 </head>
@@ -411,7 +420,7 @@ function qa(){
     l.sort(qSort==='new' ? (a,b)=>ts(b)-ts(a) : (a,b)=>(b.voters?.length||0)-(a.voters?.length||0) || ts(b)-ts(a));
     const first = seenQ === null; if(first && S.qLoaded) seenQ = new Set();
     $('#g-list').innerHTML = l.map(x => { const n = x.voters?.length||0, on = !!(me && x.voters?.includes(me.pid)), mine = !!x.client && ((me && x.client===me.pid) || x.client===cid), isNew = !first && !seenQ.has(x.id), bump = prevN[x.id]!==undefined && prevN[x.id]!==n;
-      return `<div class="q${x.answered?' done':''}${isNew?' in':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${toLbl(x)}${mine?'<span class="me-b">내 질문</span>':''}${x.answered?' · 답변 완료':''}</div></div><button class="vote${on?' on':''}${bump?' bump':''}" data-id="${esc(x.id)}" data-on="${on?1:0}" ${x.answered?'disabled':''}>${on?'추천 완료':'추천'} ${n}</button></div>`; }).join('')
+      return `<div class="q${x.answered?' done':''}${isNew?' in':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${toLbl(x)}${mine?'<span class="me-b">내 질문</span>':''}${x.answered?'<span class="ans-b">답변 완료</span>':''}</div></div><button class="vote${on?' on':''}${bump?' bump':''}" data-id="${esc(x.id)}" data-on="${on?1:0}" ${x.answered?'disabled':''}>${on?'추천 완료':'추천'} ${n}</button></div>`; }).join('')
       || (qFilter==='*' ? '<div class="q"><div class="grow"><div class="t" style="color:var(--muted)">(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">첫 질문을 올려주세요</div></div></div>' : '<p class="muted" style="padding:10px 0">아직 이 대상에게 온 질문이 없어요.</p>');
     if(seenQ) l.forEach(x => { seenQ.add(x.id); prevN[x.id] = x.voters?.length||0; }); };
   $('#g-sort').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; qSort = b.dataset.s; $('#g-sort').querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b)); render.questions(); });
@@ -462,50 +471,26 @@ function winFx(ov, lv){ if(view==='screen' || view==='admin' || !isMe(lv)) retur
   ov.classList.add('me'); ov.insertAdjacentHTML('beforeend', `<div class="youwin">🎉 축하합니다!<small>당첨되셨어요. 앞으로 나와 주세요</small></div><button class="btn" id="yw-x" style="margin-top:16px">닫기</button>`);
   ov.querySelector('#yw-x').onclick = () => ov.remove(); confetti(ov); try { navigator.vibrate?.([90,60,90,60,160]); } catch(e){} return true; }
 // ---------- 추첨 연출 (screen·참가자 휴대폰 공용) ----------
-  // 당첨자 공개 연출. 공이 8초 동안 핀 사이를 이리저리 튕기다가 마지막에 이웃 칸을 오가며 뜸을 들인 뒤 당첨 칸에 안착한다.
-  let seenSeq = null;
-  const plinko = lv => {
-    const pz = lv.prize ? `<div class="pz">${esc(lv.prize)}</div>` : '';
-    const ov = document.createElement('div'); ov.className = 'ov pk';
-    ov.innerHTML = `<div class="rk">${esc(awardLabel(lv))}</div>${pz}<canvas id="pk"></canvas><div id="pkres"></div>`;
+  // 당첨자 공개 연출: 슬롯머신처럼 응모자 이름이 빠르게 돌다가 서서히 멈춰 당첨자에 선다. 이름이 나오는 빈도 = 응모권 수.
+  const reel = lv => {
+    const ov = document.createElement('div'); ov.className = 'ov rl';
+    ov.innerHTML = `<div class="rk">${esc(awardLabel(lv))}</div>${lv.prize?`<div class="pz">${esc(lv.prize)}</div>`:''}<div class="reel"><div class="strip"></div><div class="wl2"></div></div><div id="rlres"></div>`;
     document.body.appendChild(ov);
-    const cv = ov.querySelector('#pk'), W = cv.width = Math.min(window.innerWidth - 80, 1400), H = cv.height = Math.min(window.innerHeight - 260, 620), ctx = cv.getContext('2d');
-    const L = 30, R = W - 30, BW = R - L, rows = 12, top = 30, bottom = H - 90, slotTop = H - 70, slotH = 50;
-    const total = lv.pool.reduce((s,p)=>s+p.t,0); let acc = 0;
-    const slots = lv.pool.map(p => { const x0 = L + acc/total*BW; acc += p.t; return { ...p, x0, x1: L + acc/total*BW }; });
-    const tx = L + lv.u*BW, win = slots.find(s => tx >= s.x0 && tx < s.x1) || slots[slots.length-1], sw = Math.max(40, win.x1 - win.x0);
-    const clamp = x => Math.min(R-12, Math.max(L+12, x));
-    const xs = [W/2]; const side = rand() < .5 ? -1 : 1;
-    for(let i=1;i<=rows;i++){ let x;
-      if(i <= rows-3) x = xs[i-1] + (tx - xs[i-1]) * 0.22 + (rand()-.5) * 2 * 170 * (1 - i/rows*0.5);
-      else if(i === rows-2) x = tx + side * Math.max(sw*2.2, 90);
-      else if(i === rows-1) x = tx - side * Math.max(sw*1.1, 50);
-      else x = tx;
-      xs.push(clamp(x)); }
-    const segDur = []; for(let i=0;i<rows;i++) segDur.push(i < rows-3 ? 520 : i === rows-3 ? 900 : 1300);
-    const cum = [0]; segDur.forEach(d => cum.push(cum[cum.length-1] + d)); const dur = cum[rows];
-    const pegs = []; for(let i=1;i<rows;i++){ const y = top + (bottom-top)*i/rows, off = i%2 ? 28 : 0; for(let x = L + off; x <= R; x += 56) pegs.push({x,y}); }
-    const t0 = performance.now(), trail = []; let done = false;
-    const easeIO = t => t<.5 ? 2*t*t : -1+(4-2*t)*t;
-    const draw = now => {
-      const el = Math.min(dur, now - t0);
-      let i = 0; while(i < rows-1 && el >= cum[i+1]) i++;
-      const f = Math.min(1, (el - cum[i]) / segDur[i]), p = el / dur;
-      ctx.clearRect(0,0,W,H);
-      ctx.fillStyle = 'rgba(157,176,255,.35)'; pegs.forEach(g => { ctx.beginPath(); ctx.arc(g.x, g.y, 3, 0, 7); ctx.fill(); });
-      slots.forEach((sl,k) => { ctx.fillStyle = done && sl===win ? '#3d5afe' : (k%2 ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.04)'); ctx.fillRect(sl.x0, slotTop, sl.x1-sl.x0, slotH); ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.beginPath(); ctx.moveTo(sl.x0, slotTop); ctx.lineTo(sl.x0, slotTop+slotH); ctx.stroke(); if(sl.x1-sl.x0 >= 24){ ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.font = '600 12px Pretendard, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(sl.no, (sl.x0+sl.x1)/2, slotTop+slotH-8); } });
-      const bx = p >= 1 ? tx : xs[i] + (xs[i+1]-xs[i]) * easeIO(f);
-      const by = p >= 1 ? slotTop + slotH/2 - 10 : top + (bottom-top) * (i + f) / rows - Math.sin(f*Math.PI) * 14;
-      trail.push({x:bx,y:by}); if(trail.length > 22) trail.shift();
-      trail.forEach((t,k) => { ctx.fillStyle = `rgba(157,176,255,${k/trail.length*.5})`; ctx.beginPath(); ctx.arc(t.x, t.y, 5 + k/trail.length*7, 0, 7); ctx.fill(); });
-      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(bx, by, 14, 0, 7); ctx.fill();
-      if(p < 1) requestAnimationFrame(draw);
-      else if(!done){ done = true; requestAnimationFrame(draw); setTimeout(() => { ov.querySelector('#pkres').innerHTML = `<div class="nm">${esc(lv.name)}</div><div class="meta">${esc(lv.gen||'')} · No.${esc(lv.no)}</div>`; if(winFx(ov, lv)) ov.dataset.keep = 1; }, 900); setTimeout(() => { if(!ov.dataset.keep) ov.remove(); }, 10000); }
-    };
-    requestAnimationFrame(draw);
+    const pool = lv.pool, tot = pool.reduce((a,p)=>a+(p.t||1),0) || 1;
+    const pick = () => { let r = rand()*tot; for(const p of pool){ r -= (p.t||1); if(r < 0) return p; } return pool[pool.length-1]; };
+    const N = 44, seq = []; for(let k=0;k<N;k++) seq.push(pick()); seq.push({ no:lv.no, name:lv.name }); seq.push(pick(), pick());
+    const strip = ov.querySelector('.strip'); strip.innerHTML = seq.map(p=>`<div class="it"><b>${esc(p.name)}</b><span>No.${esc(p.no)}</span></div>`).join('');
+    const H = strip.firstElementChild.getBoundingClientRect().height || 64, target = (N - 1) * H, dur = 6800, t0 = performance.now();
+    const ease = t => 1 - Math.pow(1 - t, 4);
+    const step = now => { const t = Math.min(1, (now - t0) / dur); strip.style.transform = `translateY(${-target * ease(t)}px)`;
+      if(t < 1) return requestAnimationFrame(step);
+      ov.querySelector('.reel').classList.add('done'); strip.children[N].classList.add('hit');
+      setTimeout(() => { ov.querySelector('#rlres').innerHTML = `<div class="nm">${esc(lv.name)}</div><div class="meta">${esc(lv.gen||'')} · No.${esc(lv.no)}</div>`; if(winFx(ov, lv)) ov.dataset.keep = 1; }, 500);
+      setTimeout(() => { if(!ov.dataset.keep) ov.remove(); }, 9000); };
+    requestAnimationFrame(step);
   };
   const reveal = lv => {
-    if(Array.isArray(lv.pool) && lv.pool.length && typeof lv.u === 'number') return plinko(lv);
+    if(Array.isArray(lv.pool) && lv.pool.length) return reel(lv);
     const pz = lv.prize ? `<div class="pz">${esc(lv.prize)}</div>` : ''; const ov = document.createElement('div'); ov.className = 'ov'; ov.innerHTML = `<div class="rk">${esc(awardLabel(lv))}</div>${pz}<div class="roll" id="roll">00</div>`;
     document.body.appendChild(ov);
     const maxNo = Math.max(80, ...(S.draw?.items||[]).map(w=>Number(w.no)||0));
@@ -531,7 +516,7 @@ function screen(){
     if(!S.tables.published || !rows.length){ el.innerHTML = '<p class="se">명찰에 적힌 테이블 번호로 앉아 주세요.</p>'; return; }
     const g = {}; rows.forEach(r => { (g[r[key]] = g[r[key]] || []).push(r); });
     el.innerHTML = Object.keys(g).sort((a,b)=>a-b).map(n => `<div class="tb"><div class="tn">${esc(n)}</div>${g[n].map(r=>`<div>${esc(r.name)} <span>${esc(r.gen)}</span></div>`).join('')}</div>`).join(''); };
-  render.questions = () => { const el = $('#s-q'); if(!el) return; el.innerHTML = visible().slice(0,8).map(x=>`<div class="sq${x.answered?' done':''}"><div class="v">👍 ${x.voters?.length||0}</div><div><div>${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${toLbl(x)}</div></div></div>`).join('') || '<p class="se">QR로 들어와 질문을 올려주세요.</p><div class="sq" style="opacity:.5"><div class="v">👍 0</div><div><div>(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">25기</div></div></div>'; };
+  render.questions = () => { const el = $('#s-q'); if(!el) return; el.innerHTML = visible().slice(0,8).map(x=>`<div class="sq${x.answered?' done':''}"><div class="v">👍 ${x.voters?.length||0}</div><div><div>${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${toLbl(x)}${x.answered?'<span class="ans-b">답변 완료</span>':''}</div></div></div>`).join('') || '<p class="se">QR로 들어와 질문을 올려주세요.</p><div class="sq" style="opacity:.5"><div class="v">👍 0</div><div><div>(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">25기</div></div></div>'; };
   const right = () => { const box = $('#s-r'); if(!box) return; const p = S.polls.find(x=>x.open||x.show);
     if(p) box.innerHTML = `<h3>투표${p.open?'':' · 마감'}</h3><div style="font-size:30px;font-weight:800;margin-bottom:18px">${esc(p.q)}</div>` + bars(p) + `<p class="se">${counts(p).total}명 참여</p>`;
     else box.innerHTML = `<h3>Big Then. Bigger Now.</h3>`; };
@@ -579,28 +564,42 @@ function adminMain(){
     if(b.dataset.a==='show') await updateDoc(ref,{show:!p.show}); if(b.dataset.a==='del' && confirm('삭제?')) await deleteDoc(ref); });
 
   // 체크인
-  $('#a-ci').innerHTML = `<section class="card"><p class="muted" id="a-cc"></p><input type="text" id="a-cs" placeholder="이름 또는 번호"><div id="a-cl"></div></section>
-    <section class="card"><form id="a-ca" class="row"><input type="number" id="a-cno" placeholder="번호" style="flex:0 0 80px" required><input type="text" id="a-cn" placeholder="이름" class="grow" required><select id="a-cg" style="flex:0 0 90px">${GENS.map(g=>`<option>${g}</option>`).join('')}</select><button class="btn btn-sm btn-primary" type="submit">체크인</button></form></section>`;
+  // 체크인 · 응모 보너스: 명단(tables.json) 전체를 띄우고 체크박스로 관리. 퀴즈 우승 테이블·사진 제공자는 state/bonus 에 저장 → 추첨 응모권에 자동 반영(새로고침해도 유지)
+  let bonus = { quiz:[], photo:null };
+  $('#a-ci').innerHTML = `<section class="card"><div class="row" style="justify-content:space-between"><b id="a-cc"></b><label class="muted" style="font-size:12px"><input type="checkbox" id="a-cu"> 미체크인만</label></div>
+    <label class="f">퀴즈 우승 테이블 (1라운드 번호 · 누르면 그 테이블 전원 응모권 +1)</label><div class="chips" id="a-qt"></div>
+    <p class="muted" style="font-size:12px;margin:6px 0">📷 = 회고 사진 제공(응모권 +1). 이름 옆 📷 를 눌러 켜고 끕니다. 응모권은 최대 3장.</p>
+    <input type="text" id="a-cs" placeholder="이름 또는 번호 검색"><div id="a-cl"></div></section>
+    <section class="card"><div class="eyebrow">현장 등록 (명단에 없는 사람)</div><form id="a-ca" class="row"><input type="number" id="a-cno" placeholder="번호" style="flex:0 0 80px" required><input type="text" id="a-cn" placeholder="이름" class="grow" required><select id="a-cg" style="flex:0 0 90px">${GENS.map(g=>`<option>${g}</option>`).join('')}</select><button class="btn btn-sm btn-primary" type="submit">체크인</button></form></section>`;
   const rows = () => S.tables.rows || [];
-  render.checkins = () => { const k = norm($('#a-cs').value); const extra = Object.values(S.checkins).filter(c => !rows().some(r=>String(r.no)===String(c.no)));
-    $('#a-cc').textContent = `체크인 ${Object.keys(S.checkins).length} / 명단 ${rows().length}`;
-    $('#a-cl').innerHTML = rows().filter(r=>!k || norm(r.name).includes(k) || String(r.no)===k).map(r=>`<label class="row" style="padding:8px 0;border-top:1px solid var(--line)"><input type="checkbox" data-no="${esc(r.no)}" ${S.checkins[String(r.no)]?'checked':''}><span class="muted" style="min-width:36px">${esc(r.no)}</span><b>${esc(r.name)}</b><span class="muted">${esc(r.gen)} · ${esc(r.t1)}/${esc(r.t2)}</span></label>`).join('')
-      + extra.map(c=>`<label class="row" style="padding:8px 0;border-top:1px solid var(--line)"><input type="checkbox" data-no="${esc(c.no)}" checked><span class="muted" style="min-width:36px">${esc(c.no)}</span><b>${esc(c.name)}</b><span class="muted">${esc(c.gen)}</span></label>`).join(''); };
-  $('#a-cs').addEventListener('input', render.checkins);
+  const photoSet = () => new Set((bonus.photo ?? rows().filter(r=>r.photo).map(r=>r.no)).map(String));
+  const ticketsOf = (no, t1) => Math.min(3, 1 + (t1!==undefined && t1!==null && t1!=='' && bonus.quiz.includes(String(t1)) ? 1 : 0) + (photoSet().has(String(no)) ? 1 : 0));
+  const saveBonus = (quiz, photo) => setDoc(doc(db,'state','bonus'), { quiz, photo });
+  render.checkins = () => { const k = norm($('#a-cs').value), onlyNo = $('#a-cu').checked, ps = photoSet();
+    const extra = Object.values(S.checkins).filter(c => !rows().some(r=>String(r.no)===String(c.no)));
+    $('#a-cc').textContent = `체크인 ${Object.keys(S.checkins).length} / 명단 ${rows().length} · 사진 ${ps.size}명`;
+    const t1s = [...new Set(rows().map(r=>String(r.t1??'')).filter(Boolean))].sort((a,b)=>a-b);
+    $('#a-qt').innerHTML = t1s.length ? t1s.map(t=>`<button type="button" data-t="${esc(t)}" class="${bonus.quiz.includes(t)?'on':''}">${esc(t)}번</button>`).join('') : '<span class="muted" style="font-size:12px">명단 공개 후 테이블 번호가 나타납니다</span>';
+    const line = (r, isExtra) => { const no = String(r.no), ci = !!S.checkins[no];
+      return `<div class="row ci${ci?' in':''}"><label class="row grow" style="gap:10px;flex-wrap:nowrap"><input type="checkbox" data-no="${esc(no)}" ${ci?'checked':''}><span class="muted" style="min-width:28px">${esc(no)}</span><b>${esc(r.name)}</b><span class="muted">${esc(r.gen)}${isExtra?' · 현장':' · '+esc(r.t1)+'/'+esc(r.t2)}</span></label><button type="button" class="ph-t${ps.has(no)?' on':''}" data-p="${esc(no)}" aria-label="사진 제공">📷</button><span class="tk">${ticketsOf(no, r.t1)}장</span></div>`; };
+    const filt = r => (!k || norm(r.name).includes(k) || String(r.no)===k) && (!onlyNo || !S.checkins[String(r.no)]);
+    $('#a-cl').innerHTML = rows().filter(filt).map(r=>line(r,false)).join('') + extra.filter(filt).map(c=>line(c,true)).join('') || '<p class="muted" style="padding:10px 0">명단이 아직 없습니다. 현장 등록으로 추가할 수 있어요.</p>'; };
+  $('#a-cs').addEventListener('input', render.checkins); $('#a-cu').addEventListener('change', render.checkins);
   $('#a-cl').addEventListener('change', async e => { const cb = e.target; if(cb.type!=='checkbox') return; const no = String(cb.dataset.no), r = rows().find(x=>String(x.no)===no) || S.checkins[no]; if(cb.checked) await setDoc(doc(db,'checkins',no), { no:Number(no), name:r?.name||'', gen:r?.gen||'', at: serverTimestamp() }); else await deleteDoc(doc(db,'checkins',no)); });
+  $('#a-cl').addEventListener('click', async e => { const b = e.target.closest('.ph-t'); if(!b) return; const ps = photoSet(), no = b.dataset.p; ps.has(no) ? ps.delete(no) : ps.add(no); await saveBonus(bonus.quiz, [...ps]); });
+  $('#a-qt').addEventListener('click', async e => { const b = e.target.closest('button[data-t]'); if(!b) return; const q = new Set(bonus.quiz), t = b.dataset.t; q.has(t) ? q.delete(t) : q.add(t); await saveBonus([...q], bonus.photo ?? [...photoSet()]); });
   $('#a-ca').addEventListener('submit', async e => { e.preventDefault(); const no = String($('#a-cno').value); await setDoc(doc(db,'checkins',no), { no:Number(no), name:$('#a-cn').value.trim(), gen:$('#a-cg').value, at: serverTimestamp() }); $('#a-cno').value=''; $('#a-cn').value=''; });
+  onSnapshot(doc(db,'state','bonus'), s => { const d = s.exists() ? s.data() : {}; bonus = { quiz:(d.quiz||[]).map(String), photo: Array.isArray(d.photo) ? d.photo.map(String) : null }; render.checkins(); if(pool.length) build(); });
 
   // 추첨
   let pool = [], winners = [], seq = 0;
   $('#a-draw').innerHTML = `<section class="card"><div class="row"><label><input type="radio" name="src" value="ci" checked> 체크인 완료자</label><label><input type="radio" name="src" value="all"> 전체 명단</label></div>
-    <label class="f">퀴즈 우승 테이블 (1라운드 번호)</label><input type="text" id="a-xq"><label class="f">회고 사진 제공 · 명찰 번호 (쉼표)</label><input type="text" id="a-xp">
+    <p class="muted" style="font-size:12px;margin:6px 0">퀴즈 우승 테이블 · 사진 제공자는 체크인 탭에서 지정한 대로 자동 반영됩니다.</p>
     <button class="btn" id="a-build">응모권 계산</button><div id="a-pool" style="margin-top:8px"></div></section>
     <section class="card"><div class="row" id="a-btns"></div><div id="a-res" style="margin:14px 0"></div><div class="row"><button class="btn btn-sm" id="a-redo">다시 뽑기</button><button class="btn btn-sm" id="a-reset">초기화</button></div><div id="a-w" style="margin-top:10px"></div></section>`;
-  const nos = s => String(s||'').split(/[,\s]+/).filter(Boolean);
   const build = () => { const src = document.querySelector('input[name=src]:checked').value, rs = rows();
     const base = (src==='ci' ? Object.values(S.checkins).map(c=>({ no:String(c.no), name:c.name, gen:c.gen })) : rs.map(r=>({ no:String(r.no), name:r.name, gen:r.gen }))).map(p => { const r = rs.find(x=>String(x.no)===p.no); return { ...p, name:p.name||r?.name||'', gen:p.gen||r?.gen||'', t1:r?.t1 }; });
-    const qt = nos($('#a-xq').value), pc = new Set(nos($('#a-xp').value));
-    pool = base.map(p => { let t = 1; if(p.t1!==undefined && qt.includes(String(p.t1))) t++; if(pc.has(p.no)) t++; return { ...p, tickets:Math.min(t,3) }; });
+    pool = base.map(p => ({ ...p, tickets: ticketsOf(p.no, p.t1) }));
     const extra = pool.filter(p=>p.tickets>1);
     $('#a-pool').innerHTML = `<p>${pool.length}명 · 응모권 ${pool.reduce((s,p)=>s+p.tickets,0)}장</p>` + (extra.length ? `<table class="t">${extra.sort((a,b)=>b.tickets-a.tickets).map(p=>`<tr><td>${esc(p.no)}</td><td>${esc(p.name)}</td><td>${p.tickets}장</td></tr>`).join('')}</table>` : ''); };
   const drawOne = ex => { const c = pool.filter(p=>!ex.has(p.no)), total = c.reduce((s,p)=>s+p.tickets,0); if(!total) return null; const u = rand(); let r = u*total, w = c[c.length-1]; for(const p of c){ r -= p.tickets; if(r<0){ w = p; break; } } return { w, u, cands: c.map(p=>({ no:p.no, name:p.name, t:p.tickets })) }; };
