@@ -1,0 +1,6 @@
+node_modules/
+.site/
+test-results/
+playwright-report/
+*.log
+.firestore.rules

@@ -19,7 +19,7 @@ a{color:var(--peri)}
 .top .slogan b{color:var(--peri)}
 .top .brand{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.22em;color:var(--peri);margin-top:8px}
 main{max-width:720px;margin:0 auto;padding:8px 16px 48px}
-.back{display:inline-block;font-size:13px;color:var(--muted);text-decoration:none;margin:4px 0 10px}
+.back{display:inline-block;font-size:13px;color:var(--muted);text-decoration:none;margin:0 0 4px;padding:12px 12px 12px 0}
 h1{font-size:22px;margin:0 0 4px}
 .muted{color:var(--muted);font-size:13px}
 .tools{display:flex;gap:8px;margin:14px 0 10px}
@@ -80,7 +80,7 @@ function render(){
   const me = meNo && rows.find(r=>String(r.no)===String(meNo));
   const list = rows.filter(r => (!gen || r.gen===gen) && (!topic || (r.topics||[]).includes(topic)) && (!q || norm(r.name).includes(norm(q)) || norm(r.intro).includes(norm(q))));
   box.innerHTML = (me ? card(me, true) + `<p class="muted" style="margin:10px 0 18px">명찰 QR로 연 카드입니다. 아래에서 다른 참가자도 찾아보세요.</p>` : '') +
-  `<div class="tools"><input type="search" id="q" placeholder="이름 · 하는 일 검색" value="${esc(q)}"><select id="g" style="flex:0 0 110px"><option value="">모든 기수</option>${[...new Set(rows.map(r=>r.gen))].sort((a,b)=>parseInt(a)-parseInt(b)).map(g=>`<option${g===gen?' selected':''}>${esc(g)}</option>`).join('')}</select></div>
+  `<div class="tools"><input type="search" id="q" aria-label="이름 · 하는 일 검색" placeholder="이름 · 하는 일 검색" value="${esc(q)}"><select id="g" aria-label="기수" style="flex:0 0 110px"><option value="">모든 기수</option>${[...new Set(rows.map(r=>r.gen))].sort((a,b)=>parseInt(a)-parseInt(b)).map(g=>`<option${g===gen?' selected':''}>${esc(g)}</option>`).join('')}</select></div>
   <div class="chips">${SHORT.map((s,i)=>`<button class="chip${topic===i+1?' on':''}" data-t="${i+1}">${esc(s)}</button>`).join('')}</div>
   <p class="cnt">${list.length}명</p>
   <div class="grid">${list.map(r=>card(r)).join('')}</div>${list.length?'':'<p class="empty">조건에 맞는 분이 없습니다</p>'}`;

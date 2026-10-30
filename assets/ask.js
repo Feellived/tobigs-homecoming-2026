@@ -39,7 +39,7 @@ body.hk-has-fab{padding-bottom:92px}
 .hk .hk-sug button{flex:0 0 auto;border:1px solid rgba(255,255,255,.12);background:transparent;color:#9aa3c7;border-radius:999px;padding:5px 12px;font-size:12px;font-family:inherit;cursor:pointer}
 .hk .hk-log{display:flex;flex-direction:column;gap:8px;margin-top:12px;max-height:46vh;overflow-y:auto;padding:2px}
 .hk.hk-page .hk-log{max-height:58vh}
-.hk .bub{max-width:86%;padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.6;white-space:pre-line;word-break:keep-all;animation:hk-in .35s cubic-bezier(.2,.8,.2,1)}
+.hk .bub{max-width:86%;padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.6;white-space:pre-line;word-break:keep-all;overflow-wrap:anywhere;animation:hk-in .35s cubic-bezier(.2,.8,.2,1)}
 .hk .bub.u{align-self:flex-end;background:#3d5afe;border-bottom-right-radius:5px}
 .hk .bub.a{align-self:flex-start;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-bottom-left-radius:5px}
 .hk .bub.e{align-self:center;background:transparent;color:#9aa3c7;font-size:12.5px;border:0;text-align:center}
@@ -94,10 +94,13 @@ body.hk-has-fab{padding-bottom:92px}
 
   function open(){
     const bg = document.createElement('div'); bg.className = 'hk-bg';
-    bg.innerHTML = `<div class="hk-sheet" role="dialog" aria-label="행사 도우미"><button type="button" class="hk-x" aria-label="닫기">×</button><div></div></div>`;
-    document.body.appendChild(bg); const close = () => bg.remove();
+    bg.innerHTML = `<div class="hk-sheet" role="dialog" aria-modal="true" aria-label="행사 도우미"><button type="button" class="hk-x" aria-label="닫기">×</button><div></div></div>`;
+    const back = document.activeElement, onKey = e => { if(e.key === 'Escape') close(); };
+    document.body.appendChild(bg); const close = () => { document.removeEventListener('keydown', onKey); bg.remove(); try { back?.focus?.(); } catch(e){} };
+    document.addEventListener('keydown', onKey);
     bg.addEventListener('click', e => { if(e.target === bg) close(); }); bg.querySelector('.hk-x').onclick = close;
     mount(bg.querySelector('.hk-sheet > div'));
+    setTimeout(() => { const i = bg.querySelector('input'); if(i && matchMedia('(hover:hover)').matches) i.focus(); else bg.querySelector('.hk-x').focus(); }, 60); // 휴대폰에선 키보드가 바로 뜨지 않게 닫기 버튼에
   }
 
   function fab(){
