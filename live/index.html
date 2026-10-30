@@ -6,12 +6,19 @@
 <title>TOBIG'S Homecoming Live</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="../assets/favicon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b1230">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="HOCO Live">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#0b1230;--accent:#3d5afe;--peri:#9db0ff;--text:#ffffff;--muted:#9aa3c7;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--field:rgba(255,255,255,.08);--display:'Space Grotesk',sans-serif;--sans:'Pretendard Variable',Pretendard,-apple-system,system-ui,sans-serif}
+:root{--ind:#6FE3D9;--aca:#C4B5FD;--navy:#0b1230;--accent:#3d5afe;--peri:#9db0ff;--text:#ffffff;--muted:#9aa3c7;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--field:rgba(255,255,255,.08);--display:'Space Grotesk',sans-serif;--sans:'Pretendard Variable',Pretendard,-apple-system,system-ui,sans-serif}
 *{box-sizing:border-box}
-body{margin:0;background:var(--navy);color:var(--text);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+body{margin:0;background:radial-gradient(900px 520px at 0% -8%,rgba(61,90,254,.38),transparent 62%),radial-gradient(700px 460px at 105% 6%,rgba(111,227,217,.13),transparent 60%),radial-gradient(800px 600px at 50% 110%,rgba(167,139,250,.12),transparent 60%),var(--navy);background-attachment:fixed;min-height:100vh;color:var(--text);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
 button,input,textarea,select{font:inherit;color:inherit}
 button{cursor:pointer}
 a{color:var(--peri)}
@@ -20,7 +27,7 @@ a{color:var(--peri)}
 .top .slogan b{color:var(--peri);font-weight:700}
 .top .brand{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.22em;color:var(--peri);margin-top:8px}
 main{max-width:560px;margin:0 auto;padding:8px 16px 48px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:12px 0}
+.card{background:rgba(255,255,255,.055);border:1px solid var(--line);border-radius:18px;padding:18px;margin:12px 0;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 10px 30px rgba(3,6,20,.25)}
 .card.primary{border-color:var(--peri);background:rgba(61,90,254,.18)}
 .eyebrow{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.18em;color:var(--peri);margin-bottom:8px}
 h2{font-size:18px;margin:0 0 10px;letter-spacing:-.01em}
@@ -90,6 +97,66 @@ label.f{display:block;font-size:12px;color:var(--muted);margin-top:8px}
 .toast.show{opacity:1}
 table.t{width:100%;border-collapse:collapse;font-size:13px}
 table.t td,table.t th{text-align:left;padding:5px 4px;border-bottom:1px solid var(--line)}
+
+/* identity · sheet */
+.who{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted);margin:2px 0 6px}
+.who b{color:#fff;font-weight:700}
+.lnk{background:none;border:0;color:var(--peri);font-size:13px;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+.sheet-bg{position:fixed;inset:0;background:rgba(3,6,20,.6);z-index:20;display:flex;align-items:flex-end;justify-content:center;animation:fade .2s}
+.sheet{width:100%;max-width:560px;background:#141c3f;border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0;padding:22px 18px 28px;animation:up .28s cubic-bezier(.2,.8,.2,1)}
+@media(min-width:600px){.sheet-bg{align-items:center}.sheet{border-radius:20px;border-bottom:1px solid var(--line)}}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.err{color:#ffb86b;font-size:13px;min-height:18px;margin:6px 0 0}
+/* question list */
+.qh{justify-content:space-between;margin-bottom:6px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:2px}
+.seg button{border:0;background:transparent;color:var(--muted);font-size:12px;padding:5px 12px;border-radius:999px}
+.seg button.on{background:#fff;color:var(--navy);font-weight:700}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chips button{flex:0 0 auto;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:5px 12px;font-size:12px}
+.chips button.on{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3)}
+.chips button.ind.on{border-color:var(--ind);color:var(--ind)}.chips button.aca.on{border-color:var(--aca);color:var(--aca)}
+.to button.ind{border-color:rgba(111,227,217,.35)}.to button.aca{border-color:rgba(196,181,253,.35)}
+.q.in{animation:slin .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes slin{from{opacity:0;transform:translateY(-8px);background:rgba(157,176,255,.14)}to{opacity:1;transform:none;background:transparent}}
+.vote{transition:transform .15s}.vote:active{transform:scale(.94)}
+.vote.bump{animation:bump .45s}
+@keyframes bump{30%{transform:scale(1.14)}60%{transform:scale(.97)}100%{transform:none}}
+.me-b{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:999px;background:rgba(255,255,255,.14);color:#fff;margin-left:6px;vertical-align:1px}
+.tgc{display:inline-block;font-size:11px;padding:0 8px;border-radius:999px;margin-left:6px;border:1px solid currentColor;line-height:17px;vertical-align:1px}
+.tgc.ind{color:var(--ind)}.tgc.aca{color:var(--aca)}
+.sq .tgc{font-size:14px;line-height:22px}
+/* speaker colors */
+.spk.ind{box-shadow:inset 3px 0 0 var(--ind)}.spk.aca{box-shadow:inset 3px 0 0 var(--aca)}
+.spk.ind .role,.spd.ind .role{color:var(--ind)!important}.spk.aca .role,.spd.aca .role{color:var(--aca)!important}
+.spk.ind .ph{color:var(--ind);background:rgba(111,227,217,.14)}.spk.aca .ph{color:var(--aca);background:rgba(196,181,253,.16)}
+/* poll results */
+.res .bar i{transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.ov.fv .res{margin:14px 0}.ov.fv .res .bar{height:12px;border-radius:6px}.ov.fv .res .l{font-size:15px}
+.res.lead .bar i{background:linear-gradient(90deg,var(--accent),var(--peri))}.res.lead .l span{font-weight:800}.res.lead .l b{color:var(--peri)}
+.res .mine{font-style:normal;font-size:11px;font-weight:700;margin-left:8px;padding:1px 8px;border-radius:999px;background:rgba(255,255,255,.16);color:#fff;vertical-align:1px}
+.res .rk1{font-style:normal;font-family:var(--display);font-size:11px;font-weight:700;margin-left:8px;color:var(--peri);letter-spacing:.08em}
+/* winner */
+.ov.me{background:radial-gradient(600px 400px at 50% 30%,rgba(61,90,254,.55),transparent 70%),var(--navy)}
+.youwin{font-size:30px;font-weight:800;margin-top:18px;line-height:1.3;animation:pop2 .7s cubic-bezier(.2,1.4,.4,1)}
+.youwin small{display:block;font-size:16px;font-weight:600;color:var(--peri);margin-top:6px}
+@keyframes pop2{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+.ov.me #pk{max-height:34vh;width:auto}
+.ov.pk{overflow:auto;padding:16px 0}
+.ov canvas.cf{position:fixed;inset:0;margin:0;max-width:none;pointer-events:none;z-index:9}
+/* hub timeline */
+.dd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.dd b{font-family:var(--display);font-size:40px;line-height:1;letter-spacing:-.03em}
+.dd span{font-size:13px;color:var(--muted)}
+.tl{list-style:none;margin:0;padding:0;position:relative}
+.tl li{display:flex;gap:12px;align-items:center;padding:6px 0 6px 18px;font-size:13.5px;color:var(--muted);position:relative}
+.tl li:before{content:'';position:absolute;left:4px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:var(--line)}
+.tl li:after{content:'';position:absolute;left:7px;top:calc(50% + 6px);bottom:-6px;width:1px;background:var(--line)}
+.tl li:last-child:after{display:none}
+.tl li span{font-family:var(--display);font-weight:700;font-size:12px;min-width:40px;color:var(--peri)}
+.tl li.done{opacity:.45}
+.tl li.now{color:#fff;font-weight:700}.tl li.now:before{background:var(--accent);box-shadow:0 0 0 4px rgba(61,90,254,.3)}
+.tip{font-size:12px;text-align:center;margin-top:14px}
 /* screen */
 body.screen .top{display:none}
 body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-template-rows:auto 1fr}
@@ -151,7 +218,7 @@ body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-templat
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp, arrayUnion, arrayRemove, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, getDoc, serverTimestamp, arrayUnion, arrayRemove, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 const firebaseConfig = { apiKey:"AIzaSyBKDlddQRA1mLotV2V2R-39GhwTrSQ8zVE", authDomain:"tobigshoco.firebaseapp.com", projectId:"tobigshoco", storageBucket:"tobigshoco.firebasestorage.app", messagingSenderId:"973817861716", appId:"1:973817861716:web:48c2fdd252eab5edf83fc1" };
@@ -179,21 +246,62 @@ const SPEAKERS = [
   { name:'경민수', gen:'20기', role:'학계',   org:'서울시립대학교 석사과정', photo:'', bio:'', keywords:[], topic:'', link:'' },
 ];
 // 질문의 name 칸 = 질문 대상 연사 이름 (''이면 모두에게). 보안 규칙 변경 없이 기존 칸 재사용
-const toLbl = x => x.name ? ' · ' + esc(x.name) + ' 선배님께' : '';
+const roleCls = x => (x && x.role === '학계') ? 'aca' : 'ind';
+const spkBy = n => SPEAKERS.find(x => x && x.name === n);
+const toLbl = x => x.name ? ` <span class="tgc ${roleCls(spkBy(x.name))}">${esc(x.name)} 선배님께</span>` : '';
 const spkPh = x => `<div class="ph">${x.photo?`<img src="${esc(x.photo)}" alt="">`:esc(x.name[0])}</div>`;
-const speakerCards = () => { const l = SPEAKERS.filter(x=>x&&x.name); if(!l.length) return ''; return `<section class="card"><div class="eyebrow">TALK GUESTS</div><div class="spks">` + l.map((x,i)=>`<button type="button" class="spk" data-i="${i}">${spkPh(x)}<div><div class="role">${esc(x.role||'')}</div><div class="nm">${esc(x.name)}<em>${esc(x.gen||'')}</em></div><div class="org">${esc(x.org||'')}</div></div></button>`).join('') + `</div><div class="spd" id="spd" hidden></div><div class="spk-hint">카드를 누르면 선배님 소개를 볼 수 있어요</div></section>`; };
+const speakerCards = () => { const l = SPEAKERS.filter(x=>x&&x.name); if(!l.length) return ''; return `<section class="card"><div class="eyebrow">TALK GUESTS</div><div class="spks">` + l.map((x,i)=>`<button type="button" class="spk ${roleCls(x)}" data-i="${i}">${spkPh(x)}<div><div class="role">${esc(x.role||'')}</div><div class="nm">${esc(x.name)}<em>${esc(x.gen||'')}</em></div><div class="org">${esc(x.org||'')}</div></div></button>`).join('') + `</div><div class="spd" id="spd" hidden></div><div class="spk-hint">카드를 누르면 선배님 소개를 볼 수 있어요</div></section>`; };
 const speakerDetail = x => { const kw = (x.keywords||[]).filter(Boolean), okLink = /^https?:\/\/[^\s"'<>]+$/i.test(x.link||''); const empty = !x.bio && !kw.length && !x.topic && !okLink;
   return `<div class="hd">${spkPh(x)}<div><div class="role" style="font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:.14em;color:var(--peri)">${esc(x.role||'')}</div><div style="font-size:17px;font-weight:700">${esc(x.name)} <span class="muted" style="font-size:13px;font-weight:500">${esc(x.gen||'')}</span></div><div class="muted" style="font-size:13px">${esc(x.org||'')}</div></div></div>`
     + (empty ? '<p class="muted" style="font-size:13px;margin:0">선배님 소개를 준비하고 있어요. 곧 채워집니다.</p>'
       : (x.bio?`<div class="bio">${esc(x.bio)}</div>`:'') + (kw.length?`<div class="kw">${kw.map(k=>`<span>${esc(k)}</span>`).join('')}</div>`:'') + (x.topic?`<div class="tp">후배에게 하고 싶은 이야기 · <b>${esc(x.topic)}</b></div>`:'') + (okLink?`<a href="${esc(x.link)}" target="_blank" rel="noopener">프로필 보기 ↗</a>`:'')); };
 const bindSpeakers = () => { const g = document.querySelector('.spks'); if(!g) return; const l = SPEAKERS.filter(x=>x&&x.name), box = $('#spd');
-  g.addEventListener('click', e => { const b = e.target.closest('.spk'); if(!b) return; const open = b.classList.contains('on'); g.querySelectorAll('.spk').forEach(x=>x.classList.remove('on')); if(open){ box.hidden = true; return; } b.classList.add('on'); box.innerHTML = speakerDetail(l[Number(b.dataset.i)]); box.hidden = false; box.scrollIntoView({ block:'nearest', behavior:'smooth' }); }); };
+  g.addEventListener('click', e => { const b = e.target.closest('.spk'); if(!b) return; const open = b.classList.contains('on'); g.querySelectorAll('.spk').forEach(x=>x.classList.remove('on')); if(open){ box.hidden = true; return; } b.classList.add('on'); const sp = l[Number(b.dataset.i)]; box.className = 'spd ' + roleCls(sp); box.innerHTML = speakerDetail(sp); box.hidden = false; box.scrollIntoView({ block:'nearest', behavior:'smooth' }); }); };
 
 const app = initializeApp(firebaseConfig), db = getFirestore(app), auth = getAuth(app);
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let toastT; const say = m => { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('show'), 2000); };
 const cid = (() => { try { let v = localStorage.getItem('hc_cid'); if(!v){ v = crypto.randomUUID(); localStorage.setItem('hc_cid', v); } return v; } catch(e){ return 'anon-' + Math.random().toString(36).slice(2); } })();
+
+// ---------- 참여자 식별 (사람 기준) ----------
+// 기수+이름 → 되돌릴 수 없는 코드(pid). 같은 사람이면 휴대폰·노트북에서 같은 pid → 추천·투표는 사람당 1번.
+// 서버에는 pid만 저장, 화면에는 기수만 표시. 내 테이블 페이지(hc_me)에서 찾은 정보가 있으면 그대로 쓴다.
+const lsGet = k => { try { return JSON.parse(localStorage.getItem(k)||'null'); } catch(e){ return null; } };
+const lsSet = (k, v) => { try { v===null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+let me = lsGet('hc_id');
+const fnv = (str, seed) => { let h = seed >>> 0; for(let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16).padStart(8,'0'); };
+async function pidOf(gen, name){
+  const key = 'tobigs-hoco-2026|' + gen + '|' + String(name||'').replace(/\s+/g,'').toLowerCase();
+  try { const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(key)); return 'p' + [...new Uint8Array(h)].slice(0,16).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+  catch(e){ return 'p' + [2166136261, 33554467, 16777619, 3735928559].map(sd => fnv(key, sd)).join(''); }
+}
+const findRow = (gen, name) => { const rows = (S.tables && S.tables.published) ? (S.tables.rows||[]) : []; const n = String(name||'').replace(/\s+/g,'').toLowerCase(); return rows.find(r => r.gen===gen && String(r.name||'').replace(/\s+/g,'').toLowerCase()===n) || null; };
+async function makeMe(gen, name, row){ me = { gen, name: String(name).trim(), pid: await pidOf(gen, name), no: row ? row.no : null }; lsSet('hc_id', me); if(row) lsSet('hc_me', row); return me; }
+async function initMe(){
+  if(!me){ const hc = lsGet('hc_me'); if(hc && hc.gen && hc.name) await makeMe(hc.gen, hc.name, hc); }
+  else if(!me.no){ const r = findRow(me.gen, me.name); if(r){ me.no = r.no; lsSet('hc_id', me); lsSet('hc_me', r); } }
+  return me;
+}
+function askMe(){ return new Promise(res => {
+  const bg = document.createElement('div'); bg.className = 'sheet-bg';
+  bg.innerHTML = `<form class="sheet" id="me-f"><div class="eyebrow">참여 정보</div><h2>기수와 이름을 알려 주세요</h2>
+    <p class="muted">추천과 투표를 한 사람당 한 번만 세기 위해 처음 한 번만 확인해요. 휴대폰과 노트북에서 같은 이름으로 들어오면 같은 사람으로 셉니다. 이름은 공개되지 않고 기수만 보여요.</p>
+    <div class="row" style="margin-top:10px"><select id="me-g" required style="flex:0 0 108px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><input type="text" id="me-n" class="grow" placeholder="이름" maxlength="20" required autocomplete="name" style="width:auto;flex:1 1 0"></div>
+    <p class="err" id="me-e"></p><div class="row" style="margin-top:6px"><button type="button" class="btn" id="me-x">취소</button><button class="btn btn-primary grow" type="submit">확인</button></div></form>`;
+  document.body.appendChild(bg);
+  const done = v => { bg.remove(); res(v); };
+  bg.addEventListener('click', e => { if(e.target === bg) done(null); });
+  bg.querySelector('#me-x').onclick = () => done(null);
+  let warned = '';
+  bg.querySelector('#me-f').onsubmit = async e => { e.preventDefault();
+    const gen = bg.querySelector('#me-g').value, name = bg.querySelector('#me-n').value.trim(); if(!gen || !name) return;
+    const listed = S.tables && S.tables.published && (S.tables.rows||[]).length, row = findRow(gen, name), key = gen + name;
+    if(listed && !row && warned !== key){ warned = key; bg.querySelector('#me-e').textContent = '참석자 명단에서 찾지 못했어요. 맞다면 한 번 더 누르면 이 이름으로 참여합니다.'; return; }
+    done(await makeMe(gen, name, row)); };
+  setTimeout(() => bg.querySelector('#me-g').focus(), 60);
+}); }
+const ensureMe = async () => me || await askMe();
 const rand = () => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; };
 const qs = location.search;
 const view = qs.includes('screen') ? 'screen' : qs.includes('admin') ? 'admin' : qs.includes('qa') ? 'qa' : qs.includes('draw') ? 'draw' : 'hub';
@@ -204,7 +312,7 @@ const render = { program(){}, questions(){}, polls(){}, draw(){}, checkins(){} }
 const voteSubs = {};
 const listen = {
   program: () => onSnapshot(doc(db,'state','program'), s => { S.program = s.exists() ? s.data() : null; render.program(); }),
-  questions: () => onSnapshot(collection(db,'questions'), s => { S.questions = s.docs.map(d => ({ id:d.id, ...d.data() })); render.questions(); }),
+  questions: () => onSnapshot(collection(db,'questions'), s => { S.questions = s.docs.map(d => ({ id:d.id, ...d.data() })); S.qLoaded = true; render.questions(); }),
   // withVotes: 집계(votes 하위 컬렉션)까지 구독. 프로젝터·운영 화면만 켠다. 참가자 휴대폰 70대가 표 하나마다 읽지 않게 하기 위함
   polls: (withVotes=false) => onSnapshot(collection(db,'polls'), s => {
     S.polls = s.docs.map(d => ({ id:d.id, ...d.data() })).sort((a,b)=>(b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0));
@@ -230,21 +338,23 @@ const bars = p => p.options.map((o,i)=>{ const { c, total } = counts(p); return 
 const winnersHtml = (items, newNo) => items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win${String(w.no)===String(newNo)?' new':''}"><span class="rk">${esc(awardLabel(w))}</span><div><b>${esc(w.name)}</b> <span class="muted">${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('');
 const nowCard = id => `<section class="card" id="${id}" hidden><div class="eyebrow">NOW</div><div class="step" id="${id}-step"></div><div class="muted" id="${id}-next"></div><div class="timer" id="${id}-timer"></div></section>`;
 let hubHi = () => {};
-const bindNow = id => { render.program = () => { const i = info(); $('#'+id).hidden = i.step===null; $('#'+id+'-step').textContent = i.name; $('#'+id+'-next').textContent = i.next; $('#'+id+'-timer').textContent = clock(); hubHi(i.hi, i.step===null); }; setInterval(render.program, 1000); };
+const bindNow = id => { render.program = () => { const i = info(); $('#'+id).hidden = i.step===null; $('#'+id+'-step').textContent = i.name; $('#'+id+'-next').textContent = i.next; $('#'+id+'-timer').textContent = clock(); hubHi(i.hi, i.step===null, i.step); }; setInterval(render.program, 1000); };
 
 
 // ---------- 강제 전환: 투표 결과 공개(관리 화면 '결과 공개') · 추첨 연출 때만 참가자 화면 전체를 덮는다 ----------
 let forceOn = false;
 function forceWatch(){
   if(forceOn) return; forceOn = true;
-  let pid = null, unsub = null, closed = null;
-  const paint = p => { let ov = document.getElementById('fv'); if(!p || closed===p.id){ if(ov) ov.remove(); return; }
-    if(!ov){ ov = document.createElement('div'); ov.id = 'fv'; ov.className = 'ov fv'; document.body.appendChild(ov); }
-    ov.innerHTML = `<div class="rk">LIVE POLL · 결과</div><div class="fq">${esc(p.q)}</div><div class="fb">${bars(p)}</div><p class="muted">${counts(p).total}명 참여</p><button class="btn" id="fv-x">닫기</button>`;
-    ov.querySelector('#fv-x').onclick = () => { closed = p.id; paint(null); }; };
+  let pid = null, unsub = null, closed = null, fvId = null, myOpt = null;
+  const paint = p => { let ov = document.getElementById('fv'); if(!p || closed===p.id){ if(ov) ov.remove(); fvId = null; return; }
+    if(!ov || fvId !== p.id){ if(ov) ov.remove(); ov = document.createElement('div'); ov.id = 'fv'; ov.className = 'ov fv';
+      ov.innerHTML = `<div class="rk">LIVE POLL · 결과</div><div class="fq">${esc(p.q)}</div><div class="fb">${p.options.map((o,i)=>`<div class="res"><div class="l"><span>${esc(o)}<em class="rk1" hidden>1위</em><em class="mine" hidden>내 선택</em></span><b>0</b></div><div class="bar"><i style="width:0%"></i></div></div>`).join('')}</div><p class="muted" id="fv-t"></p><button class="btn" id="fv-x">닫기</button>`;
+      document.body.appendChild(ov); fvId = p.id; ov.querySelector('#fv-x').onclick = () => { closed = p.id; paint(null); }; }
+    const { c, total } = counts(p), mx = Math.max(0, ...c); let mo = myOpt; if(mo===null){ try { const v = localStorage.getItem('hc_vote_'+p.id); if(v!==null) mo = Number(v); } catch(e){} }
+    requestAnimationFrame(() => requestAnimationFrame(() => { ov.querySelectorAll('.res').forEach((r,i) => { r.querySelector('b').textContent = c[i] || 0; r.querySelector('i').style.width = (total ? Math.round((c[i]||0)/total*100) : 0) + '%'; const top = total>0 && c[i]===mx; r.classList.toggle('lead', top); r.querySelector('.rk1').hidden = !top; r.querySelector('.mine').hidden = mo!==i; }); const t = ov.querySelector('#fv-t'); if(t) t.textContent = total + '명 참여'; })); };
   onSnapshot(collection(db,'polls'), s => { const p = s.docs.map(d=>({ id:d.id, ...d.data() })).find(x=>x.show);
-    if((p?.id||null) !== pid){ if(unsub){ unsub(); unsub = null; } pid = p?.id || null; if(!p) closed = null;
-      if(p) unsub = onSnapshot(collection(db,'polls',p.id,'votes'), v => { S.votes[p.id] = v.docs.map(x=>x.data().option); paint(p); }); }
+    if((p?.id||null) !== pid){ if(unsub){ unsub(); unsub = null; } pid = p?.id || null; myOpt = null; if(!p) closed = null;
+      if(p) unsub = onSnapshot(collection(db,'polls',p.id,'votes'), v => { S.votes[p.id] = v.docs.map(x=>x.data().option); const mine = me ? v.docs.find(d=>d.id===me.pid) : null; myOpt = mine ? mine.data().option : null; paint(p); }); }
     paint(p); });
   let seen = null;
   onSnapshot(doc(db,'draw','results'), s => { const lv = s.exists() ? s.data().live : null, seq = lv?.seq || 0;
@@ -255,32 +365,76 @@ function forceWatch(){
 // ---------- 허브 ----------
 function hub(){
   appEl.innerHTML = nowCard('h-now') + `
-  <a class="card entry" href="?qa" id="e-qa"><div class="eyebrow">ALUMNI SESSION</div><h2>질문 · 투표</h2><p class="muted">좋은 질문에 투표해주세요</p></a>
+  <a class="card entry" href="?qa" id="e-qa"><div class="eyebrow">ALUMNI SESSION</div><h2>질문 · 투표</h2><p class="muted">선배님께 질문하고, 좋은 질문에 추천해 주세요</p></a>
   <p class="muted" id="h-pre" hidden style="margin:4px 4px 16px">지금은 질문 · 투표만 미리 열려 있습니다. 나머지 메뉴는 행사 당일 열립니다.</p>
   <a class="card entry" href="table/" id="e-table" hidden><div class="eyebrow">TABLE TALK</div><h2>내 테이블</h2><p class="muted">1라운드 · 2라운드 테이블 번호</p></a>
   <a class="card entry" href="../people/" id="e-people" hidden><div class="eyebrow">NETWORKING</div><h2>참가자 카드</h2><p class="muted">관심사가 맞는 사람 찾기</p></a>
   <a class="card entry" href="?draw" id="e-draw" hidden><div class="eyebrow">LUCKY DRAW</div><h2>추첨 · 당첨자 확인</h2></a>
-  <a class="btn" href="../" style="width:100%;margin-top:20px">초대장 홈페이지로</a>`;
-  hubHi = (hi, idle) => { ['qa','table','people','draw'].forEach(k => $('#e-'+k).classList.toggle('primary', k===hi)); ['table','people','draw'].forEach(k => $('#e-'+k).hidden = idle); $('#h-pre').hidden = !idle; };
-  bindNow('h-now'); listen.program(); forceWatch();
+  <section class="card" id="h-tl"><div class="dd" id="h-dd" hidden></div><div class="eyebrow" id="h-tlh">PROGRAM</div><ol class="tl">${STEPS.map((x,i)=>`<li data-i="${i}"><span>${x.t}</span>${esc(x.n)}</li>`).join('')}</ol></section>
+  <a class="btn" href="../" style="width:100%;margin-top:8px">초대장 홈페이지로</a>
+  <p class="muted tip">브라우저 메뉴의 '홈 화면에 추가'를 누르면 앱처럼 바로 열 수 있어요</p>`;
+  let lastStep;
+  const dday = () => { const n = new Date(), k = new Date(n.getTime() + (540 + n.getTimezoneOffset())*60000); return Math.round((Date.UTC(2026,10,21) - Date.UTC(k.getFullYear(), k.getMonth(), k.getDate())) / 86400000); };
+  hubHi = (hi, idle, step) => { ['qa','table','people','draw'].forEach(k => $('#e-'+k).classList.toggle('primary', k===hi)); ['table','people','draw'].forEach(k => $('#e-'+k).hidden = idle); $('#h-pre').hidden = !idle;
+    if(step === lastStep) return; lastStep = step; const d = dday(), dd = $('#h-dd');
+    dd.hidden = !idle || d < 0; if(idle && d >= 0) dd.innerHTML = `<b>${d===0?'D-DAY':'D-'+d}</b><span>11.21 SAT · 12:30 입장 · KSPO 연수원 대강당</span>`;
+    $('#h-tlh').textContent = idle ? 'PROGRAM' : '오늘의 순서';
+    document.querySelectorAll('#h-tl li').forEach((li,k) => { li.classList.toggle('done', step!==null && k<step); li.classList.toggle('now', step!==null && k===step); }); };
+  bindNow('h-now'); listen.program(); forceWatch(); loadTables().then(initMe);
 }
 
 // ---------- 질문 · 투표 ----------
 function qa(){
+  const SPK = SPEAKERS.filter(x=>x&&x.name);
   appEl.innerHTML = `<a class="back" href="./">← Live</a>` + nowCard('q-now') + `
   <section class="card" id="g-poll" hidden></section>` + speakerCards() + `
   <section class="card"><div class="eyebrow">ALUMNI SESSION</div><h2>선배님께 묻고 싶은 것</h2>
-    <form id="g-form"><div class="row"><select id="g-gen" required style="flex:0 0 108px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><button class="btn btn-primary grow" type="submit" id="g-submit">질문 게시하기</button></div><div class="to" id="g-to"><span class="tl">누구에게 묻나요?</span><button type="button" class="on" data-to="">모두에게</button>${SPEAKERS.filter(x=>x&&x.name).map(x=>`<button type="button" data-to="${esc(x.name)}">${esc(x.name)}</button>`).join('')}</div><textarea id="g-text" maxlength="200" placeholder="(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?" required></textarea></form>
-    <div id="g-list" style="margin-top:8px"></div></section>`;
+    <div class="who" id="g-who"></div>
+    <form id="g-form"><div class="to" id="g-to"><span class="tl">누구에게 묻나요?</span><button type="button" class="on" data-to="">모두에게</button>${SPK.map(x=>`<button type="button" class="${roleCls(x)}" data-to="${esc(x.name)}">${esc(x.name)}</button>`).join('')}</div>
+    <textarea id="g-text" maxlength="200" placeholder="(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?" required></textarea>
+    <button class="btn btn-primary" type="submit" id="g-submit" style="width:100%;margin-top:6px">질문 게시하기</button></form></section>
+  <section class="card"><div class="row qh"><div class="eyebrow" style="margin:0">QUESTIONS</div><div class="seg" id="g-sort"><button type="button" data-s="top" class="on">추천순</button><button type="button" data-s="new">최신순</button></div></div>
+    <div class="chips" id="g-filter"><button type="button" data-f="*" class="on">전체</button><button type="button" data-f="">모두에게</button>${SPK.map(x=>`<button type="button" class="${roleCls(x)}" data-f="${esc(x.name)}">${esc(x.name)}</button>`).join('')}</div>
+    <div id="g-list"></div></section>`;
   bindNow('q-now'); bindSpeakers(); forceWatch();
-  render.questions = () => { const l = visible(); $('#g-list').innerHTML = l.map(x => { const n = x.voters?.length||0, on = x.voters?.includes(cid); return `<div class="q${x.answered?' done':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${toLbl(x)}${x.answered?' · 답변 완료':''}</div></div><button class="vote${on?' on':''}" data-id="${esc(x.id)}" data-on="${on?1:0}" ${x.answered?'disabled':''}>${on?'추천 완료':'추천'} ${n}</button></div>`; }).join('') || '<div class="q"><div class="grow"><div class="t" style="color:var(--muted)">(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">첫 질문을 올려주세요</div></div></div>'; };
-  $('#g-list').addEventListener('click', async e => { const b = e.target.closest('.vote'); if(!b) return; if(b.dataset.busy) return; b.dataset.busy = 1; b.disabled = true; try { await updateDoc(doc(db,'questions',b.dataset.id), { voters: b.dataset.on==='1' ? arrayRemove(cid) : arrayUnion(cid) }); } catch(err){ say('다시 시도해 주세요'); } finally { b.disabled = false; delete b.dataset.busy; } });
+  const renderWho = () => { $('#g-who').innerHTML = me
+    ? `<span>참여 중 · <b>${esc(me.gen)} ${esc(me.name)}</b> <span style="opacity:.7">(이름은 비공개)</span></span><button type="button" class="lnk" id="g-chg">변경</button>`
+    : `<span>추천·투표는 한 사람당 한 번만 셉니다</span><button type="button" class="lnk" id="g-chg">참여 정보 입력</button>`;
+    $('#g-chg').onclick = async () => { const prev = me; me = null; const m = await askMe(); if(!m){ me = prev; } renderWho(); render.questions(); render.polls(); }; };
+  initMe().then(() => { renderWho(); render.questions(); render.polls(); });
+  loadTables().then(() => initMe()).then(renderWho);
+
+  let qSort = 'top', qFilter = '*', seenQ = null; const prevN = {};
+  const ts = x => x.createdAt?.toMillis?.() || Date.now();
+  render.questions = () => {
+    let l = S.questions.filter(x=>!x.hidden); if(qFilter !== '*') l = l.filter(x => (x.name||'') === qFilter);
+    l.sort(qSort==='new' ? (a,b)=>ts(b)-ts(a) : (a,b)=>(b.voters?.length||0)-(a.voters?.length||0) || ts(b)-ts(a));
+    const first = seenQ === null; if(first && S.qLoaded) seenQ = new Set();
+    $('#g-list').innerHTML = l.map(x => { const n = x.voters?.length||0, on = !!(me && x.voters?.includes(me.pid)), mine = !!x.client && ((me && x.client===me.pid) || x.client===cid), isNew = !first && !seenQ.has(x.id), bump = prevN[x.id]!==undefined && prevN[x.id]!==n;
+      return `<div class="q${x.answered?' done':''}${isNew?' in':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${toLbl(x)}${mine?'<span class="me-b">내 질문</span>':''}${x.answered?' · 답변 완료':''}</div></div><button class="vote${on?' on':''}${bump?' bump':''}" data-id="${esc(x.id)}" data-on="${on?1:0}" ${x.answered?'disabled':''}>${on?'추천 완료':'추천'} ${n}</button></div>`; }).join('')
+      || (qFilter==='*' ? '<div class="q"><div class="grow"><div class="t" style="color:var(--muted)">(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">첫 질문을 올려주세요</div></div></div>' : '<p class="muted" style="padding:10px 0">아직 이 대상에게 온 질문이 없어요.</p>');
+    if(seenQ) l.forEach(x => { seenQ.add(x.id); prevN[x.id] = x.voters?.length||0; }); };
+  $('#g-sort').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; qSort = b.dataset.s; $('#g-sort').querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b)); render.questions(); });
+  $('#g-filter').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; qFilter = b.dataset.f; $('#g-filter').querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b)); render.questions(); });
+  $('#g-list').addEventListener('click', async e => { const b = e.target.closest('.vote'); if(!b || b.dataset.busy) return;
+    const m = await ensureMe(); if(!m) return; renderWho();
+    const q = S.questions.find(x=>x.id===b.dataset.id); if(!q) return; const on = q.voters?.includes(m.pid);
+    b.dataset.busy = 1; b.disabled = true; try { navigator.vibrate?.(12); } catch(err){}
+    try { await updateDoc(doc(db,'questions',q.id), { voters: on ? arrayRemove(m.pid) : arrayUnion(m.pid) }); } catch(err){ say('다시 시도해 주세요'); } finally { b.disabled = false; delete b.dataset.busy; } });
   let to = ''; $('#g-to').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; to = b.dataset.to; $('#g-to').querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b)); });
-  $('#g-form').addEventListener('submit', async e => { e.preventDefault(); const gen = $('#g-gen').value, text = $('#g-text').value.trim(); if(!gen||!text) return; const b = $('#g-submit'); b.disabled = true;
-    try { await addDoc(collection(db,'questions'), { gen, text, name:to, voters:[], createdAt: serverTimestamp(), hidden:false, answered:false, client:cid }); $('#g-text').value=''; say('올렸습니다'); setTimeout(()=>b.disabled=false, 8000); } catch(err){ say('인터넷 연결을 확인해 주세요'); b.disabled = false; } });
-  render.polls = () => { const p = S.polls.find(x=>x.open), box = $('#g-poll'); if(!p){ box.hidden = true; return; } box.hidden = false; let v = null; try { v = localStorage.getItem('hc_vote_'+p.id); } catch(e){}
-    box.innerHTML = `<div class="eyebrow">LIVE POLL</div><h2>${esc(p.q)}</h2>` + (v===null ? p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('') : `<p class="muted">투표 완료 · ${esc(p.options[Number(v)] ?? '')}</p><p class="muted">결과는 진행자가 공개하면 이 화면에 뜹니다</p>`); };
-  $('#g-poll').addEventListener('click', async e => { const b = e.target.closest('.opt'); if(!b) return; const p = S.polls.find(x=>x.open); if(!p) return; try { await setDoc(doc(db,'polls',p.id,'votes',cid), { option:Number(b.dataset.i), at: serverTimestamp() }); } catch(err){} try { localStorage.setItem('hc_vote_'+p.id, b.dataset.i); } catch(e){} render.polls(); });
+  $('#g-form').addEventListener('submit', async e => { e.preventDefault(); const text = $('#g-text').value.trim(); if(!text) return;
+    const m = await ensureMe(); if(!m) return; renderWho(); const b = $('#g-submit'); b.disabled = true;
+    try { await addDoc(collection(db,'questions'), { gen:m.gen, text, name:to, voters:[], createdAt: serverTimestamp(), hidden:false, answered:false, client:m.pid }); $('#g-text').value=''; say('게시했습니다'); setTimeout(()=>b.disabled=false, 8000); } catch(err){ say('인터넷 연결을 확인해 주세요'); b.disabled = false; } });
+  // 투표: 사람당 1표 (표 문서 id = pid, 서버 규칙상 생성만 가능)
+  const myVote = {};
+  const checkVote = async p => { if(!me || myVote[p.id] !== undefined) return; myVote[p.id] = null; try { const d = await getDoc(doc(db,'polls',p.id,'votes',me.pid)); myVote[p.id] = d.exists() ? d.data().option : null; } catch(err){} render.polls(); };
+  render.polls = () => { const p = S.polls.find(x=>x.open), box = $('#g-poll'); if(!p){ box.hidden = true; return; } box.hidden = false; checkVote(p); const v = myVote[p.id];
+    box.innerHTML = `<div class="eyebrow">LIVE POLL</div><h2>${esc(p.q)}</h2>` + (v===null || v===undefined ? p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('') : `<p class="muted">투표 완료 · <b style="color:#fff">${esc(p.options[Number(v)] ?? '')}</b></p><p class="muted">결과는 진행자가 공개하면 이 화면에 뜹니다</p>`); };
+  $('#g-poll').addEventListener('click', async e => { const b = e.target.closest('.opt'); if(!b) return; const p = S.polls.find(x=>x.open); if(!p) return;
+    const m = await ensureMe(); if(!m) return; renderWho(); const i = Number(b.dataset.i);
+    try { await setDoc(doc(db,'polls',p.id,'votes',m.pid), { option:i, at: serverTimestamp() }); myVote[p.id] = i; try { navigator.vibrate?.(15); } catch(err){} }
+    catch(err){ try { const d = await getDoc(doc(db,'polls',p.id,'votes',m.pid)); if(d.exists()){ myVote[p.id] = d.data().option; say('이미 투표하셨어요'); } else say('다시 시도해 주세요'); } catch(e2){ say('다시 시도해 주세요'); } }
+    render.polls(); });
   listen.program(); listen.questions(); listen.polls();
 }
 
@@ -290,11 +444,23 @@ function drawView(){
   bindNow('d-now');
   const rp = render.program; render.program = () => { rp(); render.draw(); };
   render.draw = () => { if(info().step===null){ $('#g-draw').innerHTML = '<p class="muted">추첨은 행사 당일 열립니다.</p><a class="btn" href="?qa" style="width:100%;margin-top:12px">질문 · 투표로 가기</a>'; return; } const items = S.draw?.items||[]; $('#g-draw').innerHTML = items.length ? winnersHtml(items, S.draw?.live?.no) : '<p class="muted">추첨 전</p>'; };
-  listen.program(); listen.draw(); forceWatch();
+  listen.program(); listen.draw(); forceWatch(); loadTables().then(initMe);
 }
 
 // ---------- 프로젝터 ----------
 // 진행 순서에 따라 화면이 바뀐다: 체크인·Table Talk → 테이블 배치, Alumni → 질문·투표, Break → 타이머, Lucky Draw → 당첨자, 그 외 → 슬로건
+
+// ---------- 내가 당첨되면 ----------
+const isMe = lv => !!(me && lv && ((me.no && String(me.no)===String(lv.no)) || (String(me.name||'').replace(/\s+/g,'')===String(lv.name||'').replace(/\s+/g,'') && me.gen===lv.gen)));
+function confetti(host){
+  const cv = document.createElement('canvas'); cv.className = 'cf'; host.appendChild(cv);
+  const W = cv.width = innerWidth, H = cv.height = innerHeight, x = cv.getContext('2d'), cols = ['#3d5afe','#9db0ff','#6FE3D9','#F2A65A','#ffffff','#C4B5FD'];
+  const ps = Array.from({length:150}, () => ({ x:Math.random()*W, y:-20-Math.random()*H*.6, vx:(Math.random()-.5)*3, vy:2+Math.random()*3, r:5+Math.random()*6, a:Math.random()*6, va:(Math.random()-.5)*.3, c:cols[Math.floor(Math.random()*cols.length)] }));
+  const t0 = performance.now(); const f = t => { x.clearRect(0,0,W,H); ps.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += .025; p.a += p.va; x.save(); x.translate(p.x,p.y); x.rotate(p.a); x.fillStyle = p.c; x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2); x.restore(); }); if(t - t0 < 5500 && cv.isConnected) requestAnimationFrame(f); else cv.remove(); }; requestAnimationFrame(f);
+}
+function winFx(ov, lv){ if(view==='screen' || view==='admin' || !isMe(lv)) return false;
+  ov.classList.add('me'); ov.insertAdjacentHTML('beforeend', `<div class="youwin">🎉 축하합니다!<small>당첨되셨어요. 앞으로 나와 주세요</small></div><button class="btn" id="yw-x" style="margin-top:16px">닫기</button>`);
+  ov.querySelector('#yw-x').onclick = () => ov.remove(); confetti(ov); try { navigator.vibrate?.([90,60,90,60,160]); } catch(e){} return true; }
 // ---------- 추첨 연출 (screen·참가자 휴대폰 공용) ----------
   // 당첨자 공개 연출. 공이 8초 동안 핀 사이를 이리저리 튕기다가 마지막에 이웃 칸을 오가며 뜸을 들인 뒤 당첨 칸에 안착한다.
   let seenSeq = null;
@@ -334,7 +500,7 @@ function drawView(){
       trail.forEach((t,k) => { ctx.fillStyle = `rgba(157,176,255,${k/trail.length*.5})`; ctx.beginPath(); ctx.arc(t.x, t.y, 5 + k/trail.length*7, 0, 7); ctx.fill(); });
       ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(bx, by, 14, 0, 7); ctx.fill();
       if(p < 1) requestAnimationFrame(draw);
-      else if(!done){ done = true; requestAnimationFrame(draw); setTimeout(() => { ov.querySelector('#pkres').innerHTML = `<div class="nm">${esc(lv.name)}</div><div class="meta">${esc(lv.gen||'')} · No.${esc(lv.no)}</div>`; }, 900); setTimeout(() => ov.remove(), 10000); }
+      else if(!done){ done = true; requestAnimationFrame(draw); setTimeout(() => { ov.querySelector('#pkres').innerHTML = `<div class="nm">${esc(lv.name)}</div><div class="meta">${esc(lv.gen||'')} · No.${esc(lv.no)}</div>`; if(winFx(ov, lv)) ov.dataset.keep = 1; }, 900); setTimeout(() => { if(!ov.dataset.keep) ov.remove(); }, 10000); }
     };
     requestAnimationFrame(draw);
   };
@@ -344,7 +510,7 @@ function drawView(){
     document.body.appendChild(ov);
     const maxNo = Math.max(80, ...(S.draw?.items||[]).map(w=>Number(w.no)||0));
     const roll = ov.querySelector('#roll'), t0 = Date.now();
-    const iv = setInterval(() => { if(Date.now() - t0 < 3000){ roll.textContent = String(Math.floor(rand()*maxNo)+1).padStart(2,'0'); return; } clearInterval(iv); roll.textContent = String(lv.no).padStart(2,'0'); setTimeout(() => roll.insertAdjacentHTML('afterend', `<div class="nm">${esc(lv.name)}</div><div class="meta">${esc(lv.gen||'')} · No.${esc(lv.no)}</div>`), 600); setTimeout(() => ov.remove(), 7600); }, 60);
+    const iv = setInterval(() => { if(Date.now() - t0 < 3000){ roll.textContent = String(Math.floor(rand()*maxNo)+1).padStart(2,'0'); return; } clearInterval(iv); roll.textContent = String(lv.no).padStart(2,'0'); setTimeout(() => { roll.insertAdjacentHTML('afterend', `<div class="nm">${esc(lv.name)}</div><div class="meta">${esc(lv.gen||'')} · No.${esc(lv.no)}</div>`); if(winFx(ov, lv)) ov.dataset.keep = 1; }, 600); setTimeout(() => { if(!ov.dataset.keep) ov.remove(); }, 7600); }, 60);
   };
 
 function screen(){
