@@ -3,7 +3,7 @@
 """RSVP 시트에서 뽑은 CSV 한 장으로 live/tables.json 과 people.json 을 만든다.
 
 사용법:  python3 tools/make_people.py 명단.csv [--publish]
-CSV 열(헤더 이름 기준, 순서 무관): no,name,gen,t1,t2,intro,topic1,topic2,card,linkedin,remember,instagram,other
+CSV 열(헤더 이름 기준, 순서 무관): no,name,gen,t1,t2,intro,topic1,topic2,card,linkedin,remember,instagram,other,photo
   - no      명찰 번호 (= 응모 번호)
   - gen     "25기" 형식
   - t1,t2   1·2라운드 테이블 번호
@@ -11,6 +11,7 @@ CSV 열(헤더 이름 기준, 순서 무관): no,name,gen,t1,t2,intro,topic1,top
   - topic1/topic2  관심 분야 1·2순위: 번호(1~8) 또는 RSVP 선택지 문구 그대로
   - card    "표시"면 참가자 카드·명찰 QR에 공개 (RSVP 8번). 그 외는 카드에서 제외
   - linkedin/remember/instagram/other  프로필 링크. 인스타그램은 @아이디만 적어도 됨
+  - photo   회고 사진 제공자면 O/1/Y (추첨 응모권 +1, 관리 화면 체크인 탭에서 미리 켜진 상태로 표시)
 --publish 를 주면 published:true 로 쓴다. 빼면 파일은 갱신하되 published:false 유지.
 """
 import csv, json, sys, re, datetime, pathlib
@@ -43,7 +44,9 @@ def main():
     for r in rows:
         g = lambda k: (r.get(k) or '').strip()
         if not g('no') or not g('name'): continue
-        tables.append({'no': int(g('no')), 'name': g('name'), 'gen': g('gen'), 't1': g('t1'), 't2': g('t2')})
+        row = {'no': int(g('no')), 'name': g('name'), 'gen': g('gen'), 't1': g('t1'), 't2': g('t2')}
+        if g('photo').upper() in ('O', '1', 'Y', 'TRUE', '○'): row['photo'] = True
+        tables.append(row)
         if g('card') != '표시': continue
         links = {k: link(k, g(k)) for k in ('linkedin','remember','instagram','other')}
         people.append({'no': int(g('no')), 'name': g('name'), 'gen': g('gen'), 'intro': g('intro'),
