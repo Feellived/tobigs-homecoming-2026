@@ -1,13 +1,14 @@
 // 리허설 → 초기화 → 운영 노트북 새로고침(또는 다른 노트북) → 본 추첨.
 // 리허설 때부터 열어 둔 프로젝터 · 휴대폰에도 슬롯 연출이 떠야 한다.
 import { test, expect } from '@playwright/test';
-import { newDevice, resetEmulators, adminLogin, adminTab, PHONE, LAPTOP, PROJECTOR, sleep } from '../lib/helpers.mjs';
+import { newDevice, resetEmulators, adminLogin, adminTab, uploadRoster, PHONE, LAPTOP, PROJECTOR, sleep } from '../lib/helpers.mjs';
 
 test('리허설 추첨 후 초기화하고 운영 화면을 새로 열어도, 열려 있던 프로젝터·휴대폰에 본 추첨 연출이 뜬다', async ({ browser }) => {
   test.setTimeout(120_000);
   await resetEmulators();
   const admin = await newDevice(browser, LAPTOP), proj = await newDevice(browser, PROJECTOR), ph = await newDevice(browser, PHONE);
-  await adminLogin(admin.page);
+  await adminLogin(admin.page); await uploadRoster(admin.page);
+  await adminLogin(proj.page);
   for (const n of [1, 2, 3, 4, 5]) { await adminTab(admin.page, 'ci'); await admin.page.locator(`#a-cl input[data-no="${n}"]`).check(); await expect(admin.page.locator('#a-cc')).toContainText(`체크인 ${n} /`); }
   await adminTab(admin.page, 'prog'); await admin.page.click('#a-steps button[data-i="10"]');
   await proj.page.goto('/live/?screen'); await ph.page.goto('/live/');

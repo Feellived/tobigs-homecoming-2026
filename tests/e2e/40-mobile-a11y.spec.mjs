@@ -3,7 +3,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { writeFileSync, mkdirSync } from 'node:fs';
-import { newDevice, resetEmulators, seed, overflow, PHONE, sleep } from '../lib/helpers.mjs';
+import { newDevice, resetEmulators, seed, seedRoster, overflow, PHONE, sleep } from '../lib/helpers.mjs';
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
 
 const REPORT = {};
@@ -15,8 +15,9 @@ const PAGES = [
   ['내 테이블', '/live/table/'], ['참가자 카드', '/people/?no=1'], ['운영 로그인', '/live/?admin'],
 ];
 
-test.beforeAll(async () => {
+test.beforeAll(async ({ browser }) => {
   await resetEmulators();
+  await seedRoster(browser);
   await seed(async db => {
     await setDoc(doc(db, 'state', 'program'), { step: 4, endsAt: Timestamp.fromMillis(Date.now() + 40 * 60000) });
     await setDoc(doc(db, 'questions', 'Q'.repeat(20)), { gen: '26기', text: LONG, name: '임지영', voters: Array.from({ length: 123 }, (_, i) => 'v' + i), createdAt: Timestamp.now(), hidden: false, answered: true, client: 'x' });
