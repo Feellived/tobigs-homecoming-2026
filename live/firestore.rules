@@ -59,11 +59,19 @@ service cloud.firestore {
       }
     }
 
-    // check-ins and draw results: read all, write admin
-    match /checkins/{no} {
-      allow read: if true;
-      allow write: if isAdmin();
+    // 명단: 저장소가 아니라 여기에 둔다(운영 화면 '명단' 탭). 참가자는 기수+이름으로 계산한 칸 하나만 읽고(get),
+    // 전체 목록 읽기(list)와 쓰기는 운영 계정만. 참가자 카드(카드 공개 동의자만)는 state/people 문서 하나.
+    match /roster/{key} {
+      allow get: if true;
+      allow list, write: if isAdmin();
     }
+
+    // check-ins: 이름 · 번호가 들어 있어 운영 계정만 읽기 · 쓰기
+    match /checkins/{no} {
+      allow read, write: if isAdmin();
+    }
+
+    // draw results: read all, write admin
     match /draw/{docId} {
       allow read: if true;
       allow write: if isAdmin();

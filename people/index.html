@@ -88,21 +88,25 @@ function render(){
   box.querySelector('#g').onchange = e => { gen = e.target.value; render(); };
   box.querySelectorAll('.chip').forEach(b => b.onclick = () => { const t = Number(b.dataset.t); topic = topic===t ? null : t; render(); });
 }
-Promise.all([
-  fetch('../people.json',{cache:'no-store'}).then(r=>r.json()),
-  fetch('../live/tables.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>({published:false}))
-]).then(([p, t]) => {
-  if(!p.published){ box.innerHTML = '<p class="empty">공개 전입니다. 테이블 배정이 끝나는 11월 16일 이후에 열립니다.</p>'; return; }
-  rows = (p.rows||[]).slice().sort((a,b)=>parseInt(a.gen)-parseInt(b.gen) || String(a.name).localeCompare(String(b.name),'ko'));
-  if(t.published) (t.rows||[]).forEach(r => tables[String(r.no)] = r);
+// 데이터는 아래 모듈 스크립트가 Firestore(state/people: 카드 공개에 동의한 사람만)에서 읽어 window.hcCards()로 넘긴다
+window.hcCards = (list, err) => {
+  if(err === 'closed'){ box.innerHTML = '<p class="empty">공개 전입니다. 테이블 배정이 끝나는 11월 16일 이후에 열립니다.</p>'; return; }
+  if(err){ box.innerHTML = '<p class="empty">명단을 불러오지 못했습니다. 잠시 후 다시 열어주세요.</p>'; return; }
+  rows = list.slice().sort((a,b)=>parseInt(a.gen)-parseInt(b.gen) || String(a.name).localeCompare(String(b.name),'ko'));
+  rows.forEach(r => tables[String(r.no)] = r);
   render();
-}).catch(() => { box.innerHTML = '<p class="empty">명단을 불러오지 못했습니다. 잠시 후 다시 열어주세요.</p>'; });
+};
 </script>
 <script type="module">
 // 강제 전환: 투표 결과 공개 · 추첨 연출이 시작되면 라이브 화면으로 이동 (라이브 화면이 전체 화면으로 띄움)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getFirestore, collection, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getFirestore, collection, doc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 const db = getFirestore(initializeApp({ apiKey:"AIzaSyBKDlddQRA1mLotV2V2R-39GhwTrSQ8zVE", authDomain:"tobigshoco.firebaseapp.com", projectId:"tobigshoco", storageBucket:"tobigshoco.firebasestorage.app", messagingSenderId:"973817861716", appId:"1:973817861716:web:48c2fdd252eab5edf83fc1" }));
+// 참가자 카드: 명단 공개 여부(state/roster) + 카드 공개 동의자 목록(state/people, 문서 1개)
+Promise.all([getDoc(doc(db,'state','roster')), getDoc(doc(db,'state','people'))]).then(([r, p]) => {
+  if(!(r.exists() && r.data().published)) return window.hcCards([], 'closed');
+  window.hcCards((p.exists() && p.data().rows) || []);
+}).catch(() => window.hcCards([], 'error'));
 let showId, seq = null;
 onSnapshot(collection(db,'polls'), s => { const p = s.docs.find(d => d.data().show), id = p ? p.id : null; if(showId === undefined){ showId = id; return; } if(id && id !== showId) location.href = '../live/?qa'; showId = id; });
 onSnapshot(doc(db,'draw','results'), s => { const q = s.exists() ? (s.data().live?.seq || 0) : 0; if(seq === null){ seq = q; return; } if(q > seq) location.href = '../live/?draw'; seq = q; });

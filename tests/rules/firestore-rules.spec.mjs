@@ -139,6 +139,19 @@ test.describe('운영진 전용', () => {
     const db = env.authenticatedContext('u3', { email: ADMIN.email, email_verified: false }).firestore();
     await assertFails(setDoc(doc(db, 'state', 'program'), { step: 10 }));
   });
+  test('명단: 참가자는 자기 칸 하나만 읽기(get), 전체 목록·쓰기 불가. 체크인 기록은 운영 계정만 읽기', async () => {
+    await env.withSecurityRulesDisabled(async ctx => { await setDoc(doc(ctx.firestore(), 'roster', 'rabc'), { rows: [{ no: 1, name: '이지우', gen: '2기', t1: '1', t2: '4' }] }); await setDoc(doc(ctx.firestore(), 'checkins', '1'), { no: 1, name: '이지우' }); });
+    const db = anon();
+    await assertSucceeds(getDoc(doc(db, 'roster', 'rabc')));
+    await assertFails(getDocs(collection(db, 'roster')));
+    await assertFails(setDoc(doc(db, 'roster', 'rxyz'), { rows: [] }));
+    await assertFails(getDoc(doc(db, 'checkins', '1')));
+    await assertFails(getDocs(collection(db, 'checkins')));
+    await assertFails(setDoc(doc(db, 'state', 'people'), { rows: [] }));
+    await assertSucceeds(getDoc(doc(db, 'state', 'people')));          // 카드 공개 동의자 목록은 공개
+    await assertSucceeds(getDocs(collection(admin(), 'roster')));
+    await assertSucceeds(getDocs(collection(admin(), 'checkins')));
+  });
   test('규칙에 없는 컬렉션은 읽기·쓰기 모두 거부', async () => {
     await assertFails(setDoc(doc(anon(), 'secrets', 'x'), { a: 1 }));
     await assertFails(getDoc(doc(anon(), 'secrets', 'x')));
