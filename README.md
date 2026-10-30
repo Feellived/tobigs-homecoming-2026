@@ -19,7 +19,7 @@
 - 실시간 투표: 진행자가 결과를 공개하면 참가자 휴대폰 전체 화면에 결과(막대 연출 · 1위 · 내 선택)를 강제로 표시
 - 체크인 · 응모권: 명단 체크박스로 체크인, 퀴즈 우승 테이블 · 회고 사진 제공자 보너스가 응모권에 자동 반영
 - 경품 추첨: 응모권 가중 추첨, 슬롯머신 방식 공개 연출이 모든 휴대폰에 동시에 재생, 본인 당첨 시 축하 화면
-- 내 테이블 · 참가자 카드(명찰 QR), 운영진 현황 화면, 홈 화면 추가(PWA)
+- 내 테이블 · 참가자 카드(명찰 QR), 운영진 현황 화면
 - 행사 도우미: 일정 · 길찾기 · 신청 · 라이브 사용법을 답하는 AI 챗봇(답변에 지도 · 폼 버튼)
 
 ## 구조
@@ -52,7 +52,6 @@
 | `live/table/` | 내 테이블 조회 (`live/tables.json`) |
 | `people/` | 참가자 카드 (`people.json`), 명찰 QR은 `/people/?no=번호` |
 | `live/firestore.rules` | Firestore 보안 규칙 (Firebase 콘솔에 게시) |
-| `live/manifest.webmanifest`, `live/icon-*.png` | 홈 화면 추가 |
 | `tools/make_people.py` | RSVP 정리 CSV → `tables.json` · `people.json` |
 | `tools/make_qr.py` | 명찰 QR 이미지 생성 (`qr/badge/`, git 제외) |
 
