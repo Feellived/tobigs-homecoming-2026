@@ -472,7 +472,7 @@ const ASK_LINKS = {
 const ASK_SUG = ['오시는 길 알려줘', '주차할 수 있어?', '뒤풀이는 어떻게 해?', '선배님께 질문은 어떻게 올려?', '추첨 응모권은 어떻게 받아?', '늦게 가도 돼?'];
 function ask(){
   appEl.innerHTML = `<a class="back" href="./">← Live</a><section class="card"><div class="eyebrow">ASK HOCO</div><h2>행사 도우미</h2>
-    <p class="muted">일정 · 오시는 길 · 신청 · 라이브 페이지 사용법을 물어보세요. 답할 수 없는 내용은 운영부 오픈채팅으로 안내해 드려요.</p>
+    <p class="muted" style="word-break:keep-all">일정 · 오시는 길 · 신청 · 라이브 페이지 사용법을 물어보세요. 답할 수 없는 내용은 운영부 오픈채팅으로 안내해 드려요.</p>
     <div class="chips" id="k-sug">${ASK_SUG.map(t=>`<button type="button">${esc(t)}</button>`).join('')}</div>
     <div class="chat" id="k-log"></div>
     <form id="k-f" class="row" style="flex-wrap:nowrap;margin-top:10px"><input type="text" id="k-in" maxlength="300" placeholder="궁금한 것을 입력하세요" autocomplete="off" enterkeyhint="send" style="flex:1 1 0;width:auto;min-width:0;margin:0"><button class="btn btn-primary" id="k-go" type="submit" style="flex:0 0 auto">보내기</button></form>
