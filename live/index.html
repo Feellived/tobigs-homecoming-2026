@@ -6,12 +6,7 @@
 <title>TOBIG'S Homecoming Live</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="../assets/favicon.png">
-<link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0b1230">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="HOCO Live">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -155,7 +150,6 @@ table.t td,table.t th{text-align:left;padding:5px 4px;border-bottom:1px solid va
 .tl li span{font-family:var(--display);font-weight:700;font-size:12px;min-width:40px;color:var(--peri)}
 .tl li.done{opacity:.45}
 .tl li.now{color:#fff;font-weight:700}.tl li.now:before{background:var(--accent);box-shadow:0 0 0 4px rgba(61,90,254,.3)}
-.tip{font-size:12px;text-align:center;margin-top:14px}
 .ci{padding:8px 0;border-top:1px solid var(--line);flex-wrap:nowrap}.ci.in b{color:var(--peri)}
 .ph-t{border:1px solid var(--line);background:transparent;border-radius:8px;padding:3px 7px;opacity:.3;filter:grayscale(1);font-size:13px}.ph-t.on{opacity:1;filter:none;border-color:var(--peri)}
 .tk{font-family:var(--display);font-size:12px;color:var(--muted);min-width:28px;text-align:right}
@@ -225,6 +219,8 @@ body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-templat
 .reel .it{height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
 .reel .it b{font-size:24px;font-weight:800}.reel .it span{font-family:var(--display);font-size:12px;color:var(--muted)}
 .reel .wl2{position:absolute;left:10px;right:10px;top:64px;height:64px;border-top:2px solid var(--accent);border-bottom:2px solid var(--accent);border-radius:10px;background:rgba(61,90,254,.12);pointer-events:none}
+.reel.tense .wl2{animation:tense .5s ease-in-out infinite alternate}
+@keyframes tense{from{box-shadow:0 0 0 0 rgba(61,90,254,.0)}to{box-shadow:0 0 0 6px rgba(61,90,254,.35)}}
 .reel.done .it.hit b{color:var(--peri)}.reel.done .wl2{box-shadow:0 0 0 4px rgba(61,90,254,.25);transition:box-shadow .3s}
 .ov.rl .nm{font-size:min(10vw,72px);margin:10px 0 2px}.ov.rl .meta{font-size:22px}
 body.screen .reel{width:min(70vw,900px);height:330px}body.screen .reel .it{height:110px}body.screen .reel .it b{font-size:52px}body.screen .reel .it span{font-size:18px}body.screen .reel .wl2{top:110px;height:110px}
@@ -392,8 +388,7 @@ function hub(){
   <a class="card entry" href="../people/" id="e-people" hidden><div class="eyebrow">NETWORKING</div><h2>참가자 카드</h2><p class="muted">관심사가 맞는 사람 찾기</p></a>
   <a class="card entry" href="?draw" id="e-draw" hidden><div class="eyebrow">LUCKY DRAW</div><h2>추첨 · 당첨자 확인</h2></a>
   <section class="card" id="h-tl"><div class="dd" id="h-dd" hidden></div><div class="eyebrow" id="h-tlh">PROGRAM</div><ol class="tl">${STEPS.map((x,i)=>`<li data-i="${i}"><span>${x.t}</span>${esc(x.n)}</li>`).join('')}</ol></section>
-  <a class="btn" href="../" style="width:100%;margin-top:8px">초대장 홈페이지로</a>
-  <p class="muted tip">브라우저 메뉴의 '홈 화면에 추가'를 누르면 앱처럼 바로 열 수 있어요</p>`;
+  <a class="btn" href="../" style="width:100%;margin-top:8px">초대장 홈페이지로</a>`;
   let lastStep;
   const dday = () => { const n = new Date(), k = new Date(n.getTime() + (540 + n.getTimezoneOffset())*60000); return Math.round((Date.UTC(2026,10,21) - Date.UTC(k.getFullYear(), k.getMonth(), k.getDate())) / 86400000); };
   hubHi = (hi, idle, step) => { ['qa','table','people','draw'].forEach(k => $('#e-'+k).classList.toggle('primary', k===hi)); ['table','people','draw'].forEach(k => $('#e-'+k).hidden = idle); $('#h-pre').hidden = !idle;
@@ -480,7 +475,7 @@ function ask(){
     <p class="muted">일정 · 오시는 길 · 신청 · 라이브 페이지 사용법을 물어보세요. 답할 수 없는 내용은 운영부 오픈채팅으로 안내해 드려요.</p>
     <div class="chips" id="k-sug">${ASK_SUG.map(t=>`<button type="button">${esc(t)}</button>`).join('')}</div>
     <div class="chat" id="k-log"></div>
-    <form id="k-f" class="row" style="flex-wrap:nowrap;margin-top:10px"><input type="text" id="k-in" maxlength="300" placeholder="궁금한 것을 입력하세요" autocomplete="off" enterkeyhint="send" style="flex:1 1 0;width:auto"><button class="btn btn-primary" id="k-go" type="submit">보내기</button></form>
+    <form id="k-f" class="row" style="flex-wrap:nowrap;margin-top:10px"><input type="text" id="k-in" maxlength="300" placeholder="궁금한 것을 입력하세요" autocomplete="off" enterkeyhint="send" style="flex:1 1 0;width:auto;min-width:0;margin:0"><button class="btn btn-primary" id="k-go" type="submit" style="flex:0 0 auto">보내기</button></form>
     </section>`;
   forceWatch();
   let hist = []; try { hist = JSON.parse(sessionStorage.getItem('hc_ask')||'[]'); } catch(e){}
@@ -541,12 +536,25 @@ function winFx(ov, lv){ if(view==='screen' || view==='admin' || !isMe(lv)) retur
     document.body.appendChild(ov);
     const pool = lv.pool, tot = pool.reduce((a,p)=>a+(p.t||1),0) || 1;
     const pick = () => { let r = rand()*tot; for(const p of pool){ r -= (p.t||1); if(r < 0) return p; } return pool[pool.length-1]; };
-    const N = 44, seq = []; for(let k=0;k<N;k++) seq.push(pick()); seq.push({ no:lv.no, name:lv.name }); seq.push(pick(), pick());
+    // N번째 칸이 당첨자. 바로 앞(N-1) 칸은 당첨자와 다른 사람으로 고정해 '아깝게 지나가는' 장면을 만든다
+    const N = 24, seq = []; for(let k=0;k<N;k++) seq.push(pick());
+    const other = () => { for(let k=0;k<30;k++){ const p = pick(); if(String(p.no)!==String(lv.no)) return p; } return pick(); };
+    seq[N-1] = other(); seq.push({ no:lv.no, name:lv.name }); seq.push(other(), pick());
     const strip = ov.querySelector('.strip'); strip.innerHTML = seq.map(p=>`<div class="it"><b>${esc(p.name)}</b><span>No.${esc(p.no)}</span></div>`).join('');
-    const H = strip.firstElementChild.getBoundingClientRect().height || 64, target = (N - 1) * H, dur = 6800, t0 = performance.now();
-    const ease = t => 1 - Math.pow(1 - t, 4);
-    const step = now => { const t = Math.min(1, (now - t0) / dur); strip.style.transform = `translateY(${-target * ease(t)}px)`;
-      if(t < 1) return requestAnimationFrame(step);
+    const H = strip.firstElementChild.getBoundingClientRect().height || 64, t0 = performance.now();
+    // 위치 y = (k-1)*H 일 때 k번째 칸이 가운데. 단계: ① 천천히 흐르며 감속 → ② N-1(바로 앞 사람) 칸을 지나 경계까지 아주 느리게 기어감
+    // → ③ 경계에서 멈칫(살짝 떨림) → ④ 툭 넘어가 당첨 칸을 살짝 지나쳤다가 ⑤ 제자리에 안착
+    const yA = (N - 2) * H + 0.12 * H, yB = (N - 2) * H + 0.48 * H, yOver = (N - 1) * H + 0.08 * H, yEnd = (N - 1) * H;
+    const T1 = 7200, T2 = T1 + 1800, T3 = T2 + 700, T4 = T3 + 380, T5 = T4 + 420;
+    const easeOut = t => 1 - Math.pow(1 - t, 3), easeInOut = t => t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2, easeIn = t => t*t*t;
+    const posAt = e => e < T1 ? yA * easeOut(e / T1)
+      : e < T2 ? yA + (yB - yA) * easeInOut((e - T1) / (T2 - T1))
+      : e < T3 ? yB + Math.sin((e - T2) / 55) * 0.012 * H
+      : e < T4 ? yB + (yOver - yB) * easeIn((e - T3) / (T4 - T3))
+      : e < T5 ? yOver + (yEnd - yOver) * easeOut((e - T4) / (T5 - T4)) : yEnd;
+    const reelEl = ov.querySelector('.reel');
+    const step = now => { const e = now - t0; strip.style.transform = `translateY(${-posAt(e)}px)`; reelEl.classList.toggle('tense', e >= T1 && e < T3);
+      if(e < T5) return requestAnimationFrame(step);
       ov.querySelector('.reel').classList.add('done'); strip.children[N].classList.add('hit');
       setTimeout(() => { ov.querySelector('#rlres').innerHTML = `<div class="nm">${esc(lv.name)}</div><div class="meta">${esc(lv.gen||'')} · No.${esc(lv.no)}</div>`; if(winFx(ov, lv)) ov.dataset.keep = 1; }, 500);
       setTimeout(() => { if(!ov.dataset.keep) ov.remove(); }, 9000); };
