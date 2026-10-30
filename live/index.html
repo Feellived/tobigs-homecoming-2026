@@ -229,7 +229,7 @@ body.screen .reel{width:min(70vw,900px);height:330px}body.screen .reel .it{heigh
 <script src="../assets/ask.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, getDoc, serverTimestamp, arrayUnion, arrayRemove, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, getDoc, getDocs, writeBatch, serverTimestamp, arrayUnion, arrayRemove, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 const firebaseConfig = { apiKey:"AIzaSyBKDlddQRA1mLotV2V2R-39GhwTrSQ8zVE", authDomain:"tobigshoco.firebaseapp.com", projectId:"tobigshoco", storageBucket:"tobigshoco.firebasestorage.app", messagingSenderId:"973817861716", appId:"1:973817861716:web:48c2fdd252eab5edf83fc1" };
@@ -287,10 +287,15 @@ async function pidOf(gen, name){
   const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(key)); // 보안 연결(https)에서만 동작. 없으면 예외 → 참여 정보 저장 안 함
   return 'p' + [...new Uint8Array(h)].slice(0,16).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
-const findRow = (gen, name) => { const rows = (S.tables && S.tables.published) ? (S.tables.rows||[]) : []; const n = String(name||'').replace(/\s+/g,'').toLowerCase(); return rows.find(r => r.gen===gen && String(r.name||'').replace(/\s+/g,'').toLowerCase()===n) || null; };
+// 명단은 저장소가 아니라 Firestore에 있다(운영 화면 '명단' 탭에서 CSV를 올림). 참가자는 자기 기수+이름 칸(roster/{rosterKey}) 하나만 읽을 수 있고, 전체 목록은 운영 계정만 읽는다.
+const normName = s => String(s||'').replace(/\s+/g,'').toLowerCase();
+async function rosterKey(gen, name){ const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('tobigs-hoco-2026-roster|' + gen + '|' + normName(name))); return 'r' + [...new Uint8Array(h)].slice(0,16).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+async function findRow(gen, name){ if(!S.tables.published) return null; const n = normName(name);
+  if((S.tables.rows||[]).length) return S.tables.rows.find(r => r.gen===gen && normName(r.name)===n) || null;
+  try { const d = await getDoc(doc(db,'roster', await rosterKey(gen, name))); return d.exists() ? ((d.data().rows||[])[0] || null) : null; } catch(e){ return null; } }
 async function makeMe(gen, name, row){ me = { gen, name: String(name).trim(), pid: await pidOf(gen, name), no: row ? row.no : null }; lsSet('hc_id', me); if(row) lsSet('hc_me', row); return me; }
 async function initMe(){
-  if(me && !me.no){ const r = findRow(me.gen, me.name); if(r){ me.no = r.no; lsSet('hc_id', me); lsSet('hc_me', r); } }
+  if(me && !me.no){ const r = await findRow(me.gen, me.name); if(r){ me.no = r.no; lsSet('hc_id', me); lsSet('hc_me', r); } }
   return me;
 }
 function askMe(){ return new Promise(res => {
@@ -308,7 +313,7 @@ function askMe(){ return new Promise(res => {
   let warned = '';
   bg.querySelector('#me-f').onsubmit = async e => { e.preventDefault();
     const gen = bg.querySelector('#me-g').value, name = bg.querySelector('#me-n').value.trim(); if(!gen || !name) return;
-    const listed = S.tables && S.tables.published && (S.tables.rows||[]).length, row = findRow(gen, name), key = gen + name;
+    const listed = S.tables && S.tables.published, row = await findRow(gen, name), key = gen + name;
     if(listed && !row && warned !== key){ warned = key; bg.querySelector('#me-e').textContent = '참석자 명단에서 찾지 못했어요. 맞다면 한 번 더 누르면 이 이름으로 참여합니다.'; return; }
     try { done(await makeMe(gen, name, row)); } catch(err){ bg.querySelector('#me-e').textContent = '이 브라우저에서는 참여 정보를 만들 수 없어요. 주소가 https로 시작하는지 확인해 주세요.'; } };
   const hc = lsGet('hc_me'); if(hc && hc.gen && hc.name){ bg.querySelector('#me-g').value = hc.gen; bg.querySelector('#me-n').value = hc.name; } // 내 테이블에서 찾은 값은 미리 채우기만, 확인은 본인이
@@ -321,7 +326,7 @@ const view = qs.includes('screen') ? 'screen' : qs.includes('admin') ? 'admin' :
 const appEl = $('#app');
 
 const S = { program:null, questions:[], polls:[], votes:{}, draw:null, tables:{ published:false, rows:[] }, checkins:{} };
-const render = { program(){}, questions(){}, polls(){}, draw(){}, checkins(){} };
+const render = { program(){}, questions(){}, polls(){}, draw(){}, checkins(){}, roster(){} };
 const voteSubs = {};
 const listen = {
   program: () => onSnapshot(doc(db,'state','program'), s => { S.program = s.exists() ? s.data() : null; render.program(); }),
@@ -335,7 +340,10 @@ const listen = {
   draw: () => onSnapshot(doc(db,'draw','results'), s => { S.draw = s.exists() ? s.data() : null; render.draw(); }),
   checkins: () => onSnapshot(collection(db,'checkins'), s => { S.checkins = {}; s.docs.forEach(d => S.checkins[d.id] = d.data()); render.checkins(); }),
 };
-const loadTables = () => fetch('tables.json',{cache:'no-store'}).then(r=>r.json()).then(t => { S.tables = t; }).catch(()=>{});
+// full=true: 전체 명단까지(운영 계정만 가능, 아니면 빈 목록)
+const loadTables = async (full=false) => { try { const s = await getDoc(doc(db,'state','roster')); const pub = !!(s.exists() && s.data().published); const rows = [];
+  if(pub && full){ try { (await getDocs(collection(db,'roster'))).forEach(d => rows.push(...(d.data().rows||[]))); rows.sort((a,b)=>Number(a.no)-Number(b.no)); } catch(e){} }
+  S.tables = { published: pub, rows, count: s.exists() ? s.data().count || 0 : 0 }; } catch(e){} };
 
 function info(){
   const p = S.program;
@@ -531,7 +539,7 @@ function winFx(ov, lv){ if(view==='screen' || view==='admin' || !isMe(lv)) retur
 function screen(){
   document.body.classList.add('screen');
   appEl.innerHTML = `<div class="sh"><div><div class="step" id="s-step"></div><div class="next" id="s-next"></div></div><div class="timer" id="s-timer"></div><div class="qr"><img src="qr.png" alt=""><div>homecoming.datamarket.ai.kr/live</div></div></div><div class="sb" id="s-body"></div>`;
-  let mode = null, seenSeq = null; // seenSeq: 마지막으로 연출한 추첨 번호(미선언이면 ReferenceError로 테이블 배치·추첨 연출이 멈춤)
+  let mode = null, seenSeq = null, signedIn = false; // seenSeq: 마지막으로 연출한 추첨 번호(미선언이면 ReferenceError로 테이블 배치·추첨 연출이 멈춤)
   const modeOf = st => st===null ? 'qa' : (st===0||st===5) ? 'tables1' : (st===8||st===9) ? 'tables2' : st===4 ? 'qa' : st===6 ? 'break' : st===10 ? 'draw' : 'idle';
   const layout = () => { const m = modeOf(info().step); if(m===mode) return; mode = m; const b = $('#s-body'); b.className = 'sb ' + (m==='qa' ? 'two' : 'one');
     if(m==='qa') b.innerHTML = `<div class="sc"><h3>질문</h3><div id="s-q"></div></div><div class="sc" id="s-r"></div>`;
@@ -539,7 +547,8 @@ function screen(){
     else if(m==='break') b.innerHTML = `<div class="sc center"><div class="bt" id="s-bt"></div><div class="bn" id="s-bn"></div></div>`;
     else if(m==='draw') b.innerHTML = `<div class="sc"><h3>Lucky Draw</h3><div id="s-w" class="wl"></div></div>`;
     else b.innerHTML = `<div class="sc center"><div class="idle">Big Then. <b>Bigger Now.</b></div></div>`;
-    render.questions(); render.polls(); render.draw(); renderTables(); };
+    render.questions(); render.polls(); render.draw(); renderTables();
+    if(m==='tables1'||m==='tables2') loadTables(signedIn).then(renderTables); }; // 프로젝터를 명단 올리기 전에 열어 둔 경우에도 테이블 배치가 뜨도록 다시 읽음
   render.program = () => { const i = info(); $('#s-step').textContent = i.name; $('#s-next').textContent = i.next; $('#s-timer').textContent = clock(); layout(); if(mode==='break'){ $('#s-bt').textContent = clock(); $('#s-bn').textContent = i.next; } };
   setInterval(render.program, 1000);
   const renderTables = () => { const el = $('#s-t'); if(!el) return; const key = mode==='tables2' ? 't2' : 't1'; const rows = S.tables.rows || [];
@@ -553,7 +562,8 @@ function screen(){
   const winners = () => { const el = $('#s-w'); if(!el) return; const items = S.draw?.items||[]; el.innerHTML = items.length ? items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win"><span class="rk">${esc(awardLabel(w))}</span><div><b>${esc(w.name)}</b> <span>${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('') : '<p class="se">Homecoming 상부터 추첨합니다.</p>'; };
   render.polls = right;
   render.draw = () => { winners(); const lv = S.draw?.live; const seq = lv?.seq || 0; if(seenSeq===null){ seenSeq = seq; return; } if(seq > seenSeq){ seenSeq = seq; reveal(lv); } };
-  loadTables().then(renderTables); listen.program(); listen.questions(); listen.polls(true); listen.draw();
+  onAuthStateChanged(auth, u => { signedIn = !!u; loadTables(signedIn).then(renderTables); }); // 테이블 배치(이름)는 운영 계정으로 로그인한 브라우저에서만. 아니면 '명찰 번호로 앉아 주세요'
+  listen.program(); listen.questions(); listen.polls(true); listen.draw();
 }
 
 // ---------- 운영 ----------
@@ -563,11 +573,90 @@ function admin(){
   onAuthStateChanged(auth, u => { if(u) adminMain(); });
 }
 
+// ---------- 운영: 명단 올리기 · 내리기 · 행사 데이터 삭제 ----------
+// CSV 열 이름(순서 무관): no,name,gen,t1,t2,intro,topic1,topic2,card,linkedin,remember,instagram,other,photo (tools/people.template.csv)
+// 파일은 이 브라우저에서만 읽는다. 저장소에는 아무것도 남지 않는다.
+const TOPICS = ['국내 취업 · 이직 · 현업 적응','대학원 진학 · 연구 생활','해외 취업 · 유학','커리어 준비 · 진로 비교','LLM · NLP · 에이전트','데이터 분석 · 통계 · BI','비전 · 생성 모델 · 강화학습','산업 도메인 · 비즈니스'];
+const parseCSV = t => { const out = []; let row = [], f = '', q = false;
+  for(let i = 0; i < t.length; i++){ const ch = t[i];
+    if(q){ if(ch === '"'){ if(t[i+1] === '"'){ f += '"'; i++; } else q = false; } else f += ch; }
+    else if(ch === '"') q = true; else if(ch === ','){ row.push(f); f = ''; }
+    else if(ch === '\n' || ch === '\r'){ if(ch === '\r' && t[i+1] === '\n') i++; row.push(f); out.push(row); row = []; f = ''; }
+    else f += ch; }
+  if(f !== '' || row.length){ row.push(f); out.push(row); }
+  return out.filter(r => r.some(c => c.trim())); };
+const decodeText = buf => { try { return new TextDecoder('utf-8', { fatal:true }).decode(buf); } catch(e){ return new TextDecoder('euc-kr').decode(buf); } }; // 엑셀 기본 CSV(한글 윈도우)는 EUC-KR
+const topicNo = v => { v = String(v||'').trim(); if(!v) return null; if(/^\d+$/.test(v)){ const n = Number(v); return n>=1 && n<=TOPICS.length ? n : null; } const k = v.replace(/\s+/g,'').slice(0,6); const i = TOPICS.findIndex(t => t.replace(/\s+/g,'').startsWith(k)); return i < 0 ? null : i + 1; };
+const fixLink = (kind, v) => { v = String(v||'').trim(); if(!v) return '';
+  if(kind === 'instagram' && !/^http/.test(v)) return 'https://www.instagram.com/' + v.replace(/^@/,'').replace(/^\/+|\/+$/g,'');
+  if(kind === 'linkedin' && !/^http/.test(v)) return 'https://www.linkedin.com/in/' + v.replace(/^\/+|\/+$/g,'');
+  if(!/^http/.test(v)) v = 'https://' + v; return /^https?:\/\/[^\s"'<>]+$/.test(v) ? v : ''; };
+function readRoster(text){
+  const t = parseCSV(text.replace(/^﻿/, '')); if(!t.length) return { rows:[], cards:[], errors:['빈 파일입니다'], warns:[] };
+  const head = t[0].map(h => h.trim().toLowerCase()), col = k => head.indexOf(k), errors = [], warns = [], rows = [], cards = [], seen = {};
+  for(const k of ['no','name','gen','t1','t2']) if(col(k) < 0) errors.push(`'${k}' 열이 없습니다`);
+  if(errors.length) return { rows, cards, errors, warns };
+  t.slice(1).forEach((r, i) => { const g = k => col(k) < 0 ? '' : String(r[col(k)] ?? '').trim(), line = i + 2;
+    if(!g('no') && !g('name')) return;
+    if(!/^\d+$/.test(g('no')) || !g('name')){ errors.push(`${line}행: 번호(no)나 이름(name)이 비었거나 잘못됨`); return; }
+    const no = Number(g('no')); if(seen[no]){ errors.push(`${line}행: 번호 ${no}가 ${seen[no]}행과 겹침`); return; } seen[no] = line;
+    let gen = g('gen'); if(/^\d+$/.test(gen)) gen += '기'; if(!/^\d+기$/.test(gen)) warns.push(`${line}행(${no}번): 기수 '${g('gen')}' 형식 확인(예: 25기)`);
+    if(!g('t1') || !g('t2')) warns.push(`${line}행(${no}번): 테이블 번호 비어 있음`);
+    const row = { no, name: g('name'), gen, t1: g('t1'), t2: g('t2') }; if(/^(o|1|y|true|○)$/i.test(g('photo'))) row.photo = true; rows.push(row);
+    if(g('card') === '표시'){ const links = {}; for(const k of ['linkedin','remember','instagram','other']){ const u = fixLink(k, g(k)); if(u) links[k] = u; }
+      cards.push({ no, name: row.name, gen, t1: row.t1, t2: row.t2, intro: g('intro'), topics: [topicNo(g('topic1')), topicNo(g('topic2'))].filter(Boolean), links }); } });
+  const dup = {}; rows.forEach(r => { const k = r.gen + '|' + normName(r.name); dup[k] = (dup[k]||0) + 1; });
+  Object.entries(dup).filter(([,n]) => n > 1).forEach(([k]) => warns.push(`같은 기수 동명이인: ${k.replace('|',' ')} (추천·투표가 한 사람으로 셈)`));
+  return { rows, cards, errors, warns };
+}
+async function commitOps(ops){ for(let i = 0; i < ops.length; i += 400){ const b = writeBatch(db); ops.slice(i, i + 400).forEach(f => f(b)); await b.commit(); } }
+async function uploadRoster({ rows, cards }){
+  const groups = {}; for(const r of rows){ const k = await rosterKey(r.gen, r.name); (groups[k] ||= []).push(r); }
+  const old = await getDocs(collection(db,'roster')), ops = [];
+  old.docs.filter(d => !groups[d.id]).forEach(d => ops.push(b => b.delete(d.ref)));
+  Object.entries(groups).forEach(([k, rs]) => ops.push(b => b.set(doc(db,'roster',k), { rows: rs })));
+  ops.push(b => b.set(doc(db,'state','people'), { rows: cards, updated: serverTimestamp() }));
+  ops.push(b => b.set(doc(db,'state','roster'), { published: true, count: rows.length, cards: cards.length, updated: serverTimestamp() }));
+  await commitOps(ops);
+}
+async function clearRoster(){ const old = await getDocs(collection(db,'roster')); const ops = old.docs.map(d => b => b.delete(d.ref));
+  ops.push(b => b.delete(doc(db,'state','people'))); ops.push(b => b.set(doc(db,'state','roster'), { published:false, count:0, cards:0, updated: serverTimestamp() })); await commitOps(ops); }
+async function wipeEvent(){ const ops = [];
+  for(const c of ['roster','questions','checkins']) (await getDocs(collection(db,c))).forEach(d => ops.push(b => b.delete(d.ref)));
+  for(const p of (await getDocs(collection(db,'polls'))).docs){ (await getDocs(collection(db,'polls',p.id,'votes'))).forEach(v => ops.push(b => b.delete(v.ref))); ops.push(b => b.delete(p.ref)); }
+  ops.push(b => b.delete(doc(db,'draw','results'))); for(const k of ['people','bonus','roster']) ops.push(b => b.delete(doc(db,'state',k)));
+  ops.push(b => b.set(doc(db,'state','program'), { step:null, endsAt:null })); await commitOps(ops); }
+function rosterTab(){
+  $('#a-roster').innerHTML = `<section class="card"><div class="eyebrow">명단 올리기</div>
+    <p class="muted">RSVP를 정리한 CSV 파일(열 이름은 tools/people.template.csv)을 고르세요. 엑셀은 'CSV UTF-8' 또는 'CSV'로 저장하면 됩니다. 파일은 이 브라우저에서만 읽고 저장소에는 올라가지 않습니다. 다시 올리면 전체가 새 명단으로 바뀝니다.</p>
+    <input type="file" id="a-rf" accept=".csv,text/csv" aria-label="명단 CSV 파일"><div id="a-rp" style="margin-top:8px"></div>
+    <button class="btn btn-primary" id="a-ru" disabled style="margin-top:8px">이 명단으로 올리기</button></section>
+    <section class="card"><div class="eyebrow">현재 상태</div><p id="a-rs"></p>
+    <div class="row"><button class="btn" id="a-rd">명단 내리기</button><button class="btn" id="a-wipe">행사 데이터 전체 삭제</button></div>
+    <p class="muted" style="font-size:12px">명단 내리기: 명단·참가자 카드를 지우고 내 테이블·참가자 카드 화면을 닫습니다. 전체 삭제: 명단·참가자 카드·질문·투표·체크인·추첨 결과·보너스를 모두 지웁니다(행사 후 30일 안에).</p></section>`;
+  let parsed = null;
+  render.roster = () => { const t = S.tables; $('#a-rs').textContent = t.published ? `공개 중 · ${t.rows.length || t.count}명` : '올린 명단 없음 (내 테이블 · 참가자 카드 닫힘)'; };
+  $('#a-rf').addEventListener('change', async e => { const f = e.target.files[0]; parsed = null; $('#a-ru').disabled = true; if(!f) return;
+    if(/\.xlsx?$/i.test(f.name)){ $('#a-rp').innerHTML = '<p class="err">엑셀 파일은 바로 읽을 수 없어요. 엑셀에서 다른 이름으로 저장 → CSV 로 저장해 올려 주세요.</p>'; return; }
+    const r = readRoster(decodeText(await f.arrayBuffer()));
+    $('#a-rp').innerHTML = `<p id="a-rsum"><b>${r.rows.length}명</b> · 참가자 카드 공개 ${r.cards.length}명 · 사진 제공 ${r.rows.filter(x=>x.photo).length}명 · 1라운드 테이블 ${new Set(r.rows.map(x=>x.t1)).size}개</p>`
+      + (r.errors.length ? `<p class="err">올릴 수 없어요. 고쳐서 다시 골라 주세요.</p><ul class="muted" id="a-rerr">${r.errors.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>` : '')
+      + (r.warns.length ? `<ul class="muted" id="a-rwarn">${r.warns.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>` : '')
+      + (r.rows.length ? `<table class="t">${r.rows.slice(0,5).map(x=>`<tr><td>${esc(x.no)}</td><td>${esc(x.name)}</td><td>${esc(x.gen)}</td><td>${esc(x.t1)}/${esc(x.t2)}</td></tr>`).join('')}</table>${r.rows.length>5?`<p class="muted">… 외 ${r.rows.length-5}명</p>`:''}` : '');
+    if(!r.errors.length && r.rows.length){ parsed = r; $('#a-ru').disabled = false; } });
+  $('#a-ru').onclick = async () => { if(!parsed || !confirm(`${parsed.rows.length}명 명단으로 바꿀까요?`)) return; $('#a-ru').disabled = true;
+    try { await uploadRoster(parsed); say('명단을 올렸습니다'); $('#a-rp').innerHTML = ''; $('#a-rf').value = ''; parsed = null; } catch(e){ say('올리지 못했습니다: ' + (e.code||e.message)); $('#a-ru').disabled = false; }
+    await loadTables(true); render.checkins(); render.roster(); };
+  $('#a-rd').onclick = async () => { if(!confirm('명단과 참가자 카드를 지우고 내 테이블 · 참가자 카드 화면을 닫을까요?')) return; await clearRoster(); await loadTables(true); render.checkins(); render.roster(); say('명단을 내렸습니다'); };
+  $('#a-wipe').onclick = async () => { if(prompt('명단 · 질문 · 투표 · 체크인 · 추첨 결과를 모두 지웁니다. 되돌릴 수 없습니다. 계속하려면 삭제 라고 입력하세요.') !== '삭제') return;
+    try { await wipeEvent(); say('행사 데이터를 모두 지웠습니다'); } catch(e){ say('일부를 지우지 못했습니다: ' + (e.code||e.message)); } await loadTables(true); render.checkins(); render.roster(); };
+}
+
 function adminMain(){
-  appEl.innerHTML = `<div class="tabs" id="a-tabs"><button data-t="prog" class="on">진행</button><button data-t="q">질문</button><button data-t="poll">투표</button><button data-t="ci">체크인</button><button data-t="draw">추첨</button></div>
-  <div id="a-prog"></div><div id="a-q" hidden></div><div id="a-poll" hidden></div><div id="a-ci" hidden></div><div id="a-draw" hidden></div>
+  appEl.innerHTML = `<div class="tabs" id="a-tabs"><button data-t="prog" class="on">진행</button><button data-t="q">질문</button><button data-t="poll">투표</button><button data-t="ci">체크인</button><button data-t="draw">추첨</button><button data-t="roster">명단</button></div>
+  <div id="a-prog"></div><div id="a-q" hidden></div><div id="a-poll" hidden></div><div id="a-ci" hidden></div><div id="a-draw" hidden></div><div id="a-roster" hidden></div>
   <p class="muted"><a href="?screen" target="_blank">프로젝터 화면</a> · <a href="./" target="_blank">참가자 화면</a></p>`;
-  $('#a-tabs').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; document.querySelectorAll('#a-tabs button').forEach(x=>x.classList.toggle('on', x===b)); ['prog','q','poll','ci','draw'].forEach(t => $('#a-'+t).hidden = t!==b.dataset.t); });
+  $('#a-tabs').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; document.querySelectorAll('#a-tabs button').forEach(x=>x.classList.toggle('on', x===b)); ['prog','q','poll','ci','draw','roster'].forEach(t => $('#a-'+t).hidden = t!==b.dataset.t); });
 
   // 진행
   $('#a-prog').innerHTML = `<section class="card"><div class="step" id="a-step"></div><div class="timer" id="a-timer"></div><div class="row" style="margin-top:10px"><button class="btn btn-primary" id="a-next">다음 순서</button><button class="btn" id="a-progreset">진행 초기화</button></div></section>
@@ -597,7 +686,7 @@ function adminMain(){
     if(b.dataset.a==='show') await updateDoc(ref, p.show ? { show:false } : { show:true, ...tally(p) }); if(b.dataset.a==='del' && confirm('삭제?')) await deleteDoc(ref); });
 
   // 체크인
-  // 체크인 · 응모 보너스: 명단(tables.json) 전체를 띄우고 체크박스로 관리. 퀴즈 우승 테이블·사진 제공자는 state/bonus 에 저장 → 추첨 응모권에 자동 반영(새로고침해도 유지)
+  // 체크인 · 응모 보너스: 명단(명단 탭에서 올린 것) 전체를 띄우고 체크박스로 관리. 퀴즈 우승 테이블·사진 제공자는 state/bonus 에 저장 → 추첨 응모권에 자동 반영(새로고침해도 유지)
   let bonus = { quiz:[], photo:null };
   $('#a-ci').innerHTML = `<section class="card"><div class="row" style="justify-content:space-between"><b id="a-cc"></b><label class="muted" style="font-size:12px"><input type="checkbox" id="a-cu"> 미체크인만</label></div>
     <label class="f">퀴즈 우승 테이블 (1라운드 번호 · 누르면 그 테이블 전원 응모권 +1)</label><div class="chips" id="a-qt"></div>
@@ -651,7 +740,8 @@ function adminMain(){
   renderBtns();
   render.draw = () => { if((S.draw?.live?.seq||0) > seq) seq = S.draw.live.seq; if(S.draw?.items && !winners.length){ winners = S.draw.items.slice(); renderW(); } };
 
-  loadTables().then(render.checkins); listen.program(); listen.questions(); listen.polls(true); listen.checkins(); listen.draw();
+  rosterTab();
+  loadTables(true).then(() => { render.checkins(); render.roster(); }); listen.program(); listen.questions(); listen.polls(true); listen.checkins(); listen.draw();
 }
 
 ({ hub, qa, ask, draw: drawView, screen, admin })[view]();

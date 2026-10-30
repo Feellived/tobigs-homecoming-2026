@@ -1,8 +1,9 @@
 // 행사 당일 전체 시나리오: 행사 전 → 체크인 → 입장 → Alumni Session(질문·추천·투표) → Table Talk → Lucky Draw → 종료
 // 등장 기기: 운영 노트북(관리), 프로젝터(?screen), 참가자 휴대폰 A·B·C(375px), C의 노트북(같은 사람·다른 기기), 명단에 없는 현장 참가자 D
-// 명단: fixtures/people.csv(가상 40명) → tools/make_people.py --publish 로 만든 tables.json · people.json
+// 명단: fixtures/people.csv(가상 40명)를 운영 화면 '명단' 탭으로 올림(저장소에는 명단 파일이 없음)
 import { test, expect } from '@playwright/test';
-import { newDevice, resetEmulators, adminLogin, adminTab, fillIdentity, PHONE, LAPTOP, PROJECTOR, sleep } from '../lib/helpers.mjs';
+import { newDevice, resetEmulators, adminLogin, adminTab, fillIdentity, uploadRoster, seed, FIXTURE, PHONE, LAPTOP, PROJECTOR, sleep } from '../lib/helpers.mjs';
+import { collection, getDocs } from 'firebase/firestore';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -42,10 +43,49 @@ test('0. 행사 전: 허브는 질문·투표만, 추첨은 잠김, 운영 화�
   await a.page.goto('/live/?draw');
   await expect(a.page.locator('#g-draw')).toContainText('추첨은 행사 당일 열립니다');
 
+  // 명단을 올리기 전: 내 테이블 · 참가자 카드는 닫혀 있음
+  await a.page.goto('/live/table/');
+  await expect(a.page.locator('#box')).toContainText('배정 전');
+  await a.page.goto('/people/');
+  await expect(a.page.locator('#box')).toContainText('공개 전');
+
   await adminLogin(admin.page);
   await expect(admin.page.locator('#a-step')).toContainText('시작 전');
+  await adminLogin(proj.page);                 // 프로젝터 탭은 운영 노트북 브라우저(로그인 상태)에서 연다
   await proj.page.goto('/live/?screen');
   await expect(proj.page.locator('#s-q')).toBeVisible(); // 행사 전 프로젝터 = 질문 목록
+});
+
+test('0-1. 명단 올리기: 잘못된 파일은 막고, 엑셀(EUC-KR) CSV도 읽고, 다시 올리면 통째로 바뀜', async () => {
+  const p = admin.page;
+  await adminTab(p, 'roster');
+  await expect(p.locator('#a-rs')).toContainText('올린 명단 없음');
+  // 잘못된 파일: 번호 중복·번호 없음·이름 없음 → 올리기 버튼 잠김
+  await p.setInputFiles('#a-rf', FIXTURE('people-bad.csv'));
+  await expect(p.locator('#a-rerr li')).toHaveCount(3);
+  await expect(p.locator('#a-rerr')).toContainText('번호 1가 2행과 겹침');
+  await expect(p.locator('#a-ru')).toBeDisabled();
+  await expect(p.locator('#a-rp')).toContainText('쉼표, 있는 이름');      // 따옴표 안 쉼표
+  await expect(p.locator('#a-rwarn')).toContainText('테이블 번호 비어 있음');
+  // 엑셀 파일 그대로는 안내
+  await p.setInputFiles('#a-rf', { name: '명단.xlsx', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', buffer: Buffer.from('PK') });
+  await expect(p.locator('#a-rp')).toContainText('CSV 로 저장');
+  await expect(p.locator('#a-ru')).toBeDisabled();
+  // 엑셀 기본 CSV(EUC-KR, 기수 숫자만) 10명 → 올림
+  await uploadRoster(p, FIXTURE('people-euckr.csv'), 10);
+  await a.page.goto('/live/table/');
+  await a.page.selectOption('#g', '2기'); await a.page.fill('#n', '이지우'); await a.page.click('#f button[type=submit]');
+  await expect(a.page.locator('.nums .v').first()).toHaveText('1');           // 한글 깨짐 없이 찾음
+  await a.page.click('#other');
+  await a.page.selectOption('#g', '21기'); await a.page.fill('#n', '김민준'); await a.page.click('#f button[type=submit]');
+  await expect(a.page.locator('#box')).toContainText('찾지 못했습니다');      // 20번(명단 밖)
+  // 전체 40명으로 다시 올리기 → 20번도 찾아짐
+  await uploadRoster(p, FIXTURE('people.csv'), 40);
+  await a.page.selectOption('#g', '21기'); await a.page.fill('#n', '김민준'); await a.page.click('#f button[type=submit]');
+  await expect(a.page.locator('.no')).toHaveText('명찰 번호 20');
+  await a.page.click('#other');
+  // 저장소에는 명단 파일이 없다
+  for (const u of ['/live/tables.json', '/people.json']) expect((await a.page.request.get(u)).status(), u).toBe(404);
 });
 
 test('1. 체크인: 명단 40명 표시, 체크인·검색·현장 등록·사진·퀴즈 보너스', async () => {
@@ -103,6 +143,11 @@ test('2. 입장(12:30): 진행 시작 → 모든 휴대폰 NOW 갱신, 내 테�
   // 프로젝터: 1라운드 테이블 배치
   await expect(proj.page.locator('#s-step')).toHaveText('입장 · 체크인');
   await expect(proj.page.locator('#s-t .tb')).toHaveCount(8);
+  // 로그인하지 않은 브라우저의 프로젝터 화면에는 이름이 나오지 않음
+  const anonProj = await newDevice(proj.context.browser(), PROJECTOR);
+  await anonProj.page.goto('/live/?screen');
+  await expect(anonProj.page.locator('#s-t')).toContainText('명찰에 적힌 테이블 번호로');
+  await anonProj.context.close();
 
   // 내 테이블: 기수+이름으로 찾기 → 저장 → 다시 열면 바로 표시
   await a.page.click('#e-table');
@@ -410,6 +455,31 @@ test('7. 종료 → 진행 초기화: 허브가 행사 전 모드로 돌아가�
   await P.click('#a-progreset');
   await expect(a.page.locator('#h-pre')).toBeVisible();
   await expect(a.page.locator('#e-draw')).toBeHidden();
+});
+
+test('8. 행사 후: 명단 내리기 → 내 테이블·참가자 카드 닫힘, 전체 삭제 → Firestore에 개인 정보가 남지 않음', async () => {
+  const P = admin.page;
+  await adminTab(P, 'roster');
+  await P.click('#a-rd');
+  await expect(P.locator('#a-rs')).toContainText('올린 명단 없음');
+  await a.page.goto('/live/table/'); await expect(a.page.locator('#box')).toContainText('배정 전');
+  await a.page.goto('/people/');     await expect(a.page.locator('#box')).toContainText('공개 전');
+  // 전체 삭제: '삭제'를 정확히 입력해야 실행
+  P.__prompt = '아니오'; await P.click('#a-wipe'); await sleep(800);
+  const count = async c => { let n = 0; await seed(async db => { n = (await getDocs(collection(db, c))).size; }); return n; };
+  expect(await count('questions')).toBeGreaterThan(0);
+  P.__prompt = '삭제'; await P.click('#a-wipe');
+  await expect.poll(() => count('questions'), { timeout: 15_000 }).toBe(0);
+  for (const c of ['roster', 'checkins', 'polls']) expect(await count(c), c).toBe(0);
+  let left = []; await seed(async db => { left = (await getDocs(collection(db, 'state'))).docs.map(d => d.id); });
+  expect(left).toEqual(['program']);                                  // 진행 상태(시작 전)만 남음
+  await a.page.goto('/live/?qa');
+  await expect(a.page.locator('#g-list')).toContainText('첫 질문을 올려주세요');
+  await adminTab(P, 'ci'); await P.reload(); await expect(P.locator('#a-tabs')).toBeVisible(); await adminTab(P, 'ci');
+  await expect(P.locator('#a-cc')).toHaveText('체크인 0 / 명단 0 · 사진 0명');
+});
+
+test('9. 모든 기기에서 페이지 JS 오류 없음', async () => {
   const errs = [admin, proj, ...phones()].flatMap(x => x.page.__errors);
   expect(errs, '페이지 JS 오류').toEqual([]);
 });

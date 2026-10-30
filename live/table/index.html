@@ -51,44 +51,48 @@ select option{color:#0b1230}
     <div id="box"><p class="muted">불러오는 중</p></div>
   </section>
 </main>
-<script>
+<script type="module">
+// 명단은 Firestore에 있다(운영 화면 '명단' 탭에서 올림). 이 화면은 입력한 기수+이름 칸(roster/{key}) 하나만 읽는다. 전체 명단 목록은 운영 계정만 읽을 수 있다.
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getFirestore, collection, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+const db = getFirestore(initializeApp({ apiKey:"AIzaSyBKDlddQRA1mLotV2V2R-39GhwTrSQ8zVE", authDomain:"tobigshoco.firebaseapp.com", projectId:"tobigshoco", storageBucket:"tobigshoco.firebasestorage.app", messagingSenderId:"973817861716", appId:"1:973817861716:web:48c2fdd252eab5edf83fc1" }));
 const GENS = Array.from({length:26},(_,i)=>(i+1)+'기');
 const box = document.getElementById('box');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const norm = s => String(s||'').replace(/\s+/g,'').toLowerCase();
-let rows = [];
+// live/index.html rosterKey()와 같은 계산
+const rosterKey = async (gen, name) => { const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('tobigs-hoco-2026-roster|' + gen + '|' + norm(name))); return 'r' + [...new Uint8Array(h)].slice(0,16).map(b=>b.toString(16).padStart(2,'0')).join(''); };
+const find = async (gen, name) => { const d = await getDoc(doc(db,'roster', await rosterKey(gen, name))); return d.exists() ? (d.data().rows||[]) : []; };
 const remember = (r, on) => { try { on ? localStorage.setItem('hc_me', JSON.stringify(r)) : localStorage.removeItem('hc_me'); } catch(e){} };
 const mine = () => { try { return JSON.parse(localStorage.getItem('hc_me')||'null'); } catch(e){ return null; } };
 function showForm(msg){
   box.innerHTML = `<h2>내 테이블 찾기</h2><form id="f" class="row"><select id="g" aria-label="기수" required style="flex:0 0 108px"><option value="">기수</option>${GENS.map(g=>`<option>${g}</option>`).join('')}</select><input class="grow" type="text" id="n" aria-label="이름" placeholder="이름" required><button class="btn" type="submit">찾기</button></form>${msg?`<p class="muted" style="margin-top:10px">${msg}</p>`:''}`;
-  document.getElementById('f').addEventListener('submit', e => {
+  document.getElementById('f').addEventListener('submit', async e => {
     e.preventDefault();
-    const n = norm(document.getElementById('n').value), g = document.getElementById('g').value;
-    const hit = rows.find(r => norm(r.name)===n && r.gen===g);
-    if(!hit){ showForm('찾지 못했습니다. 이름과 기수를 확인하시거나 체크인 데스크에 문의해 주세요.'); return; }
-    remember(hit, true); showMine(hit);
+    const g = document.getElementById('g').value, n = document.getElementById('n').value; if(!g || !norm(n)) return;
+    let hits = []; try { hits = await find(g, n); } catch(err){ showForm('명단을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'); return; }
+    if(!hits.length){ showForm('찾지 못했습니다. 이름과 기수를 확인하시거나 체크인 데스크에 문의해 주세요.'); return; }
+    remember(hits[0], true); showMine(hits[0], hits.length > 1);
   });
 }
-function showMine(r){
+function showMine(r, twin){
   box.innerHTML = `<div class="name">${esc(r.name)} <span class="muted" style="font-size:14px;font-weight:500">${esc(r.gen)}</span></div><div class="no">명찰 번호 ${esc(r.no)}</div>
   <div class="nums"><div class="num"><div class="l">1라운드 테이블</div><div class="v">${esc(r.t1)}</div></div><div class="num"><div class="l">2라운드 테이블</div><div class="v">${esc(r.t2)}</div></div></div>
+  ${twin?'<p class="muted" style="margin-top:12px">같은 기수에 같은 이름이 있어요. 명찰 번호가 다르면 체크인 데스크에 문의해 주세요.</p>':''}
   <p class="muted" style="margin-top:12px">Table Talk 2라운드(15:20)에 두 번째 테이블로 이동합니다.</p>
   <div class="foot"><a href="#" id="other" style="display:inline-block;padding:12px 0">다른 사람 찾기</a></div>`;
   document.getElementById('other').onclick = e => { e.preventDefault(); remember(null,false); showForm(); };
 }
-fetch('../tables.json',{cache:'no-store'}).then(r=>r.json()).then(t => {
-  if(!t.published){ box.innerHTML = `<h2>내 테이블</h2><p class="muted">배정 전</p>`; return; }
-  rows = t.rows || [];
-  const me = mine();
-  const still = me && rows.find(r => String(r.no)===String(me.no) && r.name===me.name);
-  if(still) showMine(still); else showForm();
-}).catch(() => { box.innerHTML = '<p class="muted">명단을 불러오지 못했습니다. 잠시 후 다시 열어주세요.</p>'; });
-</script>
-<script type="module">
+(async () => {
+  try {
+    const st = await getDoc(doc(db,'state','roster'));
+    if(!(st.exists() && st.data().published)){ box.innerHTML = `<h2>내 테이블</h2><p class="muted">배정 전</p>`; return; }
+    const me = mine();
+    const still = me && me.gen && me.name ? (await find(me.gen, me.name)).find(r => String(r.no)===String(me.no)) : null; // 명단이 바뀌었을 수 있어 다시 확인
+    if(still){ remember(still, true); showMine(still); } else showForm();
+  } catch(e){ box.innerHTML = '<p class="muted">명단을 불러오지 못했습니다. 잠시 후 다시 열어주세요.</p>'; }
+})();
 // 강제 전환: 투표 결과 공개 · 추첨 연출이 시작되면 라이브 화면으로 이동 (라이브 화면이 전체 화면으로 띄움)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getFirestore, collection, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-const db = getFirestore(initializeApp({ apiKey:"AIzaSyBKDlddQRA1mLotV2V2R-39GhwTrSQ8zVE", authDomain:"tobigshoco.firebaseapp.com", projectId:"tobigshoco", storageBucket:"tobigshoco.firebasestorage.app", messagingSenderId:"973817861716", appId:"1:973817861716:web:48c2fdd252eab5edf83fc1" }));
 let showId, seq = null;
 onSnapshot(collection(db,'polls'), s => { const p = s.docs.find(d => d.data().show), id = p ? p.id : null; if(showId === undefined){ showId = id; return; } if(id && id !== showId) location.href = '../?qa'; showId = id; });
 onSnapshot(doc(db,'draw','results'), s => { const q = s.exists() ? (s.data().live?.seq || 0) : 0; if(seq === null){ seq = q; return; } if(q > seq) location.href = '../?draw'; seq = q; });
