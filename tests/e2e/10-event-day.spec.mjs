@@ -192,7 +192,10 @@ test('3. Alumni Session: 질문 게시(신원 1회 입력·명단 미리 채움)
   await a.page.locator('#me-f button[type=submit]').click();
   const qa1 = a.page.locator('.q', { hasText: Q1 });
   await expect(qa1).toContainText('내 질문');
-  await expect(qa1).toContainText('정세영 선배님께');
+  await expect(qa1).toContainText('정세영 님께');
+  // 질문 대상이 후배일 수도 있으므로 질문 화면에는 '선배님' · '후배' 표현이 없어야 한다
+  await a.page.click('.spk[data-i="2"]');
+  for (const x of [a.page, proj.page]) expect(await x.locator('body').innerText()).not.toMatch(/선배님|후배/);
   await expect(qa1.locator('.m')).toContainText(A.gen);
   await expect(qa1).not.toContainText(A.name.slice(1)); // 이름은 화면에 안 보임 (기수만)
   await expect(a.page.locator('#g-who')).toContainText(`${A.gen} ${A.name}`);

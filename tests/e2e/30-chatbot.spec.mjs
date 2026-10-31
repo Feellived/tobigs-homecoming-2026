@@ -18,6 +18,16 @@ test('곰돌이 버튼: 참가자 화면에는 있고 운영·프로젝터·도�
   await context.close();
 });
 
+test('초대장: 질문하기 버튼 · FAQ에 선배님 표현 없음(질문 대상이 후배일 수도 있음)', async ({ browser }) => {
+  const { page, context } = await newDevice(browser, PHONE);
+  await page.goto('/');
+  await expect(page.locator('a[href="live/?qa"]').first()).toBeAttached();
+  const qaTexts = await page.locator('a[href="live/?qa"], details summary').allTextContents();
+  expect(qaTexts.join(' ')).not.toMatch(/선배님|후배/);
+  await expect(page.locator('a.btn[href="live/?qa"]')).toHaveText('연사님께 질문하기');
+  await context.close();
+});
+
 test('초대장(375px): 스크롤해서 하단 고정 바가 올라와도 곰돌이 버튼과 겹치지 않는다(맨 아래 포함)', async ({ browser }) => {
   const { page, context } = await newDevice(browser, PHONE);
   await page.goto('/');
@@ -79,6 +89,8 @@ test('대화: 답변 표시, 허용 목록 밖 링크 제거, 답변 속 HTML은
   const dlg = page.locator('.hk-sheet[role=dialog]');
   await expect(dlg).toBeVisible();
   await expect(dlg.locator('.hk-sug button')).toHaveCount(6);
+  await expect(dlg.locator('.hk-sug')).toContainText('연사님께 질문은 어떻게 올려?');
+  await expect(dlg.locator('.hk-sug')).not.toContainText('선배님');
   await dlg.locator('.hk-sug button').first().click();               // 추천 질문
   await expect(dlg.locator('.bub.a').last()).toContainText('올림픽회관 B1');
   await expect(dlg.locator('.bub.a').last()).toContainText('<img');   // 글자 그대로
