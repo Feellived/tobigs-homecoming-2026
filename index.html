@@ -17,6 +17,7 @@
   const SITE_URL    = "https://homecoming.datamarket.ai.kr/";  // 배포 주소
   const RSVP_DEADLINE = "2026년 11월 1일(일) 23:59";   // 신청 마감 (10/18 오픈)
   const SURVEY_URL  = "#";                       // 행사 후 만족도 설문 링크 (행사 다음날부터 히어로 버튼으로 표시)
+  const LIVE_MAIN_FROM = "2026-11-15";           // 이 날부터 행사 당일까지 첫 화면 · 하단 고정 바의 주 버튼이 'Live 입장하기'(그 전엔 '참석 신청하기' + 보조 'Live 미리 보기')
   const PHOTOS_URL  = "#";                       // 행사 사진 공유 폴더 링크 (행사 후 표시)
   const ARCHIVE_URL = "https://drive.google.com/drive/folders/1Yodl9eUD0lTIndH7xzSa_Y5JlGECGXi4";  // 회고 사진 수집 폴더 (기수별 하위 폴더)
   const STAT_MEMBERS  = "400+";                  // 누적 동아리원 수 (공식 홈페이지 기준). 비우면 항목 숨김
@@ -588,6 +589,18 @@
   const d = Math.ceil((new Date(2026,10,21) - today)/86400000);
   const el = document.getElementById('dday');
   el.textContent = d>0 ? 'D-'+d+'  ·  2026.11.21 SAT' : (d===0 ? 'D-DAY  ·  2026.11.21 SAT' : 'THANK YOU  ·  2026.11.21 SAT');
+
+  // ---- Live 버튼: 신청 기간엔 보조 버튼(미리 보기), LIVE_MAIN_FROM부터 행사 당일까지는 첫 화면 · 하단 고정 바의 주 버튼 ----
+  if(d>=0){
+    const [ly, lm, ld] = LIVE_MAIN_FROM.split('-').map(Number), liveMain = today >= new Date(ly, lm - 1, ld);
+    const hc = document.getElementById('hero-cta'), hr = hc.querySelector('.js-rsvp'), live = document.createElement('a');
+    live.href = 'live/'; live.className = 'btn js-live ' + (liveMain ? 'btn-gold' : 'btn-ghost'); live.textContent = liveMain ? 'Live 입장하기' : 'Live 미리 보기';
+    if(liveMain){
+      if(hr) hr.replaceWith(live); else hc.prepend(live);
+      const st = document.querySelector('#sticky .js-rsvp'); // 크기 스타일(.js-rsvp)은 유지하고 내용만 바꿈
+      if(st){ st.textContent = 'Live 입장하기'; st.href = 'live/'; st.removeAttribute('target'); st.removeAttribute('rel'); st.classList.add('js-live'); }
+    } else if(hr) hr.after(live); else hc.prepend(live);
+  }
 
   // ---- after the event: swap CTAs to survey / photos ----
   if(d<0){
