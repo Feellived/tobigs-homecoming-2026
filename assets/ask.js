@@ -19,7 +19,7 @@
   const cid = (() => { try { let v = localStorage.getItem('hc_cid'); if(!v){ v = crypto.randomUUID(); localStorage.setItem('hc_cid', v); } return v; } catch(e){ return 'anon-' + Math.random().toString(36).slice(2); } })();
 
   const css = `
-.hk-fab{position:fixed;right:calc(14px + env(safe-area-inset-right));bottom:calc(16px + env(safe-area-inset-bottom));width:64px;height:64px;padding:0;border:0;border-radius:50%;background:#fff;box-shadow:0 8px 22px rgba(3,6,20,.38),0 0 0 2px rgba(157,176,255,.45);z-index:40;cursor:pointer;animation:hk-bob 3.4s ease-in-out infinite;transition:opacity .25s;-webkit-tap-highlight-color:transparent}
+.hk-fab{position:fixed;right:calc(24px + env(safe-area-inset-right));bottom:calc(16px + env(safe-area-inset-bottom));width:64px;height:64px;padding:0;border:0;border-radius:50%;background:#fff;box-shadow:0 8px 22px rgba(3,6,20,.38),0 0 0 2px rgba(157,176,255,.45);z-index:40;cursor:pointer;animation:hk-bob 3.4s ease-in-out infinite;transition:opacity .25s;-webkit-tap-highlight-color:transparent}
 .hk-fab img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover}
 .hk-fab.dim{opacity:.28}
 body.hk-has-fab{padding-bottom:92px}
