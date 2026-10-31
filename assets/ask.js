@@ -13,7 +13,7 @@
     conference: ['컨퍼런스 갤러리', 'https://great-wholesaler-9e1.notion.site/TOBIG-s-3cb02c1ed3668286a24d015ba69029fc'],
     live_hub: ['라이브 첫 화면', '/live/'], live_qa: ['질문 · 투표', '/live/?qa'], live_table: ['내 테이블', '/live/table/'], people: ['참가자 카드', '/people/'], live_draw: ['추첨', '/live/?draw'],
   };
-  const ASK_SUG = ['오시는 길 알려줘', '주차할 수 있어?', '뒤풀이는 어떻게 해?', '선배님께 질문은 어떻게 올려?', '추첨 응모권은 어떻게 받아?', '늦게 가도 돼?'];
+  const ASK_SUG = ['오시는 길 알려줘', '주차할 수 있어?', '뒤풀이는 어떻게 해?', '연사님께 질문은 어떻게 올려?', '추첨 응모권은 어떻게 받아?', '늦게 가도 돼?'];
   const BEAR = '/assets/apple-touch-icon.png';
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
   const cid = (() => { try { let v = localStorage.getItem('hc_cid'); if(!v){ v = crypto.randomUUID(); localStorage.setItem('hc_cid', v); } return v; } catch(e){ return 'anon-' + Math.random().toString(36).slice(2); } })();
