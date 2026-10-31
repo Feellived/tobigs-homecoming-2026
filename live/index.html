@@ -249,7 +249,7 @@ const AWARDS = [
 const awardLabel = w => w.label || (w.rank + '등');
 const GENS = Array.from({length:26},(_,i)=>(i+1)+'기');
 // Alumni Session 연사. 질문·투표 화면 상단 카드. photo는 '../assets/speakers/01.jpg' 식, 없으면 ''(이름 첫 글자). name이 비면 숨김.
-// 카드를 누르면 상세가 펼쳐진다. bio(자기소개, 줄바꿈 가능)·keywords(배열)·topic(후배에게 하고 싶은 이야기)·link(공개 링크)는 회신 받는 대로 채운다. 비어 있으면 '준비 중'
+// 카드를 누르면 상세가 펼쳐진다. bio(자기소개, 줄바꿈 가능)·keywords(배열)·topic(나누고 싶은 이야기)·link(공개 링크)는 회신 받는 대로 채운다. 비어 있으면 '준비 중'
 const SPEAKERS = [
   { name:'정세영', gen:'14기', role:'산업계', org:'코오롱베니트', photo:'', bio:'', keywords:[], topic:'', link:'' },
   { name:'전종섭', gen:'7기',  role:'산업계', org:'Databricks', photo:'', bio:'', keywords:[], topic:'', link:'' },
@@ -259,13 +259,13 @@ const SPEAKERS = [
 // 질문의 name 칸 = 질문 대상 연사 이름 (''이면 모두에게). 보안 규칙 변경 없이 기존 칸 재사용
 const roleCls = x => (x && x.role === '학계') ? 'aca' : 'ind';
 const spkBy = n => SPEAKERS.find(x => x && x.name === n);
-const toLbl = x => x.name ? ` <span class="tgc ${roleCls(spkBy(x.name))}">${esc(x.name)} 선배님께</span>` : '';
+const toLbl = x => x.name ? ` <span class="tgc ${roleCls(spkBy(x.name))}">${esc(x.name)} 님께</span>` : '';
 const spkPh = x => `<div class="ph">${x.photo?`<img src="${esc(x.photo)}" alt="">`:esc(x.name[0])}</div>`;
-const speakerCards = () => { const l = SPEAKERS.filter(x=>x&&x.name); if(!l.length) return ''; return `<section class="card"><div class="eyebrow">TALK GUESTS</div><div class="spks">` + l.map((x,i)=>`<button type="button" class="spk ${roleCls(x)}" data-i="${i}">${spkPh(x)}<div><div class="role">${esc(x.role||'')}</div><div class="nm">${esc(x.name)}<em>${esc(x.gen||'')}</em></div><div class="org">${esc(x.org||'')}</div></div></button>`).join('') + `</div><div class="spd" id="spd" hidden></div><div class="spk-hint">카드를 누르면 선배님 소개를 볼 수 있어요</div></section>`; };
+const speakerCards = () => { const l = SPEAKERS.filter(x=>x&&x.name); if(!l.length) return ''; return `<section class="card"><div class="eyebrow">TALK GUESTS</div><div class="spks">` + l.map((x,i)=>`<button type="button" class="spk ${roleCls(x)}" data-i="${i}">${spkPh(x)}<div><div class="role">${esc(x.role||'')}</div><div class="nm">${esc(x.name)}<em>${esc(x.gen||'')}</em></div><div class="org">${esc(x.org||'')}</div></div></button>`).join('') + `</div><div class="spd" id="spd" hidden></div><div class="spk-hint">카드를 누르면 연사 소개를 볼 수 있어요</div></section>`; };
 const speakerDetail = x => { const kw = (x.keywords||[]).filter(Boolean), okLink = /^https?:\/\/[^\s"'<>]+$/i.test(x.link||''); const empty = !x.bio && !kw.length && !x.topic && !okLink;
   return `<div class="hd">${spkPh(x)}<div><div class="role" style="font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:.14em;color:var(--peri)">${esc(x.role||'')}</div><div style="font-size:17px;font-weight:700">${esc(x.name)} <span class="muted" style="font-size:13px;font-weight:500">${esc(x.gen||'')}</span></div><div class="muted" style="font-size:13px">${esc(x.org||'')}</div></div></div>`
-    + (empty ? '<p class="muted" style="font-size:13px;margin:0">선배님 소개를 준비하고 있어요. 곧 채워집니다.</p>'
-      : (x.bio?`<div class="bio">${esc(x.bio)}</div>`:'') + (kw.length?`<div class="kw">${kw.map(k=>`<span>${esc(k)}</span>`).join('')}</div>`:'') + (x.topic?`<div class="tp">후배에게 하고 싶은 이야기 · <b>${esc(x.topic)}</b></div>`:'') + (okLink?`<a href="${esc(x.link)}" target="_blank" rel="noopener">프로필 보기 ↗</a>`:'')); };
+    + (empty ? '<p class="muted" style="font-size:13px;margin:0">연사 소개를 준비하고 있어요. 곧 채워집니다.</p>'
+      : (x.bio?`<div class="bio">${esc(x.bio)}</div>`:'') + (kw.length?`<div class="kw">${kw.map(k=>`<span>${esc(k)}</span>`).join('')}</div>`:'') + (x.topic?`<div class="tp">나누고 싶은 이야기 · <b>${esc(x.topic)}</b></div>`:'') + (okLink?`<a href="${esc(x.link)}" target="_blank" rel="noopener">프로필 보기 ↗</a>`:'')); };
 const bindSpeakers = () => { const g = document.querySelector('.spks'); if(!g) return; const l = SPEAKERS.filter(x=>x&&x.name), box = $('#spd');
   g.addEventListener('click', e => { const b = e.target.closest('.spk'); if(!b) return; const open = b.classList.contains('on'); g.querySelectorAll('.spk').forEach(x=>x.classList.remove('on')); if(open){ box.hidden = true; return; } b.classList.add('on'); const sp = l[Number(b.dataset.i)]; box.className = 'spd ' + roleCls(sp); box.innerHTML = speakerDetail(sp); box.hidden = false; box.scrollIntoView({ block:'nearest', behavior:'smooth' }); }); };
 
@@ -391,7 +391,7 @@ function forceWatch(){
 // ---------- 허브 ----------
 function hub(){
   appEl.innerHTML = nowCard('h-now') + `
-  <a class="card entry" href="?qa" id="e-qa"><div class="eyebrow">ALUMNI SESSION</div><h2>질문 · 투표</h2><p class="muted">선배님께 질문하고, 좋은 질문에 추천해 주세요</p></a>
+  <a class="card entry" href="?qa" id="e-qa"><div class="eyebrow">ALUMNI SESSION</div><h2>질문 · 투표</h2><p class="muted">연사님께 질문하고, 좋은 질문에 추천해 주세요</p></a>
   <p class="muted" id="h-pre" hidden style="margin:4px 4px 16px">지금은 질문 · 투표만 미리 열려 있습니다. 나머지 메뉴는 행사 당일 열립니다.</p>
   <a class="card entry" href="table/" id="e-table" hidden><div class="eyebrow">TABLE TALK</div><h2>내 테이블</h2><p class="muted">1라운드 · 2라운드 테이블 번호</p></a>
   <a class="card entry" href="../people/" id="e-people" hidden><div class="eyebrow">NETWORKING</div><h2>참가자 카드</h2><p class="muted">관심사가 맞는 사람 찾기</p></a>
@@ -413,7 +413,7 @@ function qa(){
   const SPK = SPEAKERS.filter(x=>x&&x.name);
   appEl.innerHTML = `<a class="back" href="./">← Live</a>` + nowCard('q-now') + `
   <section class="card" id="g-poll" hidden></section>` + speakerCards() + `
-  <section class="card"><div class="eyebrow">ALUMNI SESSION</div><h2>선배님께 묻고 싶은 것</h2>
+  <section class="card"><div class="eyebrow">ALUMNI SESSION</div><h2>연사님께 묻고 싶은 것</h2>
     <div class="who" id="g-who"></div>
     <form id="g-form"><div class="to" id="g-to"><span class="tl">누구에게 묻나요?</span><button type="button" class="on" data-to="">모두에게</button>${SPK.map(x=>`<button type="button" class="${roleCls(x)}" data-to="${esc(x.name)}">${esc(x.name)}</button>`).join('')}</div>
     <textarea id="g-text" aria-label="질문 내용" maxlength="200" placeholder="(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?" required></textarea>
