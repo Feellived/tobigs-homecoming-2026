@@ -402,7 +402,7 @@ function hub(){
   const dday = () => { const n = new Date(), k = new Date(n.getTime() + (540 + n.getTimezoneOffset())*60000); return Math.round((Date.UTC(2026,10,21) - Date.UTC(k.getFullYear(), k.getMonth(), k.getDate())) / 86400000); };
   hubHi = (hi, idle, step) => { ['qa','table','people','draw'].forEach(k => $('#e-'+k).classList.toggle('primary', k===hi)); ['table','people','draw'].forEach(k => $('#e-'+k).hidden = idle); $('#h-pre').hidden = !idle;
     if(step === lastStep) return; lastStep = step; const d = dday(), dd = $('#h-dd');
-    dd.hidden = !idle || d < 0; if(idle && d >= 0) dd.innerHTML = `<b>${d===0?'D-DAY':'D-'+d}</b><span>11.21 SAT · 12:30 입장 · KSPO 연수원 대강당</span>`;
+    dd.hidden = !idle || d < 0; if(idle && d >= 0) dd.innerHTML = `<b>${d===0?'D-DAY':'D-'+d}</b><span>11.21 SAT · 12:30 입장 · 올림픽회관 KSPO 연수원</span>`;
     $('#h-tlh').textContent = idle ? 'PROGRAM' : '오늘의 순서';
     document.querySelectorAll('#h-tl li').forEach((li,k) => { li.classList.toggle('done', step!==null && k<step); li.classList.toggle('now', step!==null && k===step); }); };
   bindNow('h-now'); listen.program(); forceWatch(); loadTables().then(initMe);
