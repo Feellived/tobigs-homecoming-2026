@@ -342,7 +342,7 @@ const listen = {
 };
 // full=true: 전체 명단까지(운영 계정만 가능, 아니면 빈 목록)
 const loadTables = async (full=false) => { try { const s = await getDoc(doc(db,'state','roster')); const pub = !!(s.exists() && s.data().published); const rows = [];
-  if(pub && full){ try { (await getDocs(collection(db,'roster'))).forEach(d => rows.push(...(d.data().rows||[]))); rows.sort((a,b)=>Number(a.no)-Number(b.no)); } catch(e){} }
+  if(full){ try { (await getDocs(collection(db,'roster'))).forEach(d => rows.push(...(d.data().rows||[]))); rows.sort((a,b)=>Number(a.no)-Number(b.no)); } catch(e){} }
   S.tables = { published: pub, rows, count: s.exists() ? s.data().count || 0 : 0 }; } catch(e){} };
 
 function info(){
@@ -610,13 +610,13 @@ function readRoster(text){
   return { rows, cards, errors, warns };
 }
 async function commitOps(ops){ for(let i = 0; i < ops.length; i += 400){ const b = writeBatch(db); ops.slice(i, i + 400).forEach(f => f(b)); await b.commit(); } }
-async function uploadRoster({ rows, cards }){
+async function uploadRoster({ rows, cards }, publish){
   const groups = {}; for(const r of rows){ const k = await rosterKey(r.gen, r.name); (groups[k] ||= []).push(r); }
   const old = await getDocs(collection(db,'roster')), ops = [];
   old.docs.filter(d => !groups[d.id]).forEach(d => ops.push(b => b.delete(d.ref)));
   Object.entries(groups).forEach(([k, rs]) => ops.push(b => b.set(doc(db,'roster',k), { rows: rs })));
   ops.push(b => b.set(doc(db,'state','people'), { rows: cards, updated: serverTimestamp() }));
-  ops.push(b => b.set(doc(db,'state','roster'), { published: true, count: rows.length, cards: cards.length, updated: serverTimestamp() }));
+  ops.push(b => b.set(doc(db,'state','roster'), { published: !!publish, count: rows.length, cards: cards.length, updated: serverTimestamp() }));
   await commitOps(ops);
 }
 async function clearRoster(){ const old = await getDocs(collection(db,'roster')); const ops = old.docs.map(d => b => b.delete(d.ref));
@@ -630,12 +630,14 @@ function rosterTab(){
   $('#a-roster').innerHTML = `<section class="card"><div class="eyebrow">명단 올리기</div>
     <p class="muted">RSVP를 정리한 CSV 파일(열 이름은 tools/people.template.csv)을 고르세요. 엑셀은 'CSV UTF-8' 또는 'CSV'로 저장하면 됩니다. 파일은 이 브라우저에서만 읽고 저장소에는 올라가지 않습니다. 다시 올리면 전체가 새 명단으로 바뀝니다.</p>
     <input type="file" id="a-rf" accept=".csv,text/csv" aria-label="명단 CSV 파일"><div id="a-rp" style="margin-top:8px"></div>
+    <label style="display:flex;gap:6px;align-items:center;margin-top:8px;font-size:14px"><input type="checkbox" id="a-rnow"> 올리면서 바로 공개 (체크 안 하면 올리기만 하고 참가자 화면은 닫아 둠)</label>
     <button class="btn btn-primary" id="a-ru" disabled style="margin-top:8px">이 명단으로 올리기</button></section>
     <section class="card"><div class="eyebrow">현재 상태</div><p id="a-rs"></p>
-    <div class="row"><button class="btn" id="a-rd">명단 내리기</button><button class="btn" id="a-wipe">행사 데이터 전체 삭제</button></div>
+    <div class="row"><button class="btn btn-primary" id="a-rpub" hidden>공개하기</button><button class="btn" id="a-rd">명단 내리기</button><button class="btn" id="a-wipe">행사 데이터 전체 삭제</button></div>
     <p class="muted" style="font-size:12px">명단 내리기: 명단·참가자 카드를 지우고 내 테이블·참가자 카드 화면을 닫습니다. 전체 삭제: 명단·참가자 카드·질문·투표·체크인·추첨 결과·보너스를 모두 지웁니다(행사 후 30일 안에).</p></section>`;
   let parsed = null;
-  render.roster = () => { const t = S.tables; $('#a-rs').textContent = t.published ? `공개 중 · ${t.rows.length || t.count}명` : '올린 명단 없음 (내 테이블 · 참가자 카드 닫힘)'; };
+  render.roster = () => { const t = S.tables, n = t.rows.length || t.count; $('#a-rs').textContent = t.published ? `공개 중 · ${n}명` : n ? `올림 · 비공개 · ${n}명 (내 테이블 · 참가자 카드 닫힘)` : '올린 명단 없음 (내 테이블 · 참가자 카드 닫힘)';
+    const b = $('#a-rpub'); b.hidden = !n; b.textContent = t.published ? '공개 닫기' : '공개하기'; b.className = t.published ? 'btn' : 'btn btn-primary'; };
   $('#a-rf').addEventListener('change', async e => { const f = e.target.files[0]; parsed = null; $('#a-ru').disabled = true; if(!f) return;
     if(/\.xlsx?$/i.test(f.name)){ $('#a-rp').innerHTML = '<p class="err">엑셀 파일은 바로 읽을 수 없어요. 엑셀에서 다른 이름으로 저장 → CSV 로 저장해 올려 주세요.</p>'; return; }
     const r = readRoster(decodeText(await f.arrayBuffer()));
@@ -644,9 +646,11 @@ function rosterTab(){
       + (r.warns.length ? `<ul class="muted" id="a-rwarn">${r.warns.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>` : '')
       + (r.rows.length ? `<table class="t">${r.rows.slice(0,5).map(x=>`<tr><td>${esc(x.no)}</td><td>${esc(x.name)}</td><td>${esc(x.gen)}</td><td>${esc(x.t1)}/${esc(x.t2)}</td></tr>`).join('')}</table>${r.rows.length>5?`<p class="muted">… 외 ${r.rows.length-5}명</p>`:''}` : '');
     if(!r.errors.length && r.rows.length){ parsed = r; $('#a-ru').disabled = false; } });
-  $('#a-ru').onclick = async () => { if(!parsed || !confirm(`${parsed.rows.length}명 명단으로 바꿀까요?`)) return; $('#a-ru').disabled = true;
-    try { await uploadRoster(parsed); say('명단을 올렸습니다'); $('#a-rp').innerHTML = ''; $('#a-rf').value = ''; parsed = null; } catch(e){ say('올리지 못했습니다: ' + (e.code||e.message)); $('#a-ru').disabled = false; }
+  $('#a-ru').onclick = async () => { const now = $('#a-rnow').checked; if(!parsed || !confirm(`${parsed.rows.length}명 명단으로 바꿀까요?${now ? ' 바로 공개됩니다.' : ' 참가자 화면은 닫힌 채로 올립니다.'}`)) return; $('#a-ru').disabled = true;
+    try { await uploadRoster(parsed, now); await loadTables(true); render.checkins(); render.roster(); say(now ? '명단을 올리고 공개했습니다' : '명단을 올렸습니다 (비공개)'); $('#a-rp').innerHTML = ''; $('#a-rf').value = ''; parsed = null; } catch(e){ say('올리지 못했습니다: ' + (e.code||e.message)); $('#a-ru').disabled = false; }
     await loadTables(true); render.checkins(); render.roster(); };
+  $('#a-rpub').onclick = async () => { const on = !S.tables.published; if(!confirm(on ? '내 테이블 · 참가자 카드를 참가자에게 공개할까요?' : '내 테이블 · 참가자 카드 화면을 다시 닫을까요?')) return;
+    await setDoc(doc(db,'state','roster'), { published: on, updated: serverTimestamp() }, { merge: true }); await loadTables(true); render.roster(); say(on ? '공개했습니다' : '공개를 닫았습니다'); };
   $('#a-rd').onclick = async () => { if(!confirm('명단과 참가자 카드를 지우고 내 테이블 · 참가자 카드 화면을 닫을까요?')) return; await clearRoster(); await loadTables(true); render.checkins(); render.roster(); say('명단을 내렸습니다'); };
   $('#a-wipe').onclick = async () => { if(prompt('명단 · 질문 · 투표 · 체크인 · 추첨 결과를 모두 지웁니다. 되돌릴 수 없습니다. 계속하려면 삭제 라고 입력하세요.') !== '삭제') return;
     try { await wipeEvent(); say('행사 데이터를 모두 지웠습니다'); } catch(e){ say('일부를 지우지 못했습니다: ' + (e.code||e.message)); } await loadTables(true); render.checkins(); render.roster(); };
