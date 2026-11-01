@@ -553,7 +553,7 @@ function screen(){
   setInterval(render.program, 1000);
   const renderTables = () => { const el = $('#s-t'); if(!el) return; const key = mode==='tables2' ? 't2' : 't1'; const rows = S.tables.rows || [];
     if(!S.tables.published || !rows.length){ el.innerHTML = '<p class="se">명찰에 적힌 테이블 번호로 앉아 주세요.</p>'; return; }
-    const g = {}; rows.forEach(r => { (g[r[key]] = g[r[key]] || []).push(r); });
+    const g = {}; rows.filter(r => /^\d+$/.test(String(r[key]).trim())).forEach(r => { (g[r[key]] = g[r[key]] || []).push(r); }); // 숫자 테이블만(운영진 '운영' 등은 제외)
     el.innerHTML = Object.keys(g).sort((a,b)=>a-b).map(n => `<div class="tb"><div class="tn">${esc(n)}</div>${g[n].map(r=>`<div>${esc(r.name)} <span>${esc(r.gen)}</span></div>`).join('')}</div>`).join(''); };
   render.questions = () => { const el = $('#s-q'); if(!el) return; el.innerHTML = visible().slice(0,8).map(x=>`<div class="sq${x.answered?' done':''}"><div class="v">👍 ${x.voters?.length||0}</div><div><div>${esc(x.text)}</div><div class="m">${esc(x.gen||'')}${toLbl(x)}${x.answered?'<span class="ans-b">답변 완료</span>':''}</div></div></div>`).join('') || '<p class="se">QR로 들어와 질문을 올려주세요.</p><div class="sq" style="opacity:.5"><div class="v">👍 0</div><div><div>(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?</div><div class="m">25기</div></div></div>'; };
   const right = () => { const box = $('#s-r'); if(!box) return; const p = S.polls.find(x=>x.open||x.show);
