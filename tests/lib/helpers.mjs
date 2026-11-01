@@ -87,13 +87,15 @@ export async function seed(fn) {
 
 export const FIXTURE = name => new URL('../fixtures/' + name, import.meta.url).pathname;
 // 운영 화면 '명단' 탭에서 CSV 올리기(로그인된 운영 화면 page)
-export async function uploadRoster(page, file = FIXTURE('people.csv'), expectCount = 40) {
+// publish=false면 올리기만 하고 참가자 화면은 닫아 둔다
+export async function uploadRoster(page, file = FIXTURE('people.csv'), expectCount = 40, publish = true) {
   await adminTab(page, 'roster');
   await page.setInputFiles('#a-rf', file);
   await expect(page.locator('#a-rsum')).toContainText(`${expectCount}명`);
   await expect(page.locator('#a-ru')).toBeEnabled();
+  await page.setChecked('#a-rnow', publish);
   await page.click('#a-ru');
-  await expect(page.locator('#a-rs')).toHaveText(`공개 중 · ${expectCount}명`);
+  await expect(page.locator('#a-rs')).toHaveText(publish ? `공개 중 · ${expectCount}명` : new RegExp(`^올림 · 비공개 · ${expectCount}명`));
 }
 // 다른 기기 없이 명단만 미리 올려 두기
 export async function seedRoster(browser, file, n) {

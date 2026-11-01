@@ -79,8 +79,16 @@ test('0-1. 명단 올리기: 잘못된 파일은 막고, 엑셀(EUC-KR) CSV도 �
   await a.page.click('#other');
   await a.page.selectOption('#g', '21기'); await a.page.fill('#n', '김민준'); await a.page.click('#f button[type=submit]');
   await expect(a.page.locator('#box')).toContainText('찾지 못했습니다');      // 20번(명단 밖)
-  // 전체 40명으로 다시 올리기 → 20번도 찾아짐
-  await uploadRoster(p, FIXTURE('people.csv'), 40);
+  // 전체 40명을 비공개로 올리기 → 참가자 화면은 '배정 전', 운영 체크인 명단에는 보임
+  await uploadRoster(p, FIXTURE('people.csv'), 40, false);
+  await a.page.reload();
+  await expect(a.page.locator('#box')).toContainText('배정 전');
+  await adminTab(p, 'ci'); await expect(p.locator('#a-ci')).toContainText('김민준');
+  // 공개하기 → 20번도 찾아짐
+  await adminTab(p, 'roster'); await p.click('#a-rpub');
+  await expect(p.locator('#a-rs')).toHaveText('공개 중 · 40명');
+  await expect(p.locator('#a-rpub')).toHaveText('공개 닫기');
+  await a.page.reload();
   await a.page.selectOption('#g', '21기'); await a.page.fill('#n', '김민준'); await a.page.click('#f button[type=submit]');
   await expect(a.page.locator('.no')).toHaveText('명찰 번호 20');
   await a.page.click('#other');
