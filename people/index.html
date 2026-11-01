@@ -103,8 +103,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebas
 import { getFirestore, collection, doc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 const db = getFirestore(initializeApp({ apiKey:"AIzaSyBKDlddQRA1mLotV2V2R-39GhwTrSQ8zVE", authDomain:"tobigshoco.firebaseapp.com", projectId:"tobigshoco", storageBucket:"tobigshoco.firebasestorage.app", messagingSenderId:"973817861716", appId:"1:973817861716:web:48c2fdd252eab5edf83fc1" }));
 // 참가자 카드: 명단 공개 여부(state/roster) + 카드 공개 동의자 목록(state/people, 문서 1개)
-Promise.all([getDoc(doc(db,'state','roster')), getDoc(doc(db,'state','people'))]).then(([r, p]) => {
+// 공개 전에는 state/people를 읽지 않는다(서버 규칙도 공개 전 읽기를 막음)
+getDoc(doc(db,'state','roster')).then(async r => {
   if(!(r.exists() && r.data().published)) return window.hcCards([], 'closed');
+  const p = await getDoc(doc(db,'state','people'));
   window.hcCards((p.exists() && p.data().rows) || []);
 }).catch(() => window.hcCards([], 'error'));
 let showId, seq = null;
