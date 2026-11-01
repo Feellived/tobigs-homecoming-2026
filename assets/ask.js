@@ -5,7 +5,7 @@
   const ASK_LINKS = {
     map_kakao: ['카카오맵에서 보기', 'https://map.kakao.com/?q=%EC%98%AC%EB%A6%BC%ED%94%BD%ED%9A%8C%EA%B4%80'],
     map_naver: ['네이버 지도에서 보기', 'https://map.naver.com/p/search/%EC%98%AC%EB%A6%BC%ED%94%BD%ED%9A%8C%EA%B4%80'],
-    calendar: ['구글 캘린더에 추가', 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=TOBIG%27S%20Homecoming%20Day%202026&dates=20261121T033000Z/20261121T073500Z&ctz=Asia/Seoul&location=KSPO%20%EC%97%B0%EC%88%98%EC%9B%90%20%EB%8C%80%EA%B0%95%EB%8B%B9%20(%EC%84%9C%EC%9A%B8%20%EC%86%A1%ED%8C%8C%EA%B5%AC%20%EC%98%AC%EB%A6%BC%ED%94%BD%EB%A1%9C%20424%20%EC%98%AC%EB%A6%BC%ED%94%BD%ED%9A%8C%EA%B4%80%20B1)'],
+    calendar: ['구글 캘린더에 추가', 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=TOBIG%27S%20Homecoming%20Day%202026&dates=20261121T033000Z/20261121T073500Z&ctz=Asia/Seoul&location=%EC%98%AC%EB%A6%BC%ED%94%BD%ED%9A%8C%EA%B4%80%20B1%20KSPO%20%EC%97%B0%EC%88%98%EC%9B%90%20%EB%8C%80%EA%B0%95%EB%8B%B9%2C%20%EC%84%9C%EC%9A%B8%20%EC%86%A1%ED%8C%8C%EA%B5%AC%20%EC%98%AC%EB%A6%BC%ED%94%BD%EB%A1%9C%20424'],
     rsvp: ['참석 신청 폼', 'https://docs.google.com/forms/d/e/1FAIpQLSdzdNeDuhDAeZp2ic9w6S6oRYSQ-GDEIRNNS56Mx-okHmIuYQ/viewform'],
     openchat: ['운영부 오픈채팅', 'https://open.kakao.com/o/sW8KJKQi'],
     photos: ['회고 사진 올리기', 'https://drive.google.com/drive/folders/1Yodl9eUD0lTIndH7xzSa_Y5JlGECGXi4'],
