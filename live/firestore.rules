@@ -6,9 +6,15 @@ service cloud.firestore {
       return request.auth != null && request.auth.token.email == 'tobigs2026hoco@gmail.com';
     }
 
-    // program state (state/program): read all, write admin
+    function rosterPublished() {
+      return exists(/databases/$(database)/documents/state/roster)
+        && get(/databases/$(database)/documents/state/roster).data.published == true;
+    }
+
+    // program state (state/program): read all, write admin.
+    // state/people (participant cards) is readable only after the roster is published.
     match /state/{docId} {
-      allow read: if true;
+      allow read: if docId != 'people' || rosterPublished() || isAdmin();
       allow write: if isAdmin();
     }
 
@@ -62,7 +68,7 @@ service cloud.firestore {
     // 명단: 저장소가 아니라 여기에 둔다(운영 화면 '명단' 탭). 참가자는 기수+이름으로 계산한 칸 하나만 읽고(get),
     // 전체 목록 읽기(list)와 쓰기는 운영 계정만. 참가자 카드(카드 공개 동의자만)는 state/people 문서 하나.
     match /roster/{key} {
-      allow get: if true;
+      allow get: if rosterPublished() || isAdmin();
       allow list, write: if isAdmin();
     }
 

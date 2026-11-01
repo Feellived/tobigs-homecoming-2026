@@ -704,7 +704,7 @@ function adminMain(){
   render.checkins = () => { const k = norm($('#a-cs').value), onlyNo = $('#a-cu').checked, ps = photoSet();
     const extra = Object.values(S.checkins).filter(c => !rows().some(r=>String(r.no)===String(c.no)));
     $('#a-cc').textContent = `체크인 ${Object.keys(S.checkins).length} / 명단 ${rows().length} · 사진 ${ps.size}명`;
-    const t1s = [...new Set(rows().map(r=>String(r.t1??'')).filter(Boolean))].sort((a,b)=>a-b);
+    const t1s = [...new Set(rows().map(r=>String(r.t1??'')).filter(t => /^\d+$/.test(t)))].sort((a,b)=>a-b); // 숫자 테이블만('운영' 제외)
     $('#a-qt').innerHTML = t1s.length ? t1s.map(t=>`<button type="button" data-t="${esc(t)}" class="${bonus.quiz.includes(t)?'on':''}">${esc(t)}번</button>`).join('') : '<span class="muted" style="font-size:12px">명단 공개 후 테이블 번호가 나타납니다</span>';
     const line = (r, isExtra) => { const no = String(r.no), ci = !!S.checkins[no];
       return `<div class="row ci${ci?' in':''}"><label class="row grow" style="gap:10px;flex-wrap:nowrap"><input type="checkbox" data-no="${esc(no)}" ${ci?'checked':''}><span class="muted" style="min-width:28px">${esc(no)}</span><b>${esc(r.name)}</b><span class="muted">${esc(r.gen)}${isExtra?' · 현장':' · '+esc(r.t1)+'/'+esc(r.t2)}</span></label><button type="button" class="ph-t${ps.has(no)?' on':''}" data-p="${esc(no)}" aria-label="사진 제공">📷</button><span class="tk">${ticketsOf(no, r.t1)}장</span></div>`; };

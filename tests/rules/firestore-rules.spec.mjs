@@ -140,15 +140,22 @@ test.describe('운영진 전용', () => {
     await assertFails(setDoc(doc(db, 'state', 'program'), { step: 10 }));
   });
   test('명단: 참가자는 자기 칸 하나만 읽기(get), 전체 목록·쓰기 불가. 체크인 기록은 운영 계정만 읽기', async () => {
-    await env.withSecurityRulesDisabled(async ctx => { await setDoc(doc(ctx.firestore(), 'roster', 'rabc'), { rows: [{ no: 1, name: '이지우', gen: '2기', t1: '1', t2: '4' }] }); await setDoc(doc(ctx.firestore(), 'checkins', '1'), { no: 1, name: '이지우' }); });
+    await env.withSecurityRulesDisabled(async ctx => { await setDoc(doc(ctx.firestore(), 'roster', 'rabc'), { rows: [{ no: 1, name: '이지우', gen: '2기', t1: '1', t2: '4' }] }); await setDoc(doc(ctx.firestore(), 'checkins', '1'), { no: 1, name: '이지우' }); await setDoc(doc(ctx.firestore(), 'state', 'people'), { rows: [] }); await setDoc(doc(ctx.firestore(), 'state', 'roster'), { published: false }); });
     const db = anon();
+    // 비공개로 올린 상태: 자기 칸·참가자 카드 모두 못 읽음(운영 계정은 읽음)
+    await assertFails(getDoc(doc(db, 'roster', 'rabc')));
+    await assertFails(getDoc(doc(db, 'state', 'people')));
+    await assertSucceeds(getDoc(doc(admin(), 'roster', 'rabc')));
+    await assertSucceeds(getDoc(doc(admin(), 'state', 'people')));
+    await assertSucceeds(getDoc(doc(db, 'state', 'roster')));            // 공개 여부 자체는 누구나 읽음
+    await env.withSecurityRulesDisabled(async ctx => { await setDoc(doc(ctx.firestore(), 'state', 'roster'), { published: true }); });
     await assertSucceeds(getDoc(doc(db, 'roster', 'rabc')));
     await assertFails(getDocs(collection(db, 'roster')));
     await assertFails(setDoc(doc(db, 'roster', 'rxyz'), { rows: [] }));
     await assertFails(getDoc(doc(db, 'checkins', '1')));
     await assertFails(getDocs(collection(db, 'checkins')));
     await assertFails(setDoc(doc(db, 'state', 'people'), { rows: [] }));
-    await assertSucceeds(getDoc(doc(db, 'state', 'people')));          // 카드 공개 동의자 목록은 공개
+    await assertSucceeds(getDoc(doc(db, 'state', 'people')));          // 공개 후 카드 공개 동의자 목록은 읽기 가능
     await assertSucceeds(getDocs(collection(admin(), 'roster')));
     await assertSucceeds(getDocs(collection(admin(), 'checkins')));
   });
