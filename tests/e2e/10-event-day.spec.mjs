@@ -3,6 +3,13 @@
 // 명단: fixtures/people.csv(가상 40명)를 운영 화면 '명단' 탭으로 올림(저장소에는 명단 파일이 없음)
 import { test, expect } from '@playwright/test';
 import { newDevice, resetEmulators, adminLogin, adminTab, fillIdentity, uploadRoster, seed, FIXTURE, PHONE, LAPTOP, PROJECTOR, sleep } from '../lib/helpers.mjs';
+// 투표 선택지 칸 채우기 (기본 2칸, 마지막 칸에서 Enter = 칸 추가)
+async function fillOptions(P, opts) {
+  for (let i = 0; i < opts.length; i++) {
+    if (i >= 2) await P.locator('.a-opt').nth(i - 1).press('Enter');
+    await P.locator('.a-opt').nth(i).fill(opts[i]);
+  }
+}
 import { collection, getDocs } from 'firebase/firestore';
 
 test.describe.configure({ mode: 'serial' });
@@ -285,7 +292,7 @@ test('4. 투표: 열기 ≠ 결과 공개(회귀), 1인 1표, 결과 공개 시 
   const P = admin.page;
   await adminTab(P, 'poll');
   await P.fill('#a-pq', '가장 기대되는 순서는?');
-  await P.fill('#a-po', 'Alumni Session\nTable Talk\nLucky Draw');
+  await fillOptions(P, ['Alumni Session', 'Table Talk', 'Lucky Draw']);
   await P.click('#a-pf button[type=submit]');
   const card = P.locator('#a-pl section.card', { hasText: '가장 기대되는 순서는?' });
   await expect(card).toContainText('닫힘');
@@ -353,7 +360,7 @@ test('4-1. 투표: 앞 투표 결과가 공개된 채로 다음 투표를 열면
   await c1.locator('button[data-a="show"]').click();           // 1번 투표 결과 다시 공개
   await expect(d.page.locator('#fv')).toBeVisible();
   await P.fill('#a-pq', '오늘 몇 시까지 계실 건가요?');
-  await P.fill('#a-po', '단체사진까지\n뒤풀이까지');
+  await fillOptions(P, ['단체사진까지', '뒤풀이까지']);
   await P.click('#a-pf button[type=submit]');
   const c2 = P.locator('#a-pl section.card', { hasText: '오늘 몇 시까지' });
   await c2.locator('button[data-a="open"]').click();
