@@ -261,8 +261,8 @@ const AWARDS = [
 ];
 const awardLabel = w => w.label || (w.rank + '등');
 const GENS = Array.from({length:26},(_,i)=>(i+1)+'기');
-// TOBIG'S Quiz: Q1~Q6 각 1점, Q7(골든) 2점. 동점이면 타이브레이커를 맞힌 테이블이 앞선다. 테이블은 명단의 1라운드 번호(없으면 1~15)
-const QUIZ_PTS = [1,1,1,1,1,1,2], QUIZ_TABLES = 15;
+// TOBIG'S Quiz: 뒤로 갈수록 배점이 커진다(1·1·2·2·3·3·5, 골든 Q7 5점, 총 17점). 동점이면 타이브레이커를 맞힌 테이블이 앞선다. 테이블은 명단의 1라운드 번호(없으면 1~15)
+const QUIZ_PTS = [1,1,2,2,3,3,5], QUIZ_TABLES = 15;
 const quizTables = () => { const t = [...new Set((S.tables.rows||[]).map(r=>String(r.t1??'')).filter(x=>/^\d+$/.test(x)))].sort((a,b)=>a-b); return t.length ? t : Array.from({length:QUIZ_TABLES},(_,i)=>String(i+1)); };
 // upto: 몇 번 문제까지 점수에 넣을지(공개 단계). 반환: 점수 내림차순, 같은 점수면 타이브레이커 승자 먼저
 const quizBoard = (qz, upto) => { const c = qz?.correct || {}, tb = (qz?.tb||[]).map(String);
