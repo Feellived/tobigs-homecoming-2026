@@ -198,6 +198,19 @@ body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-templat
 .sc .win .rk{font-size:26px;min-width:64px}
 .sc .win b{font-size:30px}
 .sc .win span{font-size:16px;color:var(--peri)}
+/* TOBIG'S Quiz 점수판 (프로젝터) */
+.qz{display:grid;grid-template-columns:1fr 1fr;column-gap:48px;row-gap:10px;margin-top:6px}
+.qr2{display:grid;grid-template-columns:44px 132px 1fr 64px;align-items:center;gap:14px;font-size:24px}
+.qr2 .rk{font-family:var(--display);font-weight:700;color:var(--muted);font-size:20px}
+.qr2 .tn{font-family:var(--display);font-weight:700;white-space:nowrap}
+.qr2 .bar{height:16px;background:var(--line);border-radius:8px;overflow:hidden}
+.qr2 .bar i{display:block;height:100%;width:0;background:var(--peri);transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.qr2 b{font-family:var(--display);font-size:30px;text-align:right;font-variant-numeric:tabular-nums}
+.qr2.lead .rk,.qr2.lead b{color:var(--peri)}.qr2.lead .bar i{background:linear-gradient(90deg,var(--accent),var(--peri))}
+.qr2.tbk .tn::after{content:'TB';font-size:12px;margin-left:8px;padding:1px 6px;border-radius:999px;border:1px solid var(--peri);color:var(--peri);vertical-align:3px}
+.qzw{text-align:center;margin:6px 0 22px}.qzw .k{font-family:var(--display);font-size:16px;letter-spacing:.2em;color:var(--peri)}.qzw .w{font-family:var(--display);font-weight:700;font-size:min(9vw,96px);line-height:1.05}.qzw .s{font-size:22px;color:var(--muted);margin-top:6px}
+.qa-g{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:8px 0}.qa-g button{border:1px solid var(--line);background:transparent;color:#fff;border-radius:10px;padding:12px 0;font-size:16px;font-weight:700}.qa-g button.on{background:var(--accent);border-color:var(--accent)}
+.qa-s{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;font-size:12px}.qa-s div{border:1px solid var(--line);border-radius:8px;padding:6px 0;text-align:center}.qa-s b{display:block;font-size:13px;white-space:nowrap}
 .se{color:var(--peri);font-size:20px}
 .ov{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:5;animation:fade .4s}
 @keyframes fade{from{opacity:0}to{opacity:1}}
@@ -248,6 +261,14 @@ const AWARDS = [
 ];
 const awardLabel = w => w.label || (w.rank + '등');
 const GENS = Array.from({length:26},(_,i)=>(i+1)+'기');
+// TOBIG'S Quiz: Q1~Q6 각 1점, Q7(골든) 2점. 동점이면 타이브레이커를 맞힌 테이블이 앞선다. 테이블은 명단의 1라운드 번호(없으면 1~15)
+const QUIZ_PTS = [1,1,1,1,1,1,2], QUIZ_TABLES = 15;
+const quizTables = () => { const t = [...new Set((S.tables.rows||[]).map(r=>String(r.t1??'')).filter(x=>/^\d+$/.test(x)))].sort((a,b)=>a-b); return t.length ? t : Array.from({length:QUIZ_TABLES},(_,i)=>String(i+1)); };
+// upto: 몇 번 문제까지 점수에 넣을지(공개 단계). 반환: 점수 내림차순, 같은 점수면 타이브레이커 승자 먼저
+const quizBoard = (qz, upto) => { const c = qz?.correct || {}, tb = (qz?.tb||[]).map(String);
+  return quizTables().map(t => ({ t, s: QUIZ_PTS.slice(0, upto).reduce((a,pt,i)=>a + ((c['q'+(i+1)]||[]).map(String).includes(t) ? pt : 0), 0), tb: tb.includes(t) }))
+    .sort((a,b)=> b.s-a.s || (b.tb?1:0)-(a.tb?1:0) || a.t-b.t); };
+const quizWinners = (qz, upto) => { const b = quizBoard(qz, upto); if(!b.length || !b[0].s) return []; const top = b.filter(x=>x.s===b[0].s); const tbw = top.filter(x=>x.tb); return tbw.length ? tbw : top; };
 // Alumni Session 연사. 질문·투표 화면 상단 카드. photo는 '../assets/speakers/01.jpg' 식, 없으면 ''(이름 첫 글자). name이 비면 숨김.
 // 카드를 누르면 상세가 펼쳐진다. bio(자기소개, 줄바꿈 가능)·keywords(배열)·topic(나누고 싶은 이야기)·msg(후배들에게 한마디)·link(공개 링크)는 회신 받는 대로 채운다. 비어 있으면 '준비 중'
 const SPEAKERS = [
@@ -325,8 +346,8 @@ const qs = location.search;
 const view = qs.includes('screen') ? 'screen' : qs.includes('admin') ? 'admin' : qs.includes('ask') ? 'ask' : qs.includes('qa') ? 'qa' : qs.includes('draw') ? 'draw' : 'hub';
 const appEl = $('#app');
 
-const S = { program:null, questions:[], polls:[], votes:{}, draw:null, tables:{ published:false, rows:[] }, checkins:{} };
-const render = { program(){}, questions(){}, polls(){}, draw(){}, checkins(){}, roster(){} };
+const S = { program:null, questions:[], polls:[], votes:{}, draw:null, tables:{ published:false, rows:[] }, checkins:{}, quiz:null };
+const render = { program(){}, questions(){}, polls(){}, draw(){}, checkins(){}, roster(){}, quiz(){} };
 const voteSubs = {};
 const listen = {
   program: () => onSnapshot(doc(db,'state','program'), s => { S.program = s.exists() ? s.data() : null; render.program(); }),
@@ -338,6 +359,7 @@ const listen = {
     render.polls();
   }),
   draw: () => onSnapshot(doc(db,'draw','results'), s => { S.draw = s.exists() ? s.data() : null; render.draw(); }),
+  quiz: () => onSnapshot(doc(db,'state','quiz'), s => { S.quiz = s.exists() ? s.data() : null; render.quiz(); }),
   checkins: () => onSnapshot(collection(db,'checkins'), s => { S.checkins = {}; s.docs.forEach(d => S.checkins[d.id] = d.data()); render.checkins(); }),
 };
 // full=true: 전체 명단까지(운영 계정만 가능, 아니면 빈 목록)
@@ -540,14 +562,16 @@ function screen(){
   document.body.classList.add('screen');
   appEl.innerHTML = `<div class="sh"><div><div class="step" id="s-step"></div><div class="next" id="s-next"></div></div><div class="timer" id="s-timer"></div><div class="qr"><img src="qr.png" alt=""><div>homecoming.datamarket.ai.kr/live</div></div></div><div class="sb" id="s-body"></div>`;
   let mode = null, seenSeq = null, signedIn = false; // seenSeq: 마지막으로 연출한 추첨 번호(미선언이면 ReferenceError로 테이블 배치·추첨 연출이 멈춤)
-  const modeOf = st => st===null ? 'qa' : (st===0||st===5) ? 'tables1' : (st===8||st===9) ? 'tables2' : st===4 ? 'qa' : st===6 ? 'break' : st===10 ? 'draw' : 'idle';
+  const modeOf0 = st => st===null ? 'qa' : (st===0||st===5) ? 'tables1' : (st===8||st===9) ? 'tables2' : st===4 ? 'qa' : st===6 ? 'break' : st===7 ? 'quiz' : st===10 ? 'draw' : 'idle';
+  const modeOf = st => S.quiz?.show ? 'quiz' : modeOf0(st); // 점수판 공개 중이면 순서와 관계없이 점수판
   const layout = () => { const m = modeOf(info().step); if(m===mode) return; mode = m; const b = $('#s-body'); b.className = 'sb ' + (m==='qa' ? 'two' : 'one');
     if(m==='qa') b.innerHTML = `<div class="sc"><h3>질문</h3><div id="s-q"></div></div><div class="sc" id="s-r"></div>`;
     else if(m==='tables1'||m==='tables2') b.innerHTML = `<div class="sc"><h3>${m==='tables1'?'1라운드 테이블':'2라운드 테이블'}</h3><div class="tg" id="s-t"></div></div>`;
     else if(m==='break') b.innerHTML = `<div class="sc center"><div class="bt" id="s-bt"></div><div class="bn" id="s-bn"></div></div>`;
     else if(m==='draw') b.innerHTML = `<div class="sc"><h3>Lucky Draw</h3><div id="s-w" class="wl"></div></div>`;
+    else if(m==='quiz') b.innerHTML = `<div class="sc" id="s-qz"></div>`;
     else b.innerHTML = `<div class="sc center"><div class="idle">Big Then. <b>Bigger Now.</b></div></div>`;
-    render.questions(); render.polls(); render.draw(); renderTables();
+    render.questions(); render.polls(); render.draw(); renderTables(); render.quiz();
     if(m==='tables1'||m==='tables2') loadTables(signedIn).then(renderTables); }; // 프로젝터를 명단 올리기 전에 열어 둔 경우에도 테이블 배치가 뜨도록 다시 읽음
   render.program = () => { const i = info(); $('#s-step').textContent = i.name; $('#s-next').textContent = i.next; $('#s-timer').textContent = clock(); layout(); if(mode==='break'){ $('#s-bt').textContent = clock(); $('#s-bn').textContent = i.next; } };
   setInterval(render.program, 1000);
@@ -563,7 +587,19 @@ function screen(){
   render.polls = right;
   render.draw = () => { winners(); const lv = S.draw?.live; const seq = lv?.seq || 0; if(seenSeq===null){ seenSeq = seq; return; } if(seq > seenSeq){ seenSeq = seq; reveal(lv); } };
   onAuthStateChanged(auth, u => { signedIn = !!u; loadTables(signedIn).then(renderTables); }); // 테이블 배치(이름)는 운영 계정으로 로그인한 브라우저에서만. 아니면 '명찰 번호로 앉아 주세요'
-  listen.program(); listen.questions(); listen.polls(true); listen.draw();
+  let qzKey = null, qzFin = false;
+  render.quiz = () => { layout(); const el = $('#s-qz'); if(!el) return; const qz = S.quiz || {}, upto = Math.min(7, qz.upto||0);
+    if(!qz.show){ qzKey = null; el.className = 'sc center'; el.innerHTML = `<div class="idle">TOBIG'S <b>Quiz</b></div><div class="bn">${quizTables().length}테이블 · 7문제 · 1개의 우승 팀</div>`; return; }
+    el.className = 'sc'; const bd = quizBoard(qz, upto), win = qz.final ? quizWinners(qz, upto) : [], tie = qz.final && win.length > 1, mx = Math.max(1, ...bd.map(x=>x.s));
+    const key = JSON.stringify([upto, qz.final, bd]); if(key === qzKey) return; const first = qzKey === null; qzKey = key;
+    const half = Math.ceil(bd.length/2), row = (x,i) => `<div class="qr2${win.some(w=>w.t===x.t)?' lead':''}${x.tb?' tbk':''}"><span class="rk">${i+1}</span><span class="tn">TABLE ${esc(x.t)}</span><div class="bar"><i data-w="${Math.round(x.s/mx*100)}"></i></div><b>${x.s}</b></div>`;
+    el.innerHTML = `<h3>TOBIG'S QUIZ · SCOREBOARD · ${upto ? 'Q1–Q'+upto+' 반영' : '채점 전'}</h3>`
+      + (qz.final ? (tie ? `<div class="qzw"><div class="k">동점</div><div class="w">TABLE ${win.map(w=>esc(w.t)).join(' · ')}</div><div class="s">타이브레이커로 우승 팀을 가립니다</div></div>` : win.length ? `<div class="qzw"><div class="k">WINNER</div><div class="w">TABLE ${esc(win[0].t)}</div><div class="s">${win[0].s}점 · 테이블 전원 Lucky Draw 응모권 +1</div></div>` : '') : '')
+      + `<div class="qz"><div>${bd.slice(0,half).map((x,i)=>row(x,i)).join('')}</div><div>${bd.slice(half).map((x,i)=>row(x,i+half)).join('')}</div></div>`;
+    const go = () => el.querySelectorAll('.bar i').forEach(i => i.style.width = i.dataset.w + '%');
+    first ? requestAnimationFrame(() => requestAnimationFrame(go)) : go();
+    if(qz.final && !tie && win.length && !qzFin){ qzFin = true; confetti(document.body); } if(!qz.final) qzFin = false; };
+  listen.program(); listen.questions(); listen.polls(true); listen.draw(); listen.quiz();
 }
 
 // ---------- 운영 ----------
@@ -624,7 +660,7 @@ async function clearRoster(){ const old = await getDocs(collection(db,'roster'))
 async function wipeEvent(){ const ops = [];
   for(const c of ['roster','questions','checkins']) (await getDocs(collection(db,c))).forEach(d => ops.push(b => b.delete(d.ref)));
   for(const p of (await getDocs(collection(db,'polls'))).docs){ (await getDocs(collection(db,'polls',p.id,'votes'))).forEach(v => ops.push(b => b.delete(v.ref))); ops.push(b => b.delete(p.ref)); }
-  ops.push(b => b.delete(doc(db,'draw','results'))); for(const k of ['people','bonus','roster']) ops.push(b => b.delete(doc(db,'state',k)));
+  ops.push(b => b.delete(doc(db,'draw','results'))); for(const k of ['people','bonus','roster','quiz']) ops.push(b => b.delete(doc(db,'state',k)));
   ops.push(b => b.set(doc(db,'state','program'), { step:null, endsAt:null })); await commitOps(ops); }
 function rosterTab(){
   $('#a-roster').innerHTML = `<section class="card"><div class="eyebrow">명단 올리기</div>
@@ -656,10 +692,10 @@ function rosterTab(){
 }
 
 function adminMain(){
-  appEl.innerHTML = `<div class="tabs" id="a-tabs"><button data-t="prog" class="on">진행</button><button data-t="q">질문</button><button data-t="poll">투표</button><button data-t="ci">체크인</button><button data-t="draw">추첨</button><button data-t="roster">명단</button></div>
-  <div id="a-prog"></div><div id="a-q" hidden></div><div id="a-poll" hidden></div><div id="a-ci" hidden></div><div id="a-draw" hidden></div><div id="a-roster" hidden></div>
+  appEl.innerHTML = `<div class="tabs" id="a-tabs"><button data-t="prog" class="on">진행</button><button data-t="q">질문</button><button data-t="poll">투표</button><button data-t="ci">체크인</button><button data-t="quiz">퀴즈</button><button data-t="draw">추첨</button><button data-t="roster">명단</button></div>
+  <div id="a-prog"></div><div id="a-q" hidden></div><div id="a-poll" hidden></div><div id="a-ci" hidden></div><div id="a-quiz" hidden></div><div id="a-draw" hidden></div><div id="a-roster" hidden></div>
   <p class="muted"><a href="?screen" target="_blank">프로젝터 화면</a> · <a href="./" target="_blank">참가자 화면</a></p>`;
-  $('#a-tabs').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; document.querySelectorAll('#a-tabs button').forEach(x=>x.classList.toggle('on', x===b)); ['prog','q','poll','ci','draw','roster'].forEach(t => $('#a-'+t).hidden = t!==b.dataset.t); });
+  $('#a-tabs').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; document.querySelectorAll('#a-tabs button').forEach(x=>x.classList.toggle('on', x===b)); ['prog','q','poll','ci','quiz','draw','roster'].forEach(t => $('#a-'+t).hidden = t!==b.dataset.t); });
 
   // 진행
   $('#a-prog').innerHTML = `<section class="card"><div class="step" id="a-step"></div><div class="timer" id="a-timer"></div><div class="row" style="margin-top:10px"><button class="btn btn-primary" id="a-next">다음 순서</button><button class="btn" id="a-progreset">진행 초기화</button></div></section>
@@ -726,6 +762,35 @@ function adminMain(){
   $('#a-qt').addEventListener('click', async e => { const b = e.target.closest('button[data-t]'); if(!b) return; const q = new Set(bonus.quiz), t = b.dataset.t; q.has(t) ? q.delete(t) : q.add(t); await saveBonus([...q], bonus.photo ?? [...photoSet()]); });
   $('#a-ca').addEventListener('submit', async e => { e.preventDefault(); const no = String($('#a-cno').value); await setDoc(doc(db,'checkins',no), { no:Number(no), name:$('#a-cn').value.trim(), gen:$('#a-cg').value, at: serverTimestamp() }); $('#a-cno').value=''; $('#a-cn').value=''; });
   onSnapshot(doc(db,'state','bonus'), s => { const d = s.exists() ? s.data() : {}; bonus = { quiz:(d.quiz||[]).map(String), photo: Array.isArray(d.photo) ? d.photo.map(String) : null }; render.checkins(); if(pool.length) build(); });
+
+  // 퀴즈 점수판: 문제를 고르고 맞힌 테이블을 누른다(바로 저장). 'Qn까지 공개'를 누르면 프로젝터 점수판이 그 문제까지 반영해 움직인다
+  let qSel = 1; const qzRef = doc(db,'state','quiz');
+  $('#a-quiz').innerHTML = `<section class="card"><div class="eyebrow">채점</div><div class="chips" id="a-qq"></div><p class="muted" id="a-qh" style="font-size:12px;margin:2px 0"></p><div class="qa-g" id="a-qg"></div></section>
+    <section class="card"><div class="eyebrow">프로젝터 공개</div><p class="muted" id="a-qst" style="margin:4px 0 10px"></p>
+      <div class="row"><button class="btn btn-primary" id="a-qup"></button><button class="btn" id="a-qhide">점수판 내리기</button></div>
+      <div class="row" style="margin-top:8px"><button class="btn" id="a-qfin">우승 발표</button><button class="btn" id="a-qbon">우승 테이블 응모권 +1 반영</button></div></section>
+    <section class="card"><div class="eyebrow">현재 점수 (채점한 전체 문제)</div><div class="qa-s" id="a-qs"></div><div class="row" style="margin-top:12px"><button class="btn btn-sm" id="a-qreset">퀴즈 초기화</button></div></section>`;
+  const qSave = d => setDoc(qzRef, d, { merge:true });
+  render.quiz = () => { const qz = S.quiz || {}, c = qz.correct || {}, upto = qz.upto || 0, isTb = qSel === 8, key = isTb ? null : 'q'+qSel, on = (isTb ? (qz.tb||[]) : (c[key]||[])).map(String);
+    $('#a-qq').innerHTML = QUIZ_PTS.map((pt,i)=>`<button type="button" data-q="${i+1}" class="${qSel===i+1?'on':''}">Q${i+1}${pt>1?' · '+pt+'점':''}${(c['q'+(i+1)]||[]).length?' ✓':''}</button>`).join('') + `<button type="button" data-q="8" class="${isTb?'on':''}">타이브레이커</button>`;
+    $('#a-qh').textContent = isTb ? '동점일 때만 씁니다. 타이브레이커를 맞힌(가장 가까운) 테이블을 누르세요. 같은 점수 안에서 앞 순위가 됩니다.' : `Q${qSel} 정답 테이블을 누르세요 (${QUIZ_PTS[qSel-1]}점). 다시 누르면 취소.`;
+    $('#a-qg').innerHTML = quizTables().map(t=>`<button type="button" data-t="${esc(t)}" class="${on.includes(t)?'on':''}">${esc(t)}</button>`).join('');
+    $('#a-qup').textContent = isTb ? '타이브레이커 반영해 공개' : `Q${qSel}까지 점수 공개`;
+    $('#a-qst').textContent = qz.show ? `공개 중 · Q${upto}까지 반영${qz.final?' · 우승 발표됨':''}` : '프로젝터에 점수판이 내려가 있습니다 (퀴즈 순서에서는 대기 화면)';
+    const w = quizWinners(qz, 7); $('#a-qfin').textContent = qz.final ? '우승 발표 취소' : '우승 발표 (Q7까지 반영)'; $('#a-qbon').disabled = !w.length || w.length > 1;
+    $('#a-qs').innerHTML = quizBoard(qz, 7).map((x,i)=>`<div><span class="muted">${i+1}위</span><b>${esc(x.t)}번 · ${x.s}${x.tb?' TB':''}</b></div>`).join(''); };
+  $('#a-qq').addEventListener('click', e => { const b = e.target.closest('button[data-q]'); if(!b) return; qSel = Number(b.dataset.q); render.quiz(); });
+  $('#a-qg').addEventListener('click', async e => { const b = e.target.closest('button[data-t]'); if(!b) return; const qz = S.quiz || {}, t = b.dataset.t;
+    if(qSel === 8){ const s2 = new Set((qz.tb||[]).map(String)); s2.has(t) ? s2.delete(t) : s2.add(t); await qSave({ tb:[...s2] }); return; }
+    const c = { ...(qz.correct||{}) }, k = 'q'+qSel, s2 = new Set((c[k]||[]).map(String)); s2.has(t) ? s2.delete(t) : s2.add(t); c[k] = [...s2]; await qSave({ correct:c }); });
+  $('#a-qup').onclick = () => qSave({ show:true, upto: qSel === 8 ? 7 : Math.max(qSel, 0) });
+  $('#a-qhide').onclick = () => qSave({ show:false });
+  $('#a-qfin').onclick = () => { const qz = S.quiz || {}; qSave(qz.final ? { final:false } : { final:true, show:true, upto:7 }); };
+  $('#a-qbon').onclick = async () => { const w = quizWinners(S.quiz||{}, 7); if(w.length !== 1) return; if(!confirm(`${w[0].t}번 테이블 전원에게 응모권 +1을 줄까요? (체크인 탭의 퀴즈 우승 테이블이 이 테이블로 바뀝니다)`)) return;
+    await saveBonus([String(w[0].t)], bonus.photo ?? [...photoSet()]); say(`${w[0].t}번 테이블 응모권 +1 반영`); };
+  $('#a-qreset').onclick = async () => { if(confirm('퀴즈 채점·공개 상태를 모두 지울까요?')) await setDoc(qzRef, { correct:{}, tb:[], upto:0, show:false, final:false }); };
+  listen.quiz();
+  { const rc = render.checkins; render.checkins = () => { rc(); render.quiz(); }; } // 명단이 늦게 들어와도 테이블 버튼을 명단 기준으로 다시 그림
 
   // 추첨
   let pool = [], winners = [], seq = 0;
