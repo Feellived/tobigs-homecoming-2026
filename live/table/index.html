@@ -35,6 +35,7 @@ select option{color:#0b1230}
 .nums{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
 .num{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
 .num .l{font-size:12px;color:var(--muted)}
+.num .tn{font-size:13px;line-height:1.4;color:var(--muted);margin-top:6px;word-break:keep-all}
 .num .v{font-family:var(--display);font-size:56px;font-weight:700;line-height:1.1;letter-spacing:-.02em}
 .name{font-size:22px;font-weight:800;margin-bottom:4px}
 .no{font-size:13px;color:var(--muted);margin-bottom:14px}
@@ -57,6 +58,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebas
 import { getFirestore, collection, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 const db = getFirestore(initializeApp({ apiKey:"AIzaSyBKDlddQRA1mLotV2V2R-39GhwTrSQ8zVE", authDomain:"tobigshoco.firebaseapp.com", projectId:"tobigshoco", storageBucket:"tobigshoco.firebasestorage.app", messagingSenderId:"973817861716", appId:"1:973817861716:web:48c2fdd252eab5edf83fc1" }));
 const GENS = Array.from({length:26},(_,i)=>(i+1)+'기');
+// 테이블 이름 (1라운드: 커리어 단계, 2라운드: 신청서 관심 주제)
+const TLABEL = {"R1": {"1": "취업 준비 · 국내 현업 적응·이직", "2": "취업 준비 · 커리어·진로 비교", "3": "취업 준비 · 데이터·BI 직무", "4": "취업 준비 · AI·기술·기획 직무", "5": "대학원 준비 · 국내 석사·연구 진학", "6": "대학원 준비 · 해외·유학", "7": "대학원 준비 · 연구·비전·기술 트랙", "8": "석사 과정 재학", "9": "석사 과정 재학", "10": "석사 과정 재학", "11": "박사·석박통합·연구원·교수", "12": "현업 재직 · LLM·AI 모델링·리서치 엔지니어", "13": "현업 재직 · 데이터 엔지니어링·데이터 분석", "14": "현업 재직 · 산업 현장 AI·SW 개발", "15": "현업 재직 · 전략·컨설팅·솔루션·기획"}, "R2": {"1": "국내 취업·이직", "2": "국내 취업·이직", "3": "국내 취업·이직", "4": "국내 취업·이직", "5": "국내 취업·이직", "6": "국내 취업·이직", "7": "커리어·해외", "8": "커리어·해외", "9": "대학원·연구", "10": "대학원·연구", "11": "LLM·비전·생성", "12": "LLM·비전·생성", "13": "LLM·비전·생성", "14": "데이터·산업"}};
+const tl = (r, n) => (TLABEL[r]||{})[String(n).trim()] || '';
 const box = document.getElementById('box');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const norm = s => String(s||'').replace(/\s+/g,'').toLowerCase();
@@ -77,9 +81,9 @@ function showForm(msg){
 }
 function showMine(r, twin){
   box.innerHTML = `<div class="name">${esc(r.name)} <span class="muted" style="font-size:14px;font-weight:500">${esc(r.gen)}</span></div><div class="no">명찰 번호 ${esc(r.no)}</div>
-  <div class="nums"><div class="num"><div class="l">1라운드 테이블</div><div class="v">${esc(r.t1)}</div></div><div class="num"><div class="l">2라운드 테이블</div><div class="v">${esc(r.t2)}</div></div></div>
+  <div class="nums"><div class="num"><div class="l">1라운드 테이블</div><div class="v">${esc(r.t1)}</div>${tl('R1',r.t1)?`<div class="tn">${esc(tl('R1',r.t1))}</div>`:''}</div><div class="num"><div class="l">2라운드 테이블</div><div class="v">${esc(r.t2)}</div>${tl('R2',r.t2)?`<div class="tn">${esc(tl('R2',r.t2))}</div>`:''}</div></div>
   ${twin?'<p class="muted" style="margin-top:12px">같은 기수에 같은 이름이 있어요. 명찰 번호가 다르면 체크인 데스크에 문의해 주세요.</p>':''}
-  <p class="muted" style="margin-top:12px">Table Talk 2라운드(15:20)에 두 번째 테이블로 이동합니다.</p>
+  <p class="muted" style="margin-top:12px">1라운드는 커리어 단계, 2라운드는 신청 시 선택한 관심 주제를 기준으로 배정되었습니다. Table Talk 2(15:20) 시작 시 2라운드 테이블로 이동해 주시기 바랍니다.</p>
   <div class="foot"><a href="#" id="other" style="display:inline-block;padding:12px 0">다른 사람 찾기</a></div>`;
   document.getElementById('other').onclick = e => { e.preventDefault(); remember(null,false); showForm(); };
 }
