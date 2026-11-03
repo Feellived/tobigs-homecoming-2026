@@ -249,12 +249,12 @@ const AWARDS = [
 const awardLabel = w => w.label || (w.rank + '등');
 const GENS = Array.from({length:26},(_,i)=>(i+1)+'기');
 // Alumni Session 연사. 질문·투표 화면 상단 카드. photo는 '../assets/speakers/01.jpg' 식, 없으면 ''(이름 첫 글자). name이 비면 숨김.
-// 카드를 누르면 상세가 펼쳐진다. bio(자기소개, 줄바꿈 가능)·keywords(배열)·topic(나누고 싶은 이야기)·link(공개 링크)는 회신 받는 대로 채운다. 비어 있으면 '준비 중'
+// 카드를 누르면 상세가 펼쳐진다. bio(자기소개, 줄바꿈 가능)·keywords(배열)·topic(나누고 싶은 이야기)·msg(후배들에게 한마디)·link(공개 링크)는 회신 받는 대로 채운다. 비어 있으면 '준비 중'
 const SPEAKERS = [
-  { name:'정세영', gen:'14기', role:'산업계', org:'코오롱베니트', photo:'', bio:'', keywords:[], topic:'', link:'' },
-  { name:'전종섭', gen:'7기',  role:'산업계', org:'Databricks', photo:'', bio:'', keywords:[], topic:'', link:'' },
-  { name:'임지영', gen:'19기', role:'학계',   org:'KAIST 석박통합과정', photo:'', bio:'', keywords:[], topic:'', link:'' },
-  { name:'경민수', gen:'20기', role:'학계',   org:'서울시립대학교 석사과정', photo:'', bio:'', keywords:[], topic:'', link:'' },
+  { name:'정세영', gen:'14기', role:'산업계', org:'코오롱베니트 데이터분석팀', photo:'', bio:'', keywords:['데이터사이언티스트','제조 도메인','PoC'], topic:'', msg:'인생은 기세다', link:'https://www.linkedin.com/in/%EC%84%B8%EC%98%81-%EC%A0%95-b77739447' },
+  { name:'전종섭', gen:'7기',  role:'산업계', org:'Databricks · Specialist Solutions Architect (AI/ML)', photo:'../assets/speakers/02.jpg', bio:'', keywords:['스타트업','외국계','B2B'], topic:'', msg:'투빅스 활동한 지 어느덧 10년, 문득 그때 꿈꾸던 사람이 되었는지, 당시의 열정과 꿈은 여전한지 돌아보게 됩니다. 여러분은 지금 어떤 꿈을 꾸고 계신가요?', link:'https://www.linkedin.com/in/jongseob-jeon/' },
+  { name:'임지영', gen:'19기', role:'학계',   org:'KAIST 전기및전자공학부 석박사통합과정', photo:'../assets/speakers/03.jpg', bio:'컴퓨터 아키텍처 연구실(지도교수 김동준)\nAI나 컴공 전공은 아니지만 투빅스를 통해 AI를 배우고 접했고, 이후 컴퓨터 아키텍처 연구실에서 AI 시스템 가속을 다루고 있습니다.\n\n같은 AI 모델이라도 어떤 하드웨어 위에서, 어떻게 데이터를 주고받으며 돌리느냐에 따라 속도와 비용이 몇 배씩 달라집니다. 컴퓨터 아키텍처는 바로 그 \'어떻게\'를 설계하는 분야입니다. 그중에서도 대규모 생성형 추천 모델(GenRec)의 추론을 빠르고 효율적으로 돌리기 위한 메모리 계층 구조를 연구하고 있습니다.', keywords:['전공전환','컴퓨터시스템','추천시스템'], topic:'', msg:'이렇게 훌륭하게 동아리를 운영해주시고 계셔서 너무 감사드려요. 개인적으로 궁금하거나(카이스트 입학-교수님 관련/연구분야 등등) 아무거나 있을때 편하게 연락주셔도 됩니다.', link:'https://www.linkedin.com/in/jiyoung-l-1aab55125/' },
+  { name:'경민수', gen:'20기', role:'학계',   org:'서울시립대학교 석사과정', photo:'../assets/speakers/04.jpg', bio:'', keywords:['인문학 팬','낙타','뭐해먹고사냐'], topic:'', msg:'투빅스에서 다양하고 좋은 사람들과 최대한 많은 것을 경험하세요!', link:'https://gyeongminsu.github.io/' },
 ];
 // 질문의 name 칸 = 질문 대상 연사 이름 (''이면 모두에게). 보안 규칙 변경 없이 기존 칸 재사용
 const roleCls = x => (x && x.role === '학계') ? 'aca' : 'ind';
@@ -262,10 +262,10 @@ const spkBy = n => SPEAKERS.find(x => x && x.name === n);
 const toLbl = x => x.name ? ` <span class="tgc ${roleCls(spkBy(x.name))}">${esc(x.name)} 님께</span>` : '';
 const spkPh = x => `<div class="ph">${x.photo?`<img src="${esc(x.photo)}" alt="">`:esc(x.name[0])}</div>`;
 const speakerCards = () => { const l = SPEAKERS.filter(x=>x&&x.name); if(!l.length) return ''; return `<section class="card"><div class="eyebrow">TALK GUESTS</div><div class="spks">` + l.map((x,i)=>`<button type="button" class="spk ${roleCls(x)}" data-i="${i}">${spkPh(x)}<div><div class="role">${esc(x.role||'')}</div><div class="nm">${esc(x.name)}<em>${esc(x.gen||'')}</em></div><div class="org">${esc(x.org||'')}</div></div></button>`).join('') + `</div><div class="spd" id="spd" hidden></div><div class="spk-hint">카드를 누르면 연사 소개를 볼 수 있어요</div></section>`; };
-const speakerDetail = x => { const kw = (x.keywords||[]).filter(Boolean), okLink = /^https?:\/\/[^\s"'<>]+$/i.test(x.link||''); const empty = !x.bio && !kw.length && !x.topic && !okLink;
+const speakerDetail = x => { const kw = (x.keywords||[]).filter(Boolean), okLink = /^https?:\/\/[^\s"'<>]+$/i.test(x.link||''); const empty = !x.bio && !kw.length && !x.topic && !x.msg && !okLink;
   return `<div class="hd">${spkPh(x)}<div><div class="role" style="font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:.14em;color:var(--peri)">${esc(x.role||'')}</div><div style="font-size:17px;font-weight:700">${esc(x.name)} <span class="muted" style="font-size:13px;font-weight:500">${esc(x.gen||'')}</span></div><div class="muted" style="font-size:13px">${esc(x.org||'')}</div></div></div>`
     + (empty ? '<p class="muted" style="font-size:13px;margin:0">연사 소개를 준비하고 있어요. 곧 채워집니다.</p>'
-      : (x.bio?`<div class="bio">${esc(x.bio)}</div>`:'') + (kw.length?`<div class="kw">${kw.map(k=>`<span>${esc(k)}</span>`).join('')}</div>`:'') + (x.topic?`<div class="tp">나누고 싶은 이야기 · <b>${esc(x.topic)}</b></div>`:'') + (okLink?`<a href="${esc(x.link)}" target="_blank" rel="noopener">프로필 보기 ↗</a>`:'')); };
+      : (x.bio?`<div class="bio">${esc(x.bio)}</div>`:'') + (kw.length?`<div class="kw">${kw.map(k=>`<span>${esc(k)}</span>`).join('')}</div>`:'') + (x.topic?`<div class="tp">나누고 싶은 이야기 · <b>${esc(x.topic)}</b></div>`:'') + (x.msg?`<div class="tp">후배들에게 한마디<div class="bio" style="color:#fff;margin-top:4px">“${esc(x.msg)}”</div></div>`:'') + (okLink?`<a href="${esc(x.link)}" target="_blank" rel="noopener">프로필 보기 ↗</a>`:'')); };
 const bindSpeakers = () => { const g = document.querySelector('.spks'); if(!g) return; const l = SPEAKERS.filter(x=>x&&x.name), box = $('#spd');
   g.addEventListener('click', e => { const b = e.target.closest('.spk'); if(!b) return; const open = b.classList.contains('on'); g.querySelectorAll('.spk').forEach(x=>x.classList.remove('on')); if(open){ box.hidden = true; return; } b.classList.add('on'); const sp = l[Number(b.dataset.i)]; box.className = 'spd ' + roleCls(sp); box.innerHTML = speakerDetail(sp); box.hidden = false; box.scrollIntoView({ block:'nearest', behavior:'smooth' }); }); };
 
