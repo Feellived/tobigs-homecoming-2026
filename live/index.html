@@ -185,12 +185,9 @@ body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-templat
 .tl2{display:grid;grid-template-columns:repeat(4,auto);justify-content:center;justify-items:start;gap:.7em 2.2em;margin-top:2.6em;font-size:1.15em;color:var(--muted)}
 .tl2 span{white-space:nowrap}.tl2 b{font-family:var(--display);font-weight:700;margin-right:.4em}
 .tl2 .past{opacity:.4}.tl2 .on{color:#fff;font-weight:800}.tl2 .on b{color:var(--peri)}
-.po{font-size:2.4em;font-weight:800;margin-top:1em;letter-spacing:-.01em}.po i{font-style:normal;color:var(--peri);margin:0 .5em}
 .endx{display:flex;align-items:center;gap:1.4em;margin-top:2.6em;text-align:left}
 .endx img{width:min(9vw,17vh);height:min(9vw,17vh);background:#fff;border-radius:.4em;padding:.35em}
 .endx b{display:block;font-size:1.4em;margin-bottom:.25em}.endx span{color:var(--peri);font-size:1.1em}
-.dp{display:flex;flex-wrap:wrap;justify-content:center;gap:.55em .8em;margin-top:1.6em;font-size:1.05em;max-width:56em}
-.dp span{border:1px solid var(--line);border-radius:999px;padding:.3em .95em}.dp em{font-style:normal;color:var(--peri);margin-right:.45em}
 .se{color:var(--peri);font-size:1.15em}
 /* 테이블 배치: 15개를 5×3으로 화면 높이에 맞춰 채움. 명단이 없으면 안내 문구를 가운데 크게 */
 .tg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:.6em;flex:1;min-height:0}
@@ -620,7 +617,7 @@ function screen(){
   sfx.auto();
   appEl.innerHTML = `<div class="sh"><div><div class="step" id="s-step"></div><div class="next" id="s-next"></div></div><div class="timer" id="s-timer"></div><div class="qr"><img src="qr.png" alt=""><div>homecoming.datamarket.ai.kr/live</div></div></div><div class="sb" id="s-body"></div>`;
   let mode = null, seenSeq = null, signedIn = false; // seenSeq: 마지막으로 연출한 추첨 번호(미선언이면 ReferenceError로 테이블 배치·추첨 연출이 멈춤)
-  const modeOf0 = st => st===null ? 'qa' : (st===0||st===5) ? 'tables1' : (st===8||st===9) ? 'tables2' : st===4 ? 'qa' : st===6 ? 'break' : st===7 ? 'quiz' : st===10 ? 'draw' : st===11 ? 'photo' : st===12 ? 'end' : 'idle';
+  const modeOf0 = st => st===null ? 'qa' : (st===0||st===5) ? 'tables1' : (st===8||st===9) ? 'tables2' : st===4 ? 'qa' : st===6 ? 'break' : st===7 ? 'quiz' : st===10 ? 'draw' : st===12 ? 'end' : st===11 ? 'plain' : 'idle';
   const modeOf = st => S.quiz?.show ? 'quiz' : modeOf0(st); // 점수판 공개 중이면 순서와 관계없이 점수판
   const layout = () => { const m = modeOf(info().step); if(m===mode) return; mode = m; const b = $('#s-body'); b.className = 'sb ' + (m==='qa' ? 'two' : 'one');
     if(m==='qa') b.innerHTML = `<div class="sc"><h3>질문</h3><div id="s-q"></div></div><div class="sc" id="s-r"></div>`;
@@ -628,9 +625,8 @@ function screen(){
     else if(m==='break') b.innerHTML = `<div class="sc center"><div class="bt" id="s-bt"></div><div class="bn" id="s-bn"></div><div class="sx">포토존 · 포토프린터 운영 중 · 질문은 QR로 계속 올릴 수 있어요</div></div>`;
     else if(m==='draw') b.innerHTML = `<div class="sc"><h3>Lucky Draw</h3><div id="s-w" class="wl"></div></div>`;
     else if(m==='quiz') b.innerHTML = `<div class="sc" id="s-qz"></div>`;
-    else if(m==='photo') b.innerHTML = `<div class="sc center"><div class="idle">Big Then. <b>Bigger Now.</b></div><div class="po">전체<i>→</i>25 · 26기<i>→</i>선배 기수별</div><div class="sx">단체사진 순서</div></div>`;
     else if(m==='end') b.innerHTML = `<div class="sc center"><div class="idle">Big Then. <b>Bigger Now.</b></div><div class="endx"><img src="qr_survey.png" alt=""><div><b>만족도 설문에 참여해 주세요</b><span>뒤풀이 17:00 일월의 밤 · 함께 걸어서 이동해요</span></div></div></div>`;
-    else b.innerHTML = `<div class="sc center"><div class="idle">Big Then. <b>Bigger Now.</b></div><div class="tl2" id="s-tl"></div></div>`;
+    else b.innerHTML = `<div class="sc center"><div class="idle">Big Then. <b>Bigger Now.</b></div>${m==='idle' ? '<div class="tl2" id="s-tl"></div>' : ''}</div>`;
     render.questions(); render.polls(); render.draw(); renderTables(); render.quiz();
     if(m==='tables1'||m==='tables2') loadTables(signedIn).then(renderTables); }; // 프로젝터를 명단 올리기 전에 열어 둔 경우에도 테이블 배치가 뜨도록 다시 읽음
   const fitStep = el => { el.style.fontSize = ''; let f = 2.2; while(el.scrollWidth > el.clientWidth + 1 && f > 1.3){ f -= .1; el.style.fontSize = f.toFixed(1) + 'em'; } }; // 긴 순서 이름도 시계와 겹치지 않게 한 줄로
@@ -649,13 +645,13 @@ function screen(){
   const right = () => { const box = $('#s-r'); if(!box) return; const p = S.polls.find(x=>x.open||x.show);
     if(p) box.innerHTML = `<h3>투표${p.open?'':' · 마감'}</h3><div class="pq">${esc(p.q)}</div>` + bars(p) + `<p class="se">${counts(p).total}명 참여</p>`;
     else box.innerHTML = `<div class="qrbig" style="margin:auto"><img src="qr.png" alt=""><div>QR로 질문 · 추천</div><span>좋은 질문에 추천을 눌러 주세요</span></div>`; };
-  const winners = () => { const el = $('#s-w'); if(!el) return; const items = S.draw?.items||[]; el.classList.toggle('empty', !items.length); el.innerHTML = items.length ? items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win"><span class="rk">${esc(awardLabel(w))}</span><div><b>${esc(w.name)}</b> <span>${esc(w.gen||'')} · ${esc(w.no)}번${w.prize?' · '+esc(w.prize):''}</span></div></div>`).join('') : `<div style="text-align:center"><p class="se">Homecoming 상부터 추첨합니다.</p><div class="sx">응모권 기본 1장 + 퀴즈 우승 테이블 1장 + 회고 사진 1장 (최대 3장)</div><div class="dp">${AWARDS.map(a=>`<span><em>${esc(a.l)}</em>${esc(a.p)}</span>`).join('')}</div></div>`; };
+  const winners = () => { const el = $('#s-w'); if(!el) return; const items = S.draw?.items||[]; el.classList.toggle('empty', !items.length); el.innerHTML = items.length ? items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win"><span class="rk">${esc(awardLabel(w))}</span><div><b>${esc(w.name)}</b> <span>${esc(w.gen||'')} · ${esc(w.no)}번${w.prize?' · '+esc(w.prize):''}</span></div></div>`).join('') : '<p class="se">Homecoming 상부터 추첨합니다.</p>'; };
   render.polls = right;
   render.draw = () => { winners(); const lv = S.draw?.live; const seq = lv?.seq || 0; if(seenSeq===null){ seenSeq = seq; return; } if(seq > seenSeq){ seenSeq = seq; reveal(lv); } };
   onAuthStateChanged(auth, u => { signedIn = !!u; loadTables(signedIn).then(renderTables); }); // 테이블 배치(이름)는 운영 계정으로 로그인한 브라우저에서만. 아니면 '명찰 번호로 앉아 주세요'
   let qzKey = null, qzFin = false;
   render.quiz = () => { layout(); const el = $('#s-qz'); if(!el) return; const qz = S.quiz || {}, upto = Math.min(7, qz.upto||0);
-    if(!qz.show){ qzKey = null; el.className = 'sc center'; el.innerHTML = `<div class="idle">TOBIG'S <b>Quiz</b></div><div class="bn">${quizTables().length}테이블 · 7문제 · 1개의 우승 팀</div><div class="sx">테이블별 화이트보드에 정답 · 배점 1 · 1 · 2 · 2 · 3 · 3 · 5 · 동점이면 타이브레이커</div>`; return; }
+    if(!qz.show){ qzKey = null; el.className = 'sc center'; el.innerHTML = `<div class="idle">TOBIG'S <b>Quiz</b></div><div class="bn">${quizTables().length}테이블 · 7문제 · 1개의 우승 팀</div>`; return; }
     el.className = 'sc'; const bd = quizBoard(qz, upto), win = qz.final ? quizWinners(qz, upto) : [], tie = qz.final && win.length > 1, mx = Math.max(1, ...bd.map(x=>x.s));
     const key = JSON.stringify([upto, qz.final, bd]); if(key === qzKey) return; const first = qzKey === null; qzKey = key;
     const half = Math.ceil(bd.length/2), row = (x,i) => `<div class="qr2${win.some(w=>w.t===x.t)?' lead':''}${x.tb?' tbk':''}"><span class="rk">${i+1}</span><span class="tn">TABLE ${esc(x.t)}</span><div class="bar"><i data-w="${Math.round(x.s/mx*100)}"></i></div><b>${x.s}</b></div>`;
