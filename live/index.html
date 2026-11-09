@@ -163,9 +163,9 @@ body .hk-fab{z-index:4}
 body.screen{font-size:clamp(15px,1.25vw,40px);word-break:keep-all}
 body.screen .top{display:none}
 body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-template-rows:auto 1fr}
-.sh{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1.5em;padding:.7em 1.6em;border-bottom:1px solid var(--line)}
-.sh .step{font-size:2.2em;font-weight:800;line-height:1.15;letter-spacing:-.02em}
-.sh .next{font-size:1.1em;color:var(--peri);margin-top:.3em}
+.sh{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:1.5em;padding:.7em 1.6em;border-bottom:1px solid var(--line)}
+.sh .step{font-size:2.2em;font-weight:800;line-height:1.15;letter-spacing:-.02em;white-space:nowrap;overflow:hidden}
+.sh .next{font-size:1.3em;color:var(--peri);margin-top:.3em}
 .sh .timer{font-size:4.2em;margin:0}
 .sh .qr{display:flex;align-items:center;justify-content:flex-end;gap:.8em}
 .sh .qr img{width:6em;height:6em;border-radius:.35em;background:#fff;padding:.3em}
@@ -174,7 +174,7 @@ body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-templat
 .sb.one{grid-template-columns:1fr}
 .sc{padding:1.1em 1.6em 1.4em;overflow:hidden;display:flex;flex-direction:column;min-height:0}
 .sc+.sc{border-left:1px solid var(--line)}
-.sc h3{font-family:var(--display);font-size:.85em;letter-spacing:.2em;color:var(--peri);margin:0 0 .7em;text-transform:uppercase}
+.sc h3{font-family:var(--display);font-size:1.05em;letter-spacing:.2em;color:var(--peri);margin:0 0 .7em;text-transform:uppercase}
 .sc.center{align-items:center;justify-content:center;text-align:center}
 .bt{font-family:var(--display);font-weight:700;font-size:min(20vw,38vh);line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .bn{font-size:1.7em;color:var(--peri);margin-top:.5em}
@@ -184,34 +184,34 @@ body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-templat
 /* 테이블 배치: 15개를 5×3으로 화면 높이에 맞춰 채움. 명단이 없으면 안내 문구를 가운데 크게 */
 .tg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:.6em;flex:1;min-height:0}
 .tb{background:var(--card);border:1px solid var(--line);border-radius:.5em;padding:.45em .75em;font-size:1em;line-height:1.38;overflow:hidden}
-.tb .tn{font-family:var(--display);font-weight:700;font-size:1.6em;line-height:1.1;color:var(--peri);margin-bottom:.2em}
-.tb .ns{display:grid;grid-template-columns:1fr 1fr;column-gap:.5em;font-size:1.28em;white-space:nowrap}
-.tb span{font-size:.72em;color:var(--muted)}
+.tb .tn{font-family:var(--display);font-weight:700;font-size:1.8em;line-height:1.1;color:var(--peri);margin-bottom:.2em}
+.tb .ns{display:grid;grid-template-columns:1fr 1fr;column-gap:.4em;row-gap:.15em;font-size:1.5em;white-space:nowrap}
+.tb span{font-size:.6em;color:var(--muted)}
 .tg.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .tg.empty .big{font-size:3.4em;font-weight:800;line-height:1.3;letter-spacing:-.02em}
 .tg.empty .sub{font-size:1.4em;color:var(--peri);margin-top:.7em}
 /* 질문 · 투표 */
-.sq{display:flex;gap:.8em;padding:.5em 0;border-top:1px solid var(--line);font-size:1.3em;line-height:1.35}
+.sq{display:flex;gap:.8em;padding:.55em 0;border-top:1px solid var(--line);font-size:1.5em;line-height:1.35}
 .sq:first-child{border-top:0}
 .sq .v{flex:0 0 auto;min-width:3.2em;font-family:var(--display);font-weight:700;color:var(--peri)}
 .sq .m{font-size:.62em;color:var(--peri);margin-top:.2em}
 .sq .tgc,.sq .ans-b{font-size:1em;line-height:1.5;padding:0 .7em}
 .sq.done{opacity:.75}
-.sc .pq{font-size:1.6em;font-weight:800;line-height:1.3;margin-bottom:.6em}
+.sc .pq{font-size:1.9em;font-weight:800;line-height:1.3;margin-bottom:.6em}
 .sc .res{margin:.55em 0}
-.sc .res .l{font-size:1.2em;margin-bottom:.2em}
-.sc .res .bar{height:.75em;border-radius:.375em}
+.sc .res .l{font-size:1.45em;margin-bottom:.2em}
+.sc .res .bar{height:.9em;border-radius:.45em}
 .qrbig{display:flex;flex-direction:column;align-items:center;gap:.8em}
 .qrbig img{width:min(16vw,34vh);height:min(16vw,34vh);background:#fff;border-radius:.5em;padding:.5em}
 .qrbig div{font-size:1.5em;font-weight:800}
 .qrbig span{font-size:1em;color:var(--peri)}
 /* Lucky Draw 당첨자 목록 */
-.wl .win{padding:.5em 0;gap:1em}
+.wl{width:100%;max-width:64em;margin:0 auto}.wl .win{padding:.55em 0;gap:1.2em;align-items:baseline}
 .wl.empty{flex:1;display:flex;align-items:center;justify-content:center}.wl.empty .se{font-size:2.6em;font-weight:800;color:#fff}
 #s-q>.se{font-size:1.5em;margin:.2em 0 .6em}
-.wl .win .rk{font-size:1.3em;min-width:7.5em}
-.wl .win b{font-size:2em}
-.wl .win span{font-size:1em;color:var(--peri)}
+.wl .win .rk{font-size:1.6em;min-width:7.5em}
+.wl .win b{font-size:2.8em}
+.wl .win span{font-size:1.3em;color:var(--peri)}
 .sc .win{padding:.5em 0}
 /* TOBIG'S Quiz 점수판 (프로젝터) */
 .qz{display:grid;grid-template-columns:1fr 1fr;column-gap:2.4em;margin-top:.2em;flex:1;min-height:0;max-height:34em}
@@ -604,8 +604,10 @@ function screen(){
     else b.innerHTML = `<div class="sc center"><div class="idle">Big Then. <b>Bigger Now.</b></div></div>`;
     render.questions(); render.polls(); render.draw(); renderTables(); render.quiz();
     if(m==='tables1'||m==='tables2') loadTables(signedIn).then(renderTables); }; // 프로젝터를 명단 올리기 전에 열어 둔 경우에도 테이블 배치가 뜨도록 다시 읽음
-  render.program = () => { const i = info(); $('#s-step').textContent = i.name; $('#s-next').textContent = i.next; $('#s-timer').textContent = clock(); layout(); if(mode==='break'){ $('#s-bt').textContent = clock(); $('#s-bn').textContent = i.next; } };
+  const fitStep = el => { el.style.fontSize = ''; let f = 2.2; while(el.scrollWidth > el.clientWidth + 1 && f > 1.3){ f -= .1; el.style.fontSize = f.toFixed(1) + 'em'; } }; // 긴 순서 이름도 시계와 겹치지 않게 한 줄로
+  render.program = () => { const i = info(), st = $('#s-step'); if(st.textContent !== i.name){ st.textContent = i.name; fitStep(st); } $('#s-next').textContent = i.next; $('#s-timer').textContent = clock(); layout(); if(mode==='break'){ $('#s-bt').textContent = clock(); $('#s-bn').textContent = i.next; } };
   setInterval(render.program, 1000);
+  const refit = () => fitStep($('#s-step')); document.fonts?.ready.then(refit); addEventListener('resize', refit); // 웹폰트가 늦게 오면 폭이 달라지므로 다시 맞춤
   const renderTables = () => { const el = $('#s-t'); if(!el) return; const key = mode==='tables2' ? 't2' : 't1'; const rows = S.tables.rows || [];
     el.classList.toggle('empty', !S.tables.published || !rows.length);
     if(!S.tables.published || !rows.length){ el.innerHTML = `<div class="big">명찰에 적힌 테이블 번호로<br>앉아 주세요</div><div class="sub">명찰 뒷면 ${mode==='tables2' ? '2라운드' : '1라운드'} 번호</div>`; return; }
@@ -615,7 +617,7 @@ function screen(){
   const right = () => { const box = $('#s-r'); if(!box) return; const p = S.polls.find(x=>x.open||x.show);
     if(p) box.innerHTML = `<h3>투표${p.open?'':' · 마감'}</h3><div class="pq">${esc(p.q)}</div>` + bars(p) + `<p class="se">${counts(p).total}명 참여</p>`;
     else box.innerHTML = `<div class="qrbig" style="margin:auto"><img src="qr.png" alt=""><div>QR로 질문 · 추천</div><span>좋은 질문에 추천을 눌러 주세요</span></div>`; };
-  const winners = () => { const el = $('#s-w'); if(!el) return; const items = S.draw?.items||[]; el.classList.toggle('empty', !items.length); el.innerHTML = items.length ? items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win"><span class="rk">${esc(awardLabel(w))}</span><div><b>${esc(w.name)}</b> <span>${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('') : '<p class="se">Homecoming 상부터 추첨합니다.</p>'; };
+  const winners = () => { const el = $('#s-w'); if(!el) return; const items = S.draw?.items||[]; el.classList.toggle('empty', !items.length); el.innerHTML = items.length ? items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win"><span class="rk">${esc(awardLabel(w))}</span><div><b>${esc(w.name)}</b> <span>${esc(w.gen||'')} · ${esc(w.no)}번${w.prize?' · '+esc(w.prize):''}</span></div></div>`).join('') : '<p class="se">Homecoming 상부터 추첨합니다.</p>'; };
   render.polls = right;
   render.draw = () => { winners(); const lv = S.draw?.live; const seq = lv?.seq || 0; if(seenSeq===null){ seenSeq = seq; return; } if(seq > seenSeq){ seenSeq = seq; reveal(lv); } };
   onAuthStateChanged(auth, u => { signedIn = !!u; loadTables(signedIn).then(renderTables); }); // 테이블 배치(이름)는 운영 계정으로 로그인한 브라우저에서만. 아니면 '명찰 번호로 앉아 주세요'
