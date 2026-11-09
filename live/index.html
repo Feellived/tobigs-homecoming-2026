@@ -191,7 +191,6 @@ body.screen main{max-width:none;padding:0;height:100vh;display:grid;grid-templat
 .endx b{display:block;font-size:1.4em;margin-bottom:.25em}.endx span{color:var(--peri);font-size:1.1em}
 .dp{display:flex;flex-wrap:wrap;justify-content:center;gap:.55em .8em;margin-top:1.6em;font-size:1.05em;max-width:56em}
 .dp span{border:1px solid var(--line);border-radius:999px;padding:.3em .95em}.dp em{font-style:normal;color:var(--peri);margin-right:.45em}
-.snd{position:fixed;right:1.2em;bottom:1.2em;z-index:20;font-size:.9em;padding:.5em 1em;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--muted);cursor:pointer}
 .se{color:var(--peri);font-size:1.15em}
 /* 테이블 배치: 15개를 5×3으로 화면 높이에 맞춰 채움. 명단이 없으면 안내 문구를 가운데 크게 */
 .tg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:.6em;flex:1;min-height:0}
@@ -536,14 +535,14 @@ function drawView(){
 
 // ---------- 내가 당첨되면 ----------
 const isMe = lv => !!(me && lv && ((me.no && String(me.no)===String(lv.no)) || (String(me.name||'').replace(/\s+/g,'')===String(lv.name||'').replace(/\s+/g,'') && me.gen===lv.gen)));
-// 추첨 효과음 (프로젝터 ?screen 에서만). 브라우저는 클릭 전에는 소리를 막으므로 '소리 켜기'를 한 번 눌러야 한다. 음원 파일 없이 Web Audio로 합성
+// 추첨 효과음 (프로젝터 ?screen 에서만, 음원 파일 없이 Web Audio로 합성). 페이지를 열면 바로 켜 둔다.
+// 크롬이 막으면 첫 클릭·키 입력·터치 때 조용히 켜진다. 크롬을 --autoplay-policy=no-user-gesture-required 로 열면 조작 없이도 난다
 const sfx = (() => { let ac = null; const on = () => view === 'screen' && ac && ac.state === 'running';
   const unlock = () => { try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch(e){} };
   const tone = (f, t0, dur, type='triangle', vol=.18, f2=null) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.setValueAtTime(f, t0); if(f2) o.frequency.exponentialRampToValueAtTime(f2, t0 + dur);
     g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + .01); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur); o.connect(g).connect(ac.destination); o.start(t0); o.stop(t0 + dur + .02); };
   return {
-    button(){ if(view !== 'screen') return; const b = document.createElement('button'); b.className = 'snd'; b.textContent = '🔊 소리 켜기';
-      b.onclick = () => { unlock(); b.remove(); tone(880, ac.currentTime, .12); }; document.body.appendChild(b); },
+    auto(){ if(view !== 'screen') return; unlock(); ['pointerdown','keydown','touchstart'].forEach(ev => addEventListener(ev, unlock, { capture:true, passive:true })); },
     tick(slow){ if(!on()) return; tone(slow ? 1400 : 1800, ac.currentTime, slow ? .07 : .035, 'square', slow ? .08 : .05); },     // 이름 한 칸 넘어갈 때
     tense(){ if(!on()) return; tone(160, ac.currentTime, .35, 'sine', .12, 120); },                                              // 경계에서 멈칫
     win(){ if(!on()) return; const t = ac.currentTime; [523, 659, 784, 1047].forEach((f,i) => tone(f, t + i*.11, .5, 'triangle', .16)); // 당첨: 짧은 팡파르
@@ -618,7 +617,7 @@ function winFx(ov, lv){ if(view==='screen' || view==='admin' || !isMe(lv)) retur
 
 function screen(){
   document.body.classList.add('screen');
-  sfx.button();
+  sfx.auto();
   appEl.innerHTML = `<div class="sh"><div><div class="step" id="s-step"></div><div class="next" id="s-next"></div></div><div class="timer" id="s-timer"></div><div class="qr"><img src="qr.png" alt=""><div>homecoming.datamarket.ai.kr/live</div></div></div><div class="sb" id="s-body"></div>`;
   let mode = null, seenSeq = null, signedIn = false; // seenSeq: 마지막으로 연출한 추첨 번호(미선언이면 ReferenceError로 테이블 배치·추첨 연출이 멈춤)
   const modeOf0 = st => st===null ? 'qa' : (st===0||st===5) ? 'tables1' : (st===8||st===9) ? 'tables2' : st===4 ? 'qa' : st===6 ? 'break' : st===7 ? 'quiz' : st===10 ? 'draw' : st===11 ? 'photo' : st===12 ? 'end' : 'idle';
