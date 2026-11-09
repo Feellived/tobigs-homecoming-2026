@@ -537,6 +537,7 @@ function winFx(ov, lv){ if(view==='screen' || view==='admin' || !isMe(lv)) retur
   // 당첨자 공개 연출: 슬롯머신처럼 응모자 이름이 빠르게 돌다가 서서히 멈춰 당첨자에 선다. 이름이 나오는 빈도 = 응모권 수.
   const reel = lv => {
     const ov = document.createElement('div'); ov.className = 'ov rl';
+    ov.dataset.dw = 1;
     ov.innerHTML = `<div class="rk">${esc(awardLabel(lv))}</div>${lv.prize?`<div class="pz">${esc(lv.prize)}</div>`:''}<div class="reel"><div class="strip"></div><div class="wl2"></div></div><div id="rlres"></div>`;
     document.body.appendChild(ov);
     const pool = lv.pool, tot = pool.reduce((a,p)=>a+(p.t||1),0) || 1;
@@ -579,8 +580,9 @@ function winFx(ov, lv){ if(view==='screen' || view==='admin' || !isMe(lv)) retur
     requestAnimationFrame(step);
   };
   const reveal = lv => {
+    document.querySelectorAll('.ov[data-dw]').forEach(x => x.remove()); // 다음 추첨이 시작되면 이전 추첨 화면(당첨 축하 화면 포함)은 바로 닫는다
     if(Array.isArray(lv.pool) && lv.pool.length) return reel(lv);
-    const pz = lv.prize ? `<div class="pz">${esc(lv.prize)}</div>` : ''; const ov = document.createElement('div'); ov.className = 'ov'; ov.innerHTML = `<div class="rk">${esc(awardLabel(lv))}</div>${pz}<div class="roll" id="roll">00</div>`;
+    const pz = lv.prize ? `<div class="pz">${esc(lv.prize)}</div>` : ''; const ov = document.createElement('div'); ov.className = 'ov'; ov.innerHTML = `<div class="rk">${esc(awardLabel(lv))}</div>${pz}<div class="roll" id="roll">00</div>`; ov.dataset.dw = 1;
     document.body.appendChild(ov);
     const maxNo = Math.max(80, ...(S.draw?.items||[]).map(w=>Number(w.no)||0));
     const roll = ov.querySelector('#roll'), t0 = Date.now();
