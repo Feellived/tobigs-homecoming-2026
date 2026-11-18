@@ -390,7 +390,7 @@ const listen = {
 // full=true: 전체 명단까지(운영 계정만 가능, 아니면 빈 목록)
 const loadTables = async (full=false) => { try { const s = await getDoc(doc(db,'state','roster')); const pub = !!(s.exists() && s.data().published); const rows = [];
   if(full){ try { (await getDocs(collection(db,'roster'))).forEach(d => rows.push(...(d.data().rows||[]))); rows.sort((a,b)=>Number(a.no)-Number(b.no)); } catch(e){} }
-  S.tables = { published: pub, rows, count: s.exists() ? s.data().count || 0 : 0 }; } catch(e){} };
+  S.tables = { published: pub, rows, count: s.exists() ? s.data().count || 0 : 0, loaded: true }; } catch(e){ S.tables.loaded = true; } };
 
 function info(){
   const p = S.program;
@@ -452,7 +452,7 @@ function hub(){
   <a class="btn" href="../" style="width:100%;margin-top:8px">초대장 홈페이지로</a>`;
   let lastStep;
   const dday = () => { const n = new Date(), k = new Date(n.getTime() + (540 + n.getTimezoneOffset())*60000); return Math.round((Date.UTC(2026,10,21) - Date.UTC(k.getFullYear(), k.getMonth(), k.getDate())) / 86400000); };
-  hubHi = (hi, idle, step) => { ['qa','table','people','draw'].forEach(k => $('#e-'+k).classList.toggle('primary', k===hi)); const pub = !!S.tables.published; ['table','people'].forEach(k => $('#e-'+k).hidden = idle && !pub); $('#e-draw').hidden = idle; $('#h-pre').hidden = !idle || pub;
+  hubHi = (hi, idle, step) => { ['qa','table','people','draw'].forEach(k => $('#e-'+k).classList.toggle('primary', k===hi)); const pub = !!S.tables.published; ['table','people'].forEach(k => $('#e-'+k).hidden = idle && !pub); $('#e-draw').hidden = idle; $('#h-pre').hidden = !idle || pub || !S.tables.loaded;
     $('#h-notice').hidden = !idle; $('#h-nt-tb').hidden = !pub;
     if(step === lastStep) return; lastStep = step; const d = dday(), dd = $('#h-dd');
     dd.hidden = !idle || d < 0; if(idle && d >= 0) dd.innerHTML = `<b>${d===0?'D-DAY':'D-'+d}</b><span>11.21 SAT · 12:30 입장 · 올림픽회관 KSPO 연수원</span>`;
