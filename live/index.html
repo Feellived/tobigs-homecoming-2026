@@ -640,7 +640,7 @@ function screen(){
   const TL = [1,2,3,4,5,7,9,10]; let tlAt = null;
   const timeline = step => { const el = $('#s-tl'); if(!el || tlAt === step + '|' + el.childElementCount) return; tlAt = step + '|' + TL.length;
     el.innerHTML = TL.map(k => `<span class="${k===step?'on':(step!==null && k<step)?'past':''}"><b>${STEPS[k].t}</b>${esc(STEPS[k].n)}</span>`).join(''); };
-  render.program = () => { const i = info(), st = $('#s-step'); if(st.textContent !== i.name){ st.textContent = i.name; fitStep(st); } $('#s-next').textContent = i.next; $('#s-timer').textContent = clock(); layout(); if(mode==='break'){ $('#s-bt').textContent = clock(); $('#s-bn').textContent = i.next; } if(mode==='idle') timeline(i.step); else tlAt = null; };
+  render.program = () => { const i = info(), st = $('#s-step'); $('#s-timer').textContent = clock(); if(st.textContent !== i.name || st.scrollWidth > st.clientWidth + 1){ st.textContent = i.name; fitStep(st); } $('#s-next').textContent = i.next; layout(); if(mode==='break'){ $('#s-bt').textContent = clock(); $('#s-bn').textContent = i.next; } if(mode==='idle') timeline(i.step); else tlAt = null; };
   setInterval(render.program, 1000);
   const refit = () => fitStep($('#s-step')); document.fonts?.ready.then(refit); addEventListener('resize', refit); // 웹폰트가 늦게 오면 폭이 달라지므로 다시 맞춤
   const renderTables = () => { const el = $('#s-t'); if(!el) return; const key = mode==='tables2' ? 't2' : 't1'; const rows = S.tables.rows || [];
