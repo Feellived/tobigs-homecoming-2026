@@ -46,6 +46,7 @@ label.f{display:block;font-size:12px;color:var(--muted);margin-top:8px}
 .back{display:inline-block;font-size:13px;color:var(--muted);text-decoration:none;margin:0;padding:12px 12px 12px 0}
 .entry{display:block;text-decoration:none;color:#fff}
 .entry h2{margin-bottom:4px}
+.nt{margin:10px 0 0;padding-left:18px;color:var(--muted);font-size:14px;line-height:1.6;word-break:keep-all}.nt li{margin:4px 0}.nt a{color:var(--peri)}
 .q{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line)}
 .q:first-child{border-top:0}
 .q .t{font-size:15px;line-height:1.45;word-break:keep-all}
@@ -437,6 +438,11 @@ function forceWatch(){
 // ---------- 허브 ----------
 function hub(){
   appEl.innerHTML = nowCard('h-now') + `
+  <section class="card primary" id="h-notice" hidden><div class="eyebrow">NOTICE</div><h2>연사님께 미리 질문해 주세요</h2><ul class="nt">
+    <li><a href="?qa">질문 · 투표</a>에서 연사님께 질문을 남기고, 좋은 질문에 추천해 주세요. 추천이 많은 질문은 Alumni Session Q&amp;A에서 대신 여쭤봐요.</li>
+    <li>질문 · 투표 화면 위쪽 연사 카드를 누르면 연사님 소개와 키워드, 한마디를 볼 수 있어요.</li>
+    <li>궁금한 점은 오른쪽 아래 곰돌이 <a href="?ask">행사 도우미</a>에게 물어보세요. 시간표, 장소, 준비물 등을 바로 알려 드려요.</li>
+    <li id="h-nt-tb" hidden>테이블 배정이 끝났어요. <a href="table/">내 테이블</a>과 <a href="../people/">참가자 카드</a>를 미리 확인해 보세요.</li></ul></section>
   <a class="card entry" href="?qa" id="e-qa"><div class="eyebrow">ALUMNI SESSION</div><h2>질문 · 투표</h2><p class="muted">연사님께 질문하고, 좋은 질문에 추천해 주세요</p></a>
   <p class="muted" id="h-pre" hidden style="margin:4px 4px 16px">지금은 질문 · 투표만 미리 열려 있습니다. 나머지 메뉴는 행사 당일 열립니다.</p>
   <a class="card entry" href="table/" id="e-table" hidden><div class="eyebrow">TABLE TALK</div><h2>내 테이블</h2><p class="muted">1라운드 · 2라운드 테이블 번호</p></a>
@@ -446,7 +452,8 @@ function hub(){
   <a class="btn" href="../" style="width:100%;margin-top:8px">초대장 홈페이지로</a>`;
   let lastStep;
   const dday = () => { const n = new Date(), k = new Date(n.getTime() + (540 + n.getTimezoneOffset())*60000); return Math.round((Date.UTC(2026,10,21) - Date.UTC(k.getFullYear(), k.getMonth(), k.getDate())) / 86400000); };
-  hubHi = (hi, idle, step) => { ['qa','table','people','draw'].forEach(k => $('#e-'+k).classList.toggle('primary', k===hi)); ['table','people','draw'].forEach(k => $('#e-'+k).hidden = idle); $('#h-pre').hidden = !idle;
+  hubHi = (hi, idle, step) => { ['qa','table','people','draw'].forEach(k => $('#e-'+k).classList.toggle('primary', k===hi)); const pub = !!S.tables.published; ['table','people'].forEach(k => $('#e-'+k).hidden = idle && !pub); $('#e-draw').hidden = idle; $('#h-pre').hidden = !idle;
+    $('#h-notice').hidden = !idle; $('#h-nt-tb').hidden = !pub; $('#h-pre').textContent = pub ? '추첨은 행사 당일 열립니다.' : '지금은 질문 · 투표만 미리 열려 있습니다. 나머지 메뉴는 행사 당일 열립니다.';
     if(step === lastStep) return; lastStep = step; const d = dday(), dd = $('#h-dd');
     dd.hidden = !idle || d < 0; if(idle && d >= 0) dd.innerHTML = `<b>${d===0?'D-DAY':'D-'+d}</b><span>11.21 SAT · 12:30 입장 · 올림픽회관 KSPO 연수원</span>`;
     $('#h-tlh').textContent = idle ? 'PROGRAM' : '오늘의 순서';
