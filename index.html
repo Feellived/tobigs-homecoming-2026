@@ -30,6 +30,7 @@
     { name:"전종섭", gen:"7기", role:"산업계", org:"Databricks Solutions Architect", topic:"", photo:"assets/speakers/02.jpg" },
     { name:"임지영", gen:"19기", role:"학계", org:"KAIST 전기및전자공학부 석박사통합과정", topic:"", photo:"assets/speakers/03.jpg" },
     { name:"경민수", gen:"20기", role:"학계", org:"서울시립대학교 석사과정", topic:"", photo:"assets/speakers/04.jpg" },
+    { name:"이경택", gen:"1기", role:"학계", org:"가천대학교 스마트팩토리학과 조교수", topic:"", photo:"assets/speakers/05.jpg" },
   ];
   // 토크 진행 Host. name을 채우면 게스트 카드 맨 앞에 Host 카드가 붙음. 비우면 숨김.
   const MC       = { name:"", gen:"25기", org:"", photo:"" };
@@ -189,7 +190,8 @@
   .speakers[hidden]{display:none}
   .speakers.one{grid-template-columns:minmax(0,340px)}
   .speakers.four{grid-template-columns:repeat(4,minmax(0,1fr));max-width:none}
-  @media (max-width:980px){.speakers.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .speakers.five{grid-template-columns:repeat(3,minmax(0,1fr));max-width:none}
+  @media (max-width:980px){.speakers.four,.speakers.five{grid-template-columns:repeat(2,minmax(0,1fr))}}
   .spk-label{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-deep);margin-top:18px}
   .spk-label[hidden]{display:none}
   .spk-label + .speakers{margin-top:10px}
@@ -205,7 +207,7 @@
   .spk .nm em{font-style:normal;font-family:var(--display);font-size:11px;letter-spacing:.12em;color:var(--accent-deep);margin-left:6px;vertical-align:1px}
   .spk .org{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.4;word-break:keep-all;overflow-wrap:anywhere}
   .spk .tp{font-size:12.5px;color:var(--ink-2);margin-top:4px;line-height:1.4}
-  @media (max-width:760px){.speakers,.speakers.four{grid-template-columns:minmax(0,1fr)}.tl-body .d br{display:none}}
+  @media (max-width:760px){.speakers,.speakers.four,.speakers.five{grid-template-columns:minmax(0,1fr)}.tl-body .d br{display:none}}
 
   /* ---------- ROUTE STEPS ---------- */
   .steps{list-style:none;display:grid;grid-template-columns:1fr;gap:16px;margin-top:4px;counter-reset:step}
@@ -699,7 +701,7 @@
   if(spk && (guests.length || (MC && MC.name))){
     const tbd = guests.length < 4 ? '<div class="spk tbd" aria-label="연사 추가 공개 예정"><div class="ph"></div><div><div class="nm">11월 중 공개</div></div></div>' : '';
     spk.innerHTML = (MC && MC.name ? card(MC,'Host','mc') : '') + guests.map(x=>card(x,x.role||'Guest')).join('') + tbd;
-    spk.classList.toggle('four', spk.children.length>=4);
+    spk.classList.toggle('four', spk.children.length===4); spk.classList.toggle('five', spk.children.length>=5);
     spk.hidden=false; if(spl) spl.hidden=false;
   }
 
