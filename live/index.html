@@ -693,6 +693,7 @@ const parseCSV = t => { const out = []; let row = [], f = '', q = false;
 const decodeText = buf => { try { return new TextDecoder('utf-8', { fatal:true }).decode(buf); } catch(e){ return new TextDecoder('euc-kr').decode(buf); } }; // 엑셀 기본 CSV(한글 윈도우)는 EUC-KR
 const topicNo = v => { v = String(v||'').trim(); if(!v) return null; if(/^\d+$/.test(v)){ const n = Number(v); return n>=1 && n<=TOPICS.length ? n : null; } const k = v.replace(/\s+/g,'').slice(0,6); const i = TOPICS.findIndex(t => t.replace(/\s+/g,'').startsWith(k)); return i < 0 ? null : i + 1; };
 const fixLink = (kind, v) => { v = String(v||'').trim(); if(!v) return '';
+  if(!/^http/i.test(v) && /^(www\.)?(linkedin|instagram)\.com\//i.test(v)) v = 'https://' + v; // 'www.linkedin.com/in/…'처럼 주소를 통째로 적은 경우 앞에 또 붙이지 않음
   if(kind === 'instagram' && !/^http/.test(v)) return 'https://www.instagram.com/' + v.replace(/^@/,'').replace(/^\/+|\/+$/g,'');
   if(kind === 'linkedin' && !/^http/.test(v)) return 'https://www.linkedin.com/in/' + v.replace(/^\/+|\/+$/g,'');
   if(!/^http/.test(v)) v = 'https://' + v; return /^https?:\/\/[^\s"'<>]+$/.test(v) ? v : ''; };
