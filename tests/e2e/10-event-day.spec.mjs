@@ -192,7 +192,7 @@ test('2. 입장(12:30): 진행 시작 → 모든 휴대폰 NOW 갱신, 내 테�
 });
 
 test('3. Alumni Session: 질문 게시(신원 1회 입력·명단 미리 채움) · 추천 · 같은 사람 다른 기기 · 현장 참가자', async () => {
-  await admin.page.click('#a-steps button[data-i="4"]');
+  await admin.page.click('#a-steps button[data-i="3"]');
   await expect(proj.page.locator('#s-q')).toBeVisible();
 
   // A: 질문 대상 정세영 선배님 → 처음이라 신원 시트, 내 테이블에서 찾은 값이 미리 채워짐

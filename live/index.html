@@ -273,8 +273,8 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https:/
 const firebaseConfig = { apiKey:"AIzaSyBKDlddQRA1mLotV2V2R-39GhwTrSQ8zVE", authDomain:"tobigshoco.firebaseapp.com", projectId:"tobigshoco", storageBucket:"tobigshoco.firebasestorage.app", messagingSenderId:"973817861716", appId:"1:973817861716:web:48c2fdd252eab5edf83fc1" };
 const ADMIN_EMAIL = "tobigs2026hoco@gmail.com";
 const STEPS = [
-  { t:'12:30', n:'입장 · 체크인', d:30, hi:'qa' }, { t:'13:00', n:'Opening · 개회사', d:10, hi:'qa' }, { t:'13:10', n:'Yesterday', d:10, hi:'qa' }, { t:'13:20', n:'Today', d:10, hi:'qa' },
-  { t:'13:30', n:'Alumni Session', d:40, hi:'qa' }, { t:'14:10', n:'Table Talk 1', d:25, hi:'table' }, { t:'14:35', n:'Break 1', d:10, hi:'table' }, { t:'14:45', n:"TOBIG'S Quiz", d:30, hi:'table' },
+  { t:'12:30', n:'입장 · 체크인', d:30, hi:'qa' }, { t:'13:00', n:'Opening · 개회사', d:10, hi:'qa' }, { t:'13:10', n:'Yesterday', d:10, hi:'qa' }, { t:'13:20', n:'Alumni Session', d:40, hi:'qa' },
+  { t:'14:00', n:'Today', d:10, hi:'qa' }, { t:'14:10', n:'Table Talk 1', d:25, hi:'table' }, { t:'14:35', n:'Break 1', d:10, hi:'table' }, { t:'14:45', n:"TOBIG'S Quiz", d:30, hi:'table' },
   { t:'15:15', n:'2라운드 테이블로 이동', d:5, hi:'table' }, { t:'15:20', n:'Table Talk 2', d:40, hi:'people' },
   { t:'16:00', n:'Lucky Draw · Closing', d:20, hi:'draw' }, { t:'16:20', n:'단체사진', d:15, hi:'draw' }, { t:'16:35', n:'행사 종료 · 17:00 뒤풀이 (일월의 밤)', d:0, hi:'draw' },
 ];
@@ -624,7 +624,7 @@ function screen(){
   sfx.auto();
   appEl.innerHTML = `<div class="sh"><div><div class="step" id="s-step"></div><div class="next" id="s-next"></div></div><div class="timer" id="s-timer"></div><div class="qr"><img src="qr.png" alt=""><div>homecoming.datamarket.ai.kr/live</div></div></div><div class="sb" id="s-body"></div>`;
   let mode = null, seenSeq = null, signedIn = false; // seenSeq: 마지막으로 연출한 추첨 번호(미선언이면 ReferenceError로 테이블 배치·추첨 연출이 멈춤)
-  const modeOf0 = st => st===null ? 'qa' : (st===0||st===5) ? 'tables1' : (st===8||st===9) ? 'tables2' : st===4 ? 'qa' : st===6 ? 'break' : st===7 ? 'quiz' : st===10 ? 'draw' : st===12 ? 'end' : st===11 ? 'plain' : 'idle';
+  const modeOf0 = st => st===null ? 'qa' : (st===0||st===5) ? 'tables1' : (st===8||st===9) ? 'tables2' : st===3 ? 'qa' : st===6 ? 'break' : st===7 ? 'quiz' : st===10 ? 'draw' : st===12 ? 'end' : st===11 ? 'plain' : 'idle';
   const modeOf = st => S.quiz?.show ? 'quiz' : modeOf0(st); // 점수판 공개 중이면 순서와 관계없이 점수판
   const layout = () => { const m = modeOf(info().step); if(m===mode) return; mode = m; const b = $('#s-body'); b.className = 'sb ' + (m==='qa' ? 'two' : 'one');
     if(m==='qa') b.innerHTML = `<div class="sc"><h3>질문</h3><div id="s-q"></div></div><div class="sc" id="s-r"></div>`;
