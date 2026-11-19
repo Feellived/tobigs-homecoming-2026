@@ -19,7 +19,7 @@ test.beforeAll(async ({ browser }) => {
   await resetEmulators();
   await seedRoster(browser);
   await seed(async db => {
-    await setDoc(doc(db, 'state', 'program'), { step: 3, endsAt: Timestamp.fromMillis(Date.now() + 40 * 60000) });
+    await setDoc(doc(db, 'state', 'program'), { step: 4, endsAt: Timestamp.fromMillis(Date.now() + 40 * 60000) });
     await setDoc(doc(db, 'questions', 'Q'.repeat(20)), { gen: '26기', text: LONG, name: '임지영', voters: Array.from({ length: 123 }, (_, i) => 'v' + i), createdAt: Timestamp.now(), hidden: false, answered: true, client: 'x' });
     await setDoc(doc(db, 'questions', 'R'.repeat(20)), { gen: '1기', text: '짧은 질문', name: '', voters: [], createdAt: Timestamp.now(), hidden: false, answered: false, client: 'x' });
     await setDoc(doc(db, 'polls', 'p1'), { q: LONG.slice(0, 60), options: ['아주 긴 선택지 ' + 'ㄱ'.repeat(40), '짧음', '세 번째'], open: true, show: false, createdAt: Timestamp.now() });

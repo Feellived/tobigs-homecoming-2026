@@ -58,7 +58,7 @@ test('초대장(375px): 스크롤해서 하단 고정 바가 올라와도 곰돌
 
 test('라이브 화면: 맨 아래까지 스크롤하면 마지막 버튼이 곰돌이에 가려지지 않고, 결과 전체 화면이 뜨면 곰돌이는 그 아래로', async ({ browser }) => {
   await seed(async db => {
-    await setDoc(doc(db, 'state', 'program'), { step: 3, endsAt: null });
+    await setDoc(doc(db, 'state', 'program'), { step: 4, endsAt: null });
     await setDoc(doc(db, 'polls', 'p1'), { q: '결과 공개 테스트', options: ['가', '나'], open: false, show: false, createdAt: Timestamp.now() });
   });
   const { page, context } = await newDevice(browser, PHONE);
