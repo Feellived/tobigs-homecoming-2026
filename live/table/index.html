@@ -63,7 +63,7 @@ const TLABEL = {"R1": {"1": "취업 준비 · 국내 현업 적응·이직", "2"
 const tl = (r, n) => (TLABEL[r]||{})[String(n).trim()] || '';
 const box = document.getElementById('box');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const norm = s => String(s||'').replace(/\s+/g,'').toLowerCase();
+const norm = s => String(s||'').normalize('NFC').replace(/[\s\u200B-\u200D\uFEFF]+/g,'').toLowerCase(); // 자모 분리(NFD)·보이지 않는 공백이 섞여 들어와도 같은 이름으로
 // live/index.html rosterKey()와 같은 계산
 const rosterKey = async (gen, name) => { const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('tobigs-hoco-2026-roster|' + gen + '|' + norm(name))); return 'r' + [...new Uint8Array(h)].slice(0,16).map(b=>b.toString(16).padStart(2,'0')).join(''); };
 const find = async (gen, name) => { const d = await getDoc(doc(db,'roster', await rosterKey(gen, name))); return d.exists() ? (d.data().rows||[]) : []; };

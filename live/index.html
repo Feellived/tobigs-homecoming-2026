@@ -334,7 +334,7 @@ async function pidOf(gen, name){
   return 'p' + [...new Uint8Array(h)].slice(0,16).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 // 명단은 저장소가 아니라 Firestore에 있다(운영 화면 '명단' 탭에서 CSV를 올림). 참가자는 자기 기수+이름 칸(roster/{rosterKey}) 하나만 읽을 수 있고, 전체 목록은 운영 계정만 읽는다.
-const normName = s => String(s||'').replace(/\s+/g,'').toLowerCase();
+const normName = s => String(s||'').normalize('NFC').replace(/[\s\u200B-\u200D\uFEFF]+/g,'').toLowerCase(); // 자모 분리(NFD)·보이지 않는 공백이 섞여 들어와도 같은 이름으로
 async function rosterKey(gen, name){ const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('tobigs-hoco-2026-roster|' + gen + '|' + normName(name))); return 'r' + [...new Uint8Array(h)].slice(0,16).map(b=>b.toString(16).padStart(2,'0')).join(''); }
 async function findRow(gen, name){ if(!S.tables.published) return null; const n = normName(name);
   if((S.tables.rows||[]).length) return S.tables.rows.find(r => r.gen===gen && normName(r.name)===n) || null;
