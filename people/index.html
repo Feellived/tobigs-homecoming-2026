@@ -47,6 +47,12 @@ select option{color:#0b1230}
 .tb b{color:#fff;font-family:var(--display);font-size:14px}
 .empty{color:var(--muted);text-align:center;padding:30px 0}
 .cnt{font-size:12px;color:var(--muted);margin:0 0 8px}
+.cnt b{color:#fff;font-weight:600}
+.hid{margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
+.hid h2{font-size:15px;margin:0 0 2px}
+.hid-l{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.hid-l span{border:1px dashed var(--line);border-radius:999px;padding:5px 11px;font-size:13px;color:#fff}
+.hid-l em{font-style:normal;font-size:11px;color:var(--muted);margin-left:5px}
 </style>
 </head>
 <body>
@@ -66,7 +72,7 @@ const okUrl = u => /^https?:\/\/[^\s"'<>]+$/i.test(String(u||''));
 const norm = s => String(s||'').normalize('NFC').replace(/[\s\u200B-\u200D\uFEFF]+/g,'').toLowerCase();
 const box = document.getElementById('box');
 const meNo = new URLSearchParams(location.search).get('no');
-let rows = [], tables = {}, gen = '', topic = null, q = '';
+let rows = [], hidden = [], tables = {}, gen = '', topic = null, q = '';
 
 const card = (r, me=false) => {
   const links = Object.entries(r.links||{}).filter(([k,u])=>okUrl(u)).map(([k,u],i)=>`<a class="lk${i?' g':''}" href="${esc(u)}" target="_blank" rel="noopener">${esc(LINKS[k]||k)}</a>`).join('');
@@ -78,12 +84,16 @@ const card = (r, me=false) => {
 };
 // 목록만 다시 그린다. 검색 칸까지 새로 그리면 한글 입력 중(조합 중)에 글자가 자모로 흩어져 검색이 안 된다
 const listHtml = () => { const list = rows.filter(r => (!gen || r.gen===gen) && (!topic || (r.topics||[]).includes(topic)) && (!q || norm(r.name).includes(norm(q)) || norm(r.intro).includes(norm(q))));
-  return `<p class="cnt">${list.length}명</p>
-  <div class="grid">${list.map(r=>card(r)).join('')}</div>${list.length?'':'<p class="empty">조건에 맞는 분이 없습니다</p>'}`; };
+  // 카드 비공개인 분: 이름·기수만 따로 보여 준다(관심사 필터를 켜면 관심사 정보가 없으므로 숨김)
+  const hid = topic ? [] : hidden.filter(r => (!gen || r.gen===gen) && (!q || norm(r.name).includes(norm(q))));
+  const all = !gen && !topic && !q;
+  return `<p class="cnt">${all ? `${hidden.length ? `참가자 <b>${rows.length + hidden.length}명</b> · ` : ''}카드 공개 <b>${rows.length}명</b>${hidden.length ? ` · 비공개 <b>${hidden.length}명</b>` : ''}` : `카드 공개 <b>${list.length}명</b>${hid.length ? ` · 비공개 <b>${hid.length}명</b>` : ''}`}</p>
+  <div class="grid">${list.map(r=>card(r)).join('')}</div>${list.length || hid.length ? '' : '<p class="empty">조건에 맞는 분이 없습니다</p>'}`
+  + (hid.length ? `<section class="hid"><h2>카드 비공개 · ${hid.length}명</h2><p class="muted">참가자 카드를 공개하지 않은 분들이에요. 행사에는 함께하니 현장에서 직접 인사해 주세요.</p><div class="hid-l">${hid.map(r=>`<span>${esc(r.name)}<em>${esc(r.gen)}</em></span>`).join('')}</div></section>` : ''); };
 function render(){
   const me = meNo && rows.find(r=>String(r.no)===String(meNo));
   box.innerHTML = (me ? card(me, true) + `<p class="muted" style="margin:10px 0 18px">명찰 QR로 연 카드입니다. 아래에서 다른 참가자도 찾아보세요.</p>` : meNo ? `<p class="muted" style="margin:0 0 18px">이 명찰의 주인은 참가자 카드를 공개하지 않았어요. 아래에서 다른 참가자를 찾아보세요.</p>` : '') +
-  `<div class="tools"><input type="search" id="q" aria-label="이름 · 하는 일 검색" placeholder="이름 · 하는 일 검색" value="${esc(q)}"><select id="g" aria-label="기수" style="flex:0 0 110px"><option value="">모든 기수</option>${[...new Set(rows.map(r=>r.gen))].sort((a,b)=>parseInt(a)-parseInt(b)).map(g=>`<option${g===gen?' selected':''}>${esc(g)}</option>`).join('')}</select></div>
+  `<div class="tools"><input type="search" id="q" aria-label="이름 · 하는 일 검색" placeholder="이름 · 하는 일 검색" value="${esc(q)}"><select id="g" aria-label="기수" style="flex:0 0 110px"><option value="">모든 기수</option>${[...new Set([...rows, ...hidden].map(r=>r.gen))].sort((a,b)=>parseInt(a)-parseInt(b)).map(g=>`<option${g===gen?' selected':''}>${esc(g)}</option>`).join('')}</select></div>
   <div class="chips">${SHORT.map((s,i)=>`<button class="chip${topic===i+1?' on':''}" data-t="${i+1}">${esc(s)}</button>`).join('')}</div>
   <div id="lst">${listHtml()}</div>`;
   box.querySelector('#q').oninput = e => { q = e.target.value; box.querySelector('#lst').innerHTML = listHtml(); };
@@ -91,10 +101,11 @@ function render(){
   box.querySelectorAll('.chip').forEach(b => b.onclick = () => { const t = Number(b.dataset.t); topic = topic===t ? null : t; render(); });
 }
 // 데이터는 아래 모듈 스크립트가 Firestore(state/people: 카드 공개에 동의한 사람만)에서 읽어 window.hcCards()로 넘긴다
-window.hcCards = (list, err) => {
+window.hcCards = (list, err, hid) => {
   if(err === 'closed'){ box.innerHTML = '<p class="empty">공개 전입니다. 테이블 배정이 끝나는 11월 16일 이후에 열립니다.</p>'; return; }
   if(err){ box.innerHTML = '<p class="empty">명단을 불러오지 못했습니다. 잠시 후 다시 열어주세요.</p>'; return; }
-  rows = list.slice().sort((a,b)=>parseInt(a.gen)-parseInt(b.gen) || String(a.name).localeCompare(String(b.name),'ko'));
+  const byGen = (a,b)=>parseInt(a.gen)-parseInt(b.gen) || String(a.name).localeCompare(String(b.name),'ko');
+  rows = list.slice().sort(byGen); hidden = (Array.isArray(hid) ? hid : []).filter(r => r && r.name).slice().sort(byGen);
   rows.forEach(r => tables[String(r.no)] = r);
   render();
 };
@@ -109,7 +120,7 @@ const db = getFirestore(initializeApp({ apiKey:"AIzaSyBKDlddQRA1mLotV2V2R-39GhwT
 getDoc(doc(db,'state','roster')).then(async r => {
   if(!(r.exists() && r.data().published)) return window.hcCards([], 'closed');
   const p = await getDoc(doc(db,'state','people'));
-  window.hcCards((p.exists() && p.data().rows) || []);
+  window.hcCards((p.exists() && p.data().rows) || [], null, (p.exists() && p.data().hidden) || []);
 }).catch(() => window.hcCards([], 'error'));
 let showId, seq = null;
 onSnapshot(collection(db,'polls'), s => { const p = s.docs.find(d => d.data().show), id = p ? p.id : null; if(showId === undefined){ showId = id; return; } if(id && id !== showId) location.href = '../live/?qa'; showId = id; });

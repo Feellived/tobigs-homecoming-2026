@@ -724,7 +724,7 @@ async function uploadRoster({ rows, cards }, publish){
   const old = await getDocs(collection(db,'roster')), ops = [];
   old.docs.filter(d => !groups[d.id]).forEach(d => ops.push(b => b.delete(d.ref)));
   Object.entries(groups).forEach(([k, rs]) => ops.push(b => b.set(doc(db,'roster',k), { rows: rs })));
-  ops.push(b => b.set(doc(db,'state','people'), { rows: cards, updated: serverTimestamp() }));
+  ops.push(b => b.set(doc(db,'state','people'), { rows: cards, hidden: rows.filter(r => !cards.some(c => c.no === r.no)).map(r => ({ name: r.name, gen: r.gen })), updated: serverTimestamp() })); // hidden: 카드 비공개인 사람의 이름·기수만(참가자 카드 화면에서 '비공개'로 표시)
   ops.push(b => b.set(doc(db,'state','roster'), { published: !!publish, count: rows.length, cards: cards.length, updated: serverTimestamp() }));
   await commitOps(ops);
 }
