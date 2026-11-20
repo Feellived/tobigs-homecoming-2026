@@ -397,7 +397,7 @@ test('4-2. 이미지 투표: 선택지에 이미지가 붙으면 카드로 보�
   for (let i = 0; i < labels.length; i++) await P.locator('.a-img').nth(i).fill(`../assets/logo-vote/${'abcde'[i]}.jpg`);
   await P.click('#a-pf button[type=submit]');
   const card = P.locator('#a-pl section.card', { hasText: '새 로고를 골라' });
-  await expect(card.locator('.res .th')).toHaveCount(5);
+  await expect(card.locator('.res .rimg')).toHaveCount(5);
   await card.locator('button[data-a="open"]').click();
   await a.page.goto('/live/?qa');
   await expect(a.page.locator('#g-poll .opt.oi img')).toHaveCount(5);
@@ -418,10 +418,10 @@ test('4-2. 이미지 투표: 선택지에 이미지가 붙으면 카드로 보�
   await shot(a.page, 'vote-done');
   // 결과 공개: 참가자 전체 화면과 프로젝터에 썸네일
   await card.locator('button[data-a="show"]').click();
-  await expect(a.page.locator('#fv .res .th')).toHaveCount(5);
+  await expect(a.page.locator('#fv .res .rimg')).toHaveCount(5);
   await expect(a.page.locator('#fv .res').nth(2).locator('.mine')).toBeVisible();
   await shot(a.page, 'vote-result');
-  await expect(proj.page.locator('#s-r .res .th')).toHaveCount(5);
+  await expect(proj.page.locator('#s-r .res .rimg')).toHaveCount(5);
   await shot(proj.page, 'vote-screen');
   await shot(P, 'vote-admin');
   await a.page.locator('#fv-x').click();

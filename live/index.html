@@ -80,9 +80,16 @@ label.f{display:block;font-size:12px;color:var(--muted);margin-top:8px}
 .opt.oi img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#fff}
 .opt.oi span{display:block;padding:8px 10px;font-weight:700;font-size:14px}
 .optg .oi:last-child:nth-child(odd){grid-column:1/-1;width:calc(50% - 4px);justify-self:center}
-.res .th{width:4.4em;height:3.3em;object-fit:cover;border-radius:.35em;margin-right:.6em;vertical-align:middle;background:#fff}
+.rig{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sc .rig{grid-template-columns:repeat(3,minmax(0,1fr));gap:.7em}
+.res.ri,.ov.fv .res.ri,.sc .res.ri{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.res.ri .rimg{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#fff}
+.res.ri .l{align-items:center;gap:8px;margin:0;padding:6px 10px}
+.res.ri .l b{font-size:1.5em;line-height:1}
+.sc .res.ri .l{font-size:1.1em}.res.ri .l span{min-width:0;word-break:keep-all;text-align:left}
+.res.ri .bar{display:none}
+.res.ri.lead{border-color:var(--peri);box-shadow:0 0 0 2px var(--peri)}
 .ov.fv .pvi{width:100%;max-width:640px;border-radius:12px;background:#fff}
-.ov.fv .res .th{width:6em;height:4.5em}
 .done-th{display:block;width:100%;max-width:260px;border-radius:10px;margin:10px 0;background:#fff}
 .res{margin:8px 0}
 .res .l{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}
@@ -415,11 +422,12 @@ const clock = () => { const d = new Date(); return String(d.getHours()).padStart
 const counts = p => { const v = S.votes[p.id] || [], c = p.options.map(()=>0); v.forEach(o => { if(c[o]!==undefined) c[o]++; }); return { c, total:v.length }; };
 // 결과 공개용 집계: 운영 화면이 투표 문서에 counts·total을 써 두면 휴대폰은 그것만 읽는다(휴대폰마다 표 전체를 읽으면 150명 기준 공개 1번에 약 2만 2천 읽기)
 const oimg = (p,i) => (Array.isArray(p.imgs) && p.imgs[i]) || '';
-const oth = (p,i) => oimg(p,i) ? `<img class="th" src="${esc(oimg(p,i))}" alt="">` : '';
+const isImg = p => p.options.some((_,i) => oimg(p,i));
+const rimg = (p,i) => oimg(p,i) ? `<img class="rimg" src="${esc(oimg(p,i))}" alt="">` : '';
 const agg = p => Array.isArray(p.counts) ? { c: p.options.map((_,i)=>Number(p.counts[i])||0), total: Number(p.total)||0 } : counts(p);
 const visible = () => S.questions.filter(x=>!x.hidden).sort((a,b)=>(b.voters?.length||0)-(a.voters?.length||0) || (b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0));
 const norm = s => String(s||'').replace(/\s+/g,'').toLowerCase();
-const bars = p => p.options.map((o,i)=>{ const { c, total } = counts(p); return `<div class="res"><div class="l"><span>${oth(p,i)}${esc(o)}</span><b>${c[i]}</b></div><div class="bar"><i style="width:${total?Math.round(c[i]/total*100):0}%"></i></div></div>`; }).join('');
+const bars = p => isImg(p) ? `<div class="rig">${p.options.map((o,i)=>`<div class="res ri">${rimg(p,i)}<div class="l"><span>${esc(o)}</span><b>${counts(p).c[i]}</b></div></div>`).join('')}</div>` : p.options.map((o,i)=>{ const { c, total } = counts(p); return `<div class="res"><div class="l"><span>${esc(o)}</span><b>${c[i]}</b></div><div class="bar"><i style="width:${total?Math.round(c[i]/total*100):0}%"></i></div></div>`; }).join('');
 const winnersHtml = (items, newNo) => items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win${String(w.no)===String(newNo)?' new':''}"><span class="rk">${esc(awardLabel(w))}</span><div><b>${esc(w.name)}</b> <span class="muted">${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('');
 const nowCard = id => `<section class="card" id="${id}" hidden><div class="eyebrow">NOW</div><div class="step" id="${id}-step"></div><div class="muted" id="${id}-next"></div><div class="timer" id="${id}-timer"></div></section>`;
 let hubHi = () => {};
@@ -433,7 +441,7 @@ function forceWatch(){
   let pid = null, unsub = null, closed = null, fvId = null, myOpt = null;
   const paint = p => { let ov = document.getElementById('fv'); if(!p || closed===p.id){ if(ov) ov.remove(); fvId = null; return; }
     if(!ov || fvId !== p.id){ if(ov) ov.remove(); ov = document.createElement('div'); ov.id = 'fv'; ov.className = 'ov fv';
-      ov.innerHTML = `<div class="rk">LIVE POLL · 결과</div><div class="fq">${esc(p.q)}</div><div class="fb">${p.options.map((o,i)=>`<div class="res"><div class="l"><span>${oth(p,i)}${esc(o)}<em class="rk1" hidden>1위</em><em class="mine" hidden>내 선택</em></span><b>0</b></div><div class="bar"><i style="width:0%"></i></div></div>`).join('')}</div><p class="muted" id="fv-t"></p><button class="btn" id="fv-x">닫기</button>`;
+      ov.innerHTML = `<div class="rk">LIVE POLL · 결과</div><div class="fq">${esc(p.q)}</div><div class="fb${isImg(p)?' rig':''}">${p.options.map((o,i)=>`<div class="res${isImg(p)?' ri':''}">${isImg(p)?rimg(p,i):''}<div class="l"><span>${esc(o)}<em class="rk1" hidden>1위</em><em class="mine" hidden>내 선택</em></span><b>0</b></div><div class="bar"><i style="width:0%"></i></div></div>`).join('')}</div><p class="muted" id="fv-t"></p><button class="btn" id="fv-x">닫기</button>`;
       document.body.appendChild(ov); fvId = p.id; ov.querySelector('#fv-x').onclick = () => { closed = p.id; paint(null); }; }
     const { c, total } = agg(p), mx = Math.max(0, ...c); let mo = myOpt; if(mo===null){ try { const v = localStorage.getItem('hc_vote_'+p.id); if(v!==null) mo = Number(v); } catch(e){} }
     requestAnimationFrame(() => requestAnimationFrame(() => { ov.querySelectorAll('.res').forEach((r,i) => { r.querySelector('b').textContent = c[i] || 0; r.querySelector('i').style.width = (total ? Math.round((c[i]||0)/total*100) : 0) + '%'; const top = total>0 && c[i]===mx; r.classList.toggle('lead', top); r.querySelector('.rk1').hidden = !top; r.querySelector('.mine').hidden = mo!==i; }); const t = ov.querySelector('#fv-t'); if(t) t.textContent = total + '명 참여'; })); };
@@ -524,7 +532,7 @@ function qa(){
   const myVote = {};
   const checkVote = async p => { if(!me || myVote[p.id] !== undefined) return; myVote[p.id] = null; try { const d = await getDoc(doc(db,'polls',p.id,'votes',me.pid)); myVote[p.id] = d.exists() ? d.data().option : null; } catch(err){} render.polls(); };
   render.polls = () => { const p = S.polls.find(x=>x.open), box = $('#g-poll'); if(!p){ box.hidden = true; return; } box.hidden = false; checkVote(p); const v = myVote[p.id];
-    box.innerHTML = `<div class="eyebrow">LIVE POLL</div><h2>${esc(p.q)}</h2>` + (v===null || v===undefined ? (p.options.some((_,i)=>oimg(p,i)) ? `<p class="muted">눌러서 크게 본 뒤 투표할 수 있어요</p><div class="optg">` + p.options.map((o,i)=>`<button class="opt oi" data-i="${i}">${oimg(p,i)?`<img src="${esc(oimg(p,i))}" alt="" loading="lazy">`:''}<span>${esc(o)}</span></button>`).join('') + `</div>` : p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')) : `<p class="muted">투표 완료 · <b style="color:#fff">${esc(p.options[Number(v)] ?? '')}</b></p>${oimg(p,Number(v))?`<img class="done-th" src="${esc(oimg(p,Number(v)))}" alt="">`:''}<p class="muted">결과는 진행자가 공개하면 이 화면에 뜹니다</p>`); };
+    box.innerHTML = `<div class="eyebrow">LIVE POLL</div><h2>${esc(p.q)}</h2>` + (v===null || v===undefined ? (isImg(p) ? `<p class="muted">눌러서 크게 본 뒤 투표할 수 있어요</p><div class="optg">` + p.options.map((o,i)=>`<button class="opt oi" data-i="${i}">${oimg(p,i)?`<img src="${esc(oimg(p,i))}" alt="" loading="lazy">`:''}<span>${esc(o)}</span></button>`).join('') + `</div>` : p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')) : `<p class="muted">투표 완료 · <b style="color:#fff">${esc(p.options[Number(v)] ?? '')}</b></p>${oimg(p,Number(v))?`<img class="done-th" src="${esc(oimg(p,Number(v)))}" alt="">`:''}<p class="muted">결과는 진행자가 공개하면 이 화면에 뜹니다</p>`); };
   // 이미지 선택지: 바로 투표하지 않고 크게 보여 준 뒤 '이 후보에 투표'를 눌러야 표가 들어간다
   const confirmImg = (p,i) => new Promise(res => { document.getElementById('pv')?.remove(); const ov = document.createElement('div'); ov.id = 'pv'; ov.className = 'ov fv';
     ov.innerHTML = `<img class="pvi" src="${esc(oimg(p,i))}" alt=""><div class="fq">${esc(p.options[i])}</div><button class="btn btn-primary" id="pv-ok">이 후보에 투표</button><button class="btn" id="pv-x">닫기</button>`;
