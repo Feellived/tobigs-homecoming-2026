@@ -63,7 +63,7 @@ const SHORT = ['취업·이직','대학원·연구','해외','커리어·진로'
 const LINKS = { linkedin:'LinkedIn', remember:'리멤버', instagram:'Instagram', other:'링크' };
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const okUrl = u => /^https?:\/\/[^\s"'<>]+$/i.test(String(u||''));
-const norm = s => String(s||'').replace(/\s+/g,'').toLowerCase();
+const norm = s => String(s||'').normalize('NFC').replace(/[\s\u200B-\u200D\uFEFF]+/g,'').toLowerCase();
 const box = document.getElementById('box');
 const meNo = new URLSearchParams(location.search).get('no');
 let rows = [], tables = {}, gen = '', topic = null, q = '';
@@ -76,15 +76,17 @@ const card = (r, me=false) => {
   ${links?`<div class="links">${links}</div>`:'<div class="muted">프로필 링크 없음 · 직접 말을 걸어 주세요</div>'}
   ${t?`<div class="tb">1라운드 <b>${esc(t.t1)}</b> · 2라운드 <b>${esc(t.t2)}</b> 테이블</div>`:''}</div>`;
 };
+// 목록만 다시 그린다. 검색 칸까지 새로 그리면 한글 입력 중(조합 중)에 글자가 자모로 흩어져 검색이 안 된다
+const listHtml = () => { const list = rows.filter(r => (!gen || r.gen===gen) && (!topic || (r.topics||[]).includes(topic)) && (!q || norm(r.name).includes(norm(q)) || norm(r.intro).includes(norm(q))));
+  return `<p class="cnt">${list.length}명</p>
+  <div class="grid">${list.map(r=>card(r)).join('')}</div>${list.length?'':'<p class="empty">조건에 맞는 분이 없습니다</p>'}`; };
 function render(){
   const me = meNo && rows.find(r=>String(r.no)===String(meNo));
-  const list = rows.filter(r => (!gen || r.gen===gen) && (!topic || (r.topics||[]).includes(topic)) && (!q || norm(r.name).includes(norm(q)) || norm(r.intro).includes(norm(q))));
   box.innerHTML = (me ? card(me, true) + `<p class="muted" style="margin:10px 0 18px">명찰 QR로 연 카드입니다. 아래에서 다른 참가자도 찾아보세요.</p>` : meNo ? `<p class="muted" style="margin:0 0 18px">이 명찰의 주인은 참가자 카드를 공개하지 않았어요. 아래에서 다른 참가자를 찾아보세요.</p>` : '') +
   `<div class="tools"><input type="search" id="q" aria-label="이름 · 하는 일 검색" placeholder="이름 · 하는 일 검색" value="${esc(q)}"><select id="g" aria-label="기수" style="flex:0 0 110px"><option value="">모든 기수</option>${[...new Set(rows.map(r=>r.gen))].sort((a,b)=>parseInt(a)-parseInt(b)).map(g=>`<option${g===gen?' selected':''}>${esc(g)}</option>`).join('')}</select></div>
   <div class="chips">${SHORT.map((s,i)=>`<button class="chip${topic===i+1?' on':''}" data-t="${i+1}">${esc(s)}</button>`).join('')}</div>
-  <p class="cnt">${list.length}명</p>
-  <div class="grid">${list.map(r=>card(r)).join('')}</div>${list.length?'':'<p class="empty">조건에 맞는 분이 없습니다</p>'}`;
-  box.querySelector('#q').oninput = e => { q = e.target.value; render(); box.querySelector('#q').focus(); const el = box.querySelector('#q'); el.setSelectionRange(el.value.length, el.value.length); };
+  <div id="lst">${listHtml()}</div>`;
+  box.querySelector('#q').oninput = e => { q = e.target.value; box.querySelector('#lst').innerHTML = listHtml(); };
   box.querySelector('#g').onchange = e => { gen = e.target.value; render(); };
   box.querySelectorAll('.chip').forEach(b => b.onclick = () => { const t = Number(b.dataset.t); topic = topic===t ? null : t; render(); });
 }
