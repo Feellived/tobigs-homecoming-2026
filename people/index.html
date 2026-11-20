@@ -87,9 +87,9 @@ const listHtml = () => { const list = rows.filter(r => (!gen || r.gen===gen) && 
   // 카드 비공개인 분: 이름·기수만 따로 보여 준다(관심사 필터를 켜면 관심사 정보가 없으므로 숨김)
   const hid = topic ? [] : hidden.filter(r => (!gen || r.gen===gen) && (!q || norm(r.name).includes(norm(q))));
   const all = !gen && !topic && !q;
-  return `<p class="cnt">${all ? `${hidden.length ? `참가자 <b>${rows.length + hidden.length}명</b> · ` : ''}카드 공개 <b>${rows.length}명</b>${hidden.length ? ` · 비공개 <b>${hidden.length}명</b>` : ''}` : `카드 공개 <b>${list.length}명</b>${hid.length ? ` · 비공개 <b>${hid.length}명</b>` : ''}`}</p>
+  return `<p class="cnt">${all ? `${hidden.length ? `참가자 <b>${rows.length + hidden.length}명</b> · ` : ''}카드 공개 <b>${rows.length}명</b>${hidden.length ? ` · <a href="#hid">비공개 <b>${hidden.length}명</b> 보기</a>` : ''}` : `카드 공개 <b>${list.length}명</b>${hid.length ? ` · 비공개 <b>${hid.length}명</b>` : ''}`}</p>
   <div class="grid">${list.map(r=>card(r)).join('')}</div>${list.length || hid.length ? '' : '<p class="empty">조건에 맞는 분이 없습니다</p>'}`
-  + (hid.length ? `<section class="hid"><h2>카드 비공개 · ${hid.length}명</h2><p class="muted">참가자 카드를 공개하지 않은 분들이에요. 행사에는 함께하니 현장에서 직접 인사해 주세요.</p><div class="hid-l">${hid.map(r=>`<span>${esc(r.name)}<em>${esc(r.gen)}</em></span>`).join('')}</div></section>` : ''); };
+  + (hid.length ? `<section class="hid" id="hid"><h2>카드 비공개 · ${hid.length}명</h2><p class="muted">참가자 카드를 공개하지 않은 분들이에요. 행사에는 함께하니 현장에서 직접 인사해 주세요.</p><div class="hid-l">${hid.map(r=>`<span>${esc(r.name)}<em>${esc(r.gen)}</em></span>`).join('')}</div></section>` : ''); };
 function render(){
   const me = meNo && rows.find(r=>String(r.no)===String(meNo));
   box.innerHTML = (me ? card(me, true) + `<p class="muted" style="margin:10px 0 18px">명찰 QR로 연 카드입니다. 아래에서 다른 참가자도 찾아보세요.</p>` : meNo ? `<p class="muted" style="margin:0 0 18px">이 명찰의 주인은 참가자 카드를 공개하지 않았어요. 아래에서 다른 참가자를 찾아보세요.</p>` : '') +
