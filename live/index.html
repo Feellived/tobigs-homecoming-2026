@@ -378,6 +378,8 @@ const voteSubs = {};
 const listen = {
   program: () => onSnapshot(doc(db,'state','program'), s => { S.program = s.exists() ? s.data() : null; render.program(); }),
   questions: () => onSnapshot(collection(db,'questions'), s => { S.questions = s.docs.map(d => ({ id:d.id, ...d.data() })); S.qLoaded = true; render.questions(); }),
+  // 질문 작성자(기수·이름): 운영 계정만 읽을 수 있는 별도 칸. 참가자·프로젝터 화면은 구독하지 않는다
+  qauthors: () => onSnapshot(collection(db,'qauthors'), s => { S.qauthors = Object.fromEntries(s.docs.map(d => [d.id, d.data()])); render.questions(); }, () => {}),
   // withVotes: 집계(votes 하위 컬렉션)까지 구독. 프로젝터·운영 화면만 켠다. 참가자 휴대폰 70대가 표 하나마다 읽지 않게 하기 위함
   polls: (withVotes=false) => onSnapshot(collection(db,'polls'), s => {
     S.polls = s.docs.map(d => ({ id:d.id, ...d.data() })).sort((a,b)=>(b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0));
@@ -505,7 +507,7 @@ function qa(){
   let to = ''; $('#g-to').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; to = b.dataset.to; $('#g-to').querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b)); });
   $('#g-form').addEventListener('submit', async e => { e.preventDefault(); const text = $('#g-text').value.trim(); if(!text) return;
     const m = await ensureMe(); if(!m) return; renderWho(); const b = $('#g-submit'); b.disabled = true;
-    try { await addDoc(collection(db,'questions'), { gen:m.gen, text, name:to, voters:[], createdAt: serverTimestamp(), hidden:false, answered:false, client:cid }); $('#g-text').value=''; say('게시했습니다'); setTimeout(()=>b.disabled=false, 8000); } catch(err){ say('인터넷 연결을 확인해 주세요'); b.disabled = false; } });
+    try { const qref = await addDoc(collection(db,'questions'), { gen:m.gen, text, name:to, voters:[], createdAt: serverTimestamp(), hidden:false, answered:false, client:cid }); setDoc(doc(db,'qauthors',qref.id), { gen:m.gen, name:m.name, at: serverTimestamp() }).catch(()=>{}); $('#g-text').value=''; say('게시했습니다'); setTimeout(()=>b.disabled=false, 8000); } catch(err){ say('인터넷 연결을 확인해 주세요'); b.disabled = false; } });
   // 투표: 사람당 1표 (표 문서 id = pid, 서버 규칙상 생성만 가능)
   const myVote = {};
   const checkVote = async p => { if(!me || myVote[p.id] !== undefined) return; myVote[p.id] = null; try { const d = await getDoc(doc(db,'polls',p.id,'votes',me.pid)); myVote[p.id] = d.exists() ? d.data().option : null; } catch(err){} render.polls(); };
@@ -729,7 +731,7 @@ async function uploadRoster({ rows, cards }, publish){
 async function clearRoster(){ const old = await getDocs(collection(db,'roster')); const ops = old.docs.map(d => b => b.delete(d.ref));
   ops.push(b => b.delete(doc(db,'state','people'))); ops.push(b => b.set(doc(db,'state','roster'), { published:false, count:0, cards:0, updated: serverTimestamp() })); await commitOps(ops); }
 async function wipeEvent(){ const ops = [];
-  for(const c of ['roster','questions','checkins']) (await getDocs(collection(db,c))).forEach(d => ops.push(b => b.delete(d.ref)));
+  for(const c of ['roster','questions','qauthors','checkins']) (await getDocs(collection(db,c))).forEach(d => ops.push(b => b.delete(d.ref)));
   for(const p of (await getDocs(collection(db,'polls'))).docs){ (await getDocs(collection(db,'polls',p.id,'votes'))).forEach(v => ops.push(b => b.delete(v.ref))); ops.push(b => b.delete(p.ref)); }
   ops.push(b => b.delete(doc(db,'draw','results'))); for(const k of ['people','bonus','roster','quiz']) ops.push(b => b.delete(doc(db,'state',k)));
   ops.push(b => b.set(doc(db,'state','program'), { step:null, endsAt:null })); await commitOps(ops); }
@@ -780,9 +782,9 @@ function adminMain(){
 
   // 질문
   $('#a-q').innerHTML = `<section class="card"><div id="a-ql"></div></section>`;
-  render.questions = () => { $('#a-ql').innerHTML = S.questions.slice().sort((a,b)=>(b.voters?.length||0)-(a.voters?.length||0)).map(x=>`<div class="q${x.answered?' done':''}" style="${x.hidden?'opacity:.4':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">👍 ${x.voters?.length||0} · ${esc(x.gen||'')}${toLbl(x)}${x.hidden?' · 숨김':''}</div><div class="row" style="margin-top:6px"><button class="btn btn-sm" data-a="ans" data-id="${esc(x.id)}">${x.answered?'답변 취소':'답변 완료'}</button><button class="btn btn-sm" data-a="hide" data-id="${esc(x.id)}">${x.hidden?'표시':'숨김'}</button><button class="btn btn-sm" data-a="del" data-id="${esc(x.id)}">삭제</button></div></div></div>`).join('') || '<p class="muted">질문 없음</p>'; };
+  render.questions = () => { $('#a-ql').innerHTML = S.questions.slice().sort((a,b)=>(b.voters?.length||0)-(a.voters?.length||0)).map(x=>`<div class="q${x.answered?' done':''}" style="${x.hidden?'opacity:.4':''}"><div class="grow"><div class="t">${esc(x.text)}</div><div class="m">👍 ${x.voters?.length||0} · ${esc(x.gen||'')}${toLbl(x)}${x.hidden?' · 숨김':''}${S.qauthors?.[x.id] ? ` · 작성 <b>${esc(S.qauthors[x.id].gen)} ${esc(S.qauthors[x.id].name)}</b>` : ''}</div><div class="row" style="margin-top:6px"><button class="btn btn-sm" data-a="ans" data-id="${esc(x.id)}">${x.answered?'답변 취소':'답변 완료'}</button><button class="btn btn-sm" data-a="hide" data-id="${esc(x.id)}">${x.hidden?'표시':'숨김'}</button><button class="btn btn-sm" data-a="del" data-id="${esc(x.id)}">삭제</button></div></div></div>`).join('') || '<p class="muted">질문 없음</p>'; };
   $('#a-ql').addEventListener('click', async e => { const b = e.target.closest('button'); if(!b) return; const x = S.questions.find(y=>y.id===b.dataset.id); if(!x) return; const ref = doc(db,'questions',x.id);
-    if(b.dataset.a==='ans') await updateDoc(ref,{answered:!x.answered}); if(b.dataset.a==='hide') await updateDoc(ref,{hidden:!x.hidden}); if(b.dataset.a==='del' && confirm('삭제?')) await deleteDoc(ref); });
+    if(b.dataset.a==='ans') await updateDoc(ref,{answered:!x.answered}); if(b.dataset.a==='hide') await updateDoc(ref,{hidden:!x.hidden}); if(b.dataset.a==='del' && confirm('삭제?')){ await deleteDoc(ref); deleteDoc(doc(db,'qauthors',x.id)).catch(()=>{}); } });
 
   // 투표
   $('#a-poll').innerHTML = `<section class="card"><form id="a-pf"><input type="text" id="a-pq" placeholder="질문" required><div id="a-opts"></div><div class="row" style="margin:6px 0 10px"><button type="button" class="btn btn-sm" id="a-add">+ 선택지 추가</button></div><button class="btn btn-primary" type="submit">투표 만들기</button></form></section><div id="a-pl"></div>`;
@@ -891,7 +893,7 @@ function adminMain(){
   render.draw = () => { if((S.draw?.live?.seq||0) > seq) seq = S.draw.live.seq; if(S.draw?.items && !winners.length){ winners = S.draw.items.slice(); renderW(); } };
 
   rosterTab();
-  loadTables(true).then(() => { render.checkins(); render.roster(); }); listen.program(); listen.questions(); listen.polls(true); listen.checkins(); listen.draw();
+  loadTables(true).then(() => { render.checkins(); render.roster(); }); listen.program(); listen.questions(); listen.qauthors(); listen.polls(true); listen.checkins(); listen.draw();
 }
 
 ({ hub, qa, ask, draw: drawView, screen, admin })[view]();

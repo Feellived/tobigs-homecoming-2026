@@ -72,6 +72,16 @@ service cloud.firestore {
       allow list, write: if isAdmin();
     }
 
+    // question authors (gen + name): staff-only. Written once right after the question, never shown on participant or screen views.
+    match /qauthors/{qid} {
+      allow read, update, delete: if isAdmin();
+      allow create: if exists(/databases/$(database)/documents/questions/$(qid))
+        && request.resource.data.keys().hasOnly(['gen','name','at'])
+        && request.resource.data.gen is string && request.resource.data.gen.size() <= 10
+        && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 20
+        && request.resource.data.at == request.time;
+    }
+
     // check-ins: 이름 · 번호가 들어 있어 운영 계정만 읽기 · 쓰기
     match /checkins/{no} {
       allow read, write: if isAdmin();
