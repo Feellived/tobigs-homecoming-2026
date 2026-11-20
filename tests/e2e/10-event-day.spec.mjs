@@ -387,6 +387,48 @@ test('4-1. 투표: 앞 투표 결과가 공개된 채로 다음 투표를 열면
   await c2.locator('button[data-a="open"]').click();             // 닫기
 });
 
+test('4-2. 이미지 투표: 선택지에 이미지가 붙으면 카드로 보이고, 크게 본 뒤 확인해야 표가 들어간다', async () => {
+  const P = admin.page;
+  const SHOT = process.env.HOCO_SHOT_DIR;
+  const shot = async (page, name) => { if (SHOT) await page.screenshot({ path: `${SHOT}/${name}.png`, fullPage: true }); };
+  const labels = ['A', 'B', 'C', 'D', 'E · 기존 로고 유지'];
+  await P.fill('#a-pq', '투빅스의 새 로고를 골라 주세요');
+  await fillOptions(P, labels);
+  for (let i = 0; i < labels.length; i++) await P.locator('.a-img').nth(i).fill(`../assets/logo-vote/${'abcde'[i]}.jpg`);
+  await P.click('#a-pf button[type=submit]');
+  const card = P.locator('#a-pl section.card', { hasText: '새 로고를 골라' });
+  await expect(card.locator('.res .th')).toHaveCount(5);
+  await card.locator('button[data-a="open"]').click();
+  await a.page.goto('/live/?qa');
+  await expect(a.page.locator('#g-poll .opt.oi img')).toHaveCount(5);
+  await expect.poll(() => a.page.locator('#g-poll .opt.oi img').first().evaluate(i => i.complete && i.naturalWidth)).toBeGreaterThan(0);
+  await shot(a.page, 'vote-guest');
+  // 카드를 누르면 크게 보기만 뜨고, 닫으면 표가 들어가지 않는다
+  await a.page.locator('#g-poll .opt.oi').nth(2).click();
+  await expect(a.page.locator('#pv .pvi')).toBeVisible();
+  await shot(a.page, 'vote-preview');
+  await a.page.locator('#pv-x').click();
+  await expect(a.page.locator('#pv')).toHaveCount(0);
+  await expect(a.page.locator('#g-poll .opt.oi')).toHaveCount(5);
+  // 확인하면 투표
+  await a.page.locator('#g-poll .opt.oi').nth(2).click();
+  await a.page.locator('#pv-ok').click();
+  await expect(a.page.locator('#g-poll')).toContainText('투표 완료 · C');
+  await expect(a.page.locator('#g-poll .done-th')).toBeVisible();
+  await shot(a.page, 'vote-done');
+  // 결과 공개: 참가자 전체 화면과 프로젝터에 썸네일
+  await card.locator('button[data-a="show"]').click();
+  await expect(a.page.locator('#fv .res .th')).toHaveCount(5);
+  await expect(a.page.locator('#fv .res').nth(2).locator('.mine')).toBeVisible();
+  await shot(a.page, 'vote-result');
+  await expect(proj.page.locator('#s-r .res .th')).toHaveCount(5);
+  await shot(proj.page, 'vote-screen');
+  await shot(P, 'vote-admin');
+  await a.page.locator('#fv-x').click();
+  await card.locator('button[data-a="show"]').click();           // 결과 내리기
+  await card.locator('button[data-a="open"]').click();           // 닫기
+});
+
 test('5. Table Talk · Break · 퀴즈: 프로젝터 화면 전환, 허브 강조 메뉴', async () => {
   await adminTab(admin.page, 'prog');
   await admin.page.click('#a-steps button[data-i="5"]');

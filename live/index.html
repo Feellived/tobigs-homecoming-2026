@@ -74,6 +74,16 @@ label.f{display:block;font-size:12px;color:var(--muted);margin-top:8px}
 .spk .org{font-size:12px;color:var(--muted);line-height:1.35;word-break:keep-all}
 @media (max-width:420px){.spks{grid-template-columns:1fr}}
 .opt{display:block;width:100%;text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:#fff;margin:6px 0;font-size:15px}
+/* 이미지 선택지(투표 문서의 imgs): 2열 카드, 누르면 크게 보고 확인 뒤 투표 */
+.optg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.opt.oi{padding:0;margin:0;overflow:hidden;text-align:center}
+.opt.oi img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#fff}
+.opt.oi span{display:block;padding:8px 10px;font-weight:700;font-size:14px}
+.optg .oi:last-child:nth-child(odd){grid-column:1/-1;width:calc(50% - 4px);justify-self:center}
+.res .th{width:2.6em;height:1.95em;object-fit:cover;border-radius:.3em;margin-right:.55em;vertical-align:middle;background:#fff}
+.ov.fv .pvi{width:100%;max-width:640px;border-radius:12px;background:#fff}
+.ov.fv .res .th{width:4em;height:3em}
+.done-th{display:block;width:100%;max-width:260px;border-radius:10px;margin:10px 0;background:#fff}
 .res{margin:8px 0}
 .res .l{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}
 .res .bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
@@ -404,10 +414,12 @@ function info(){
 const clock = () => { const d = new Date(); return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); };
 const counts = p => { const v = S.votes[p.id] || [], c = p.options.map(()=>0); v.forEach(o => { if(c[o]!==undefined) c[o]++; }); return { c, total:v.length }; };
 // 결과 공개용 집계: 운영 화면이 투표 문서에 counts·total을 써 두면 휴대폰은 그것만 읽는다(휴대폰마다 표 전체를 읽으면 150명 기준 공개 1번에 약 2만 2천 읽기)
+const oimg = (p,i) => (Array.isArray(p.imgs) && p.imgs[i]) || '';
+const oth = (p,i) => oimg(p,i) ? `<img class="th" src="${esc(oimg(p,i))}" alt="">` : '';
 const agg = p => Array.isArray(p.counts) ? { c: p.options.map((_,i)=>Number(p.counts[i])||0), total: Number(p.total)||0 } : counts(p);
 const visible = () => S.questions.filter(x=>!x.hidden).sort((a,b)=>(b.voters?.length||0)-(a.voters?.length||0) || (b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0));
 const norm = s => String(s||'').replace(/\s+/g,'').toLowerCase();
-const bars = p => p.options.map((o,i)=>{ const { c, total } = counts(p); return `<div class="res"><div class="l"><span>${esc(o)}</span><b>${c[i]}</b></div><div class="bar"><i style="width:${total?Math.round(c[i]/total*100):0}%"></i></div></div>`; }).join('');
+const bars = p => p.options.map((o,i)=>{ const { c, total } = counts(p); return `<div class="res"><div class="l"><span>${oth(p,i)}${esc(o)}</span><b>${c[i]}</b></div><div class="bar"><i style="width:${total?Math.round(c[i]/total*100):0}%"></i></div></div>`; }).join('');
 const winnersHtml = (items, newNo) => items.slice().sort((a,b)=>b.rank-a.rank).map(w=>`<div class="win${String(w.no)===String(newNo)?' new':''}"><span class="rk">${esc(awardLabel(w))}</span><div><b>${esc(w.name)}</b> <span class="muted">${esc(w.gen||'')} · ${esc(w.no)}번</span></div></div>`).join('');
 const nowCard = id => `<section class="card" id="${id}" hidden><div class="eyebrow">NOW</div><div class="step" id="${id}-step"></div><div class="muted" id="${id}-next"></div><div class="timer" id="${id}-timer"></div></section>`;
 let hubHi = () => {};
@@ -421,7 +433,7 @@ function forceWatch(){
   let pid = null, unsub = null, closed = null, fvId = null, myOpt = null;
   const paint = p => { let ov = document.getElementById('fv'); if(!p || closed===p.id){ if(ov) ov.remove(); fvId = null; return; }
     if(!ov || fvId !== p.id){ if(ov) ov.remove(); ov = document.createElement('div'); ov.id = 'fv'; ov.className = 'ov fv';
-      ov.innerHTML = `<div class="rk">LIVE POLL · 결과</div><div class="fq">${esc(p.q)}</div><div class="fb">${p.options.map((o,i)=>`<div class="res"><div class="l"><span>${esc(o)}<em class="rk1" hidden>1위</em><em class="mine" hidden>내 선택</em></span><b>0</b></div><div class="bar"><i style="width:0%"></i></div></div>`).join('')}</div><p class="muted" id="fv-t"></p><button class="btn" id="fv-x">닫기</button>`;
+      ov.innerHTML = `<div class="rk">LIVE POLL · 결과</div><div class="fq">${esc(p.q)}</div><div class="fb">${p.options.map((o,i)=>`<div class="res"><div class="l"><span>${oth(p,i)}${esc(o)}<em class="rk1" hidden>1위</em><em class="mine" hidden>내 선택</em></span><b>0</b></div><div class="bar"><i style="width:0%"></i></div></div>`).join('')}</div><p class="muted" id="fv-t"></p><button class="btn" id="fv-x">닫기</button>`;
       document.body.appendChild(ov); fvId = p.id; ov.querySelector('#fv-x').onclick = () => { closed = p.id; paint(null); }; }
     const { c, total } = agg(p), mx = Math.max(0, ...c); let mo = myOpt; if(mo===null){ try { const v = localStorage.getItem('hc_vote_'+p.id); if(v!==null) mo = Number(v); } catch(e){} }
     requestAnimationFrame(() => requestAnimationFrame(() => { ov.querySelectorAll('.res').forEach((r,i) => { r.querySelector('b').textContent = c[i] || 0; r.querySelector('i').style.width = (total ? Math.round((c[i]||0)/total*100) : 0) + '%'; const top = total>0 && c[i]===mx; r.classList.toggle('lead', top); r.querySelector('.rk1').hidden = !top; r.querySelector('.mine').hidden = mo!==i; }); const t = ov.querySelector('#fv-t'); if(t) t.textContent = total + '명 참여'; })); };
@@ -512,8 +524,13 @@ function qa(){
   const myVote = {};
   const checkVote = async p => { if(!me || myVote[p.id] !== undefined) return; myVote[p.id] = null; try { const d = await getDoc(doc(db,'polls',p.id,'votes',me.pid)); myVote[p.id] = d.exists() ? d.data().option : null; } catch(err){} render.polls(); };
   render.polls = () => { const p = S.polls.find(x=>x.open), box = $('#g-poll'); if(!p){ box.hidden = true; return; } box.hidden = false; checkVote(p); const v = myVote[p.id];
-    box.innerHTML = `<div class="eyebrow">LIVE POLL</div><h2>${esc(p.q)}</h2>` + (v===null || v===undefined ? p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('') : `<p class="muted">투표 완료 · <b style="color:#fff">${esc(p.options[Number(v)] ?? '')}</b></p><p class="muted">결과는 진행자가 공개하면 이 화면에 뜹니다</p>`); };
+    box.innerHTML = `<div class="eyebrow">LIVE POLL</div><h2>${esc(p.q)}</h2>` + (v===null || v===undefined ? (p.options.some((_,i)=>oimg(p,i)) ? `<p class="muted">눌러서 크게 본 뒤 투표할 수 있어요</p><div class="optg">` + p.options.map((o,i)=>`<button class="opt oi" data-i="${i}">${oimg(p,i)?`<img src="${esc(oimg(p,i))}" alt="" loading="lazy">`:''}<span>${esc(o)}</span></button>`).join('') + `</div>` : p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')) : `<p class="muted">투표 완료 · <b style="color:#fff">${esc(p.options[Number(v)] ?? '')}</b></p>${oimg(p,Number(v))?`<img class="done-th" src="${esc(oimg(p,Number(v)))}" alt="">`:''}<p class="muted">결과는 진행자가 공개하면 이 화면에 뜹니다</p>`); };
+  // 이미지 선택지: 바로 투표하지 않고 크게 보여 준 뒤 '이 후보에 투표'를 눌러야 표가 들어간다
+  const confirmImg = (p,i) => new Promise(res => { document.getElementById('pv')?.remove(); const ov = document.createElement('div'); ov.id = 'pv'; ov.className = 'ov fv';
+    ov.innerHTML = `<img class="pvi" src="${esc(oimg(p,i))}" alt=""><div class="fq">${esc(p.options[i])}</div><button class="btn btn-primary" id="pv-ok">이 후보에 투표</button><button class="btn" id="pv-x">닫기</button>`;
+    document.body.appendChild(ov); ov.querySelector('#pv-ok').onclick = () => { ov.remove(); res(true); }; ov.querySelector('#pv-x').onclick = () => { ov.remove(); res(false); }; });
   $('#g-poll').addEventListener('click', async e => { const b = e.target.closest('.opt'); if(!b) return; const p = S.polls.find(x=>x.open); if(!p) return;
+    if(oimg(p, Number(b.dataset.i)) && !(await confirmImg(p, Number(b.dataset.i)))) return;
     const m = await ensureMe(); if(!m) return; renderWho(); const i = Number(b.dataset.i);
     try { await setDoc(doc(db,'polls',p.id,'votes',m.pid), { option:i, at: serverTimestamp() }); myVote[p.id] = i; try { localStorage.setItem('hc_vote_'+p.id, String(i)); } catch(err){} try { navigator.vibrate?.(15); } catch(err){} }
     catch(err){ try { const d = await getDoc(doc(db,'polls',p.id,'votes',m.pid)); if(d.exists()){ myVote[p.id] = d.data().option; say('이미 투표하셨어요'); } else say('다시 시도해 주세요'); } catch(e2){ say('다시 시도해 주세요'); } }
@@ -794,7 +811,7 @@ function adminMain(){
   // 선택지는 칸마다 하나. Enter = 다음 칸 추가, × = 칸 삭제 (2~10개)
   const optBox = $('#a-opts');
   const addOpt = (focus) => { const n = optBox.children.length; if(n >= 10) return; const d = document.createElement('div'); d.style.cssText = 'display:flex;gap:6px;align-items:center;margin-bottom:6px';
-    d.innerHTML = `<input type="text" class="a-opt" placeholder="선택지 ${n+1}" aria-label="선택지 ${n+1}" style="flex:1;margin:0"><button type="button" class="btn btn-sm a-del" aria-label="선택지 삭제">×</button>`;
+    d.innerHTML = `<input type="text" class="a-opt" placeholder="선택지 ${n+1}" aria-label="선택지 ${n+1}" style="flex:1;margin:0"><input type="text" class="a-img" placeholder="이미지 주소(선택)" aria-label="선택지 ${n+1} 이미지 주소" style="flex:1;margin:0"><button type="button" class="btn btn-sm a-del" aria-label="선택지 삭제">×</button>`;
     optBox.appendChild(d); renum(); if(focus) d.querySelector('input').focus(); };
   const renum = () => { [...optBox.children].forEach((d, i) => { d.querySelector('input').placeholder = `선택지 ${i+1}`; d.querySelector('.a-del').hidden = optBox.children.length <= 2; }); $('#a-add').hidden = optBox.children.length >= 10; };
   const resetOpts = () => { optBox.innerHTML = ''; addOpt(); addOpt(); };
@@ -802,7 +819,7 @@ function adminMain(){
   $('#a-add').onclick = () => addOpt(true);
   optBox.addEventListener('click', e => { const b = e.target.closest('.a-del'); if(!b || optBox.children.length <= 2) return; b.parentElement.remove(); renum(); });
   optBox.addEventListener('keydown', e => { if(e.key !== 'Enter' || e.isComposing) return; e.preventDefault(); const row = e.target.closest('div'); if(row === optBox.lastElementChild) addOpt(true); else row.nextElementSibling.querySelector('input').focus(); });
-  $('#a-pf').addEventListener('submit', async e => { e.preventDefault(); const qq = $('#a-pq').value.trim(), options = [...optBox.querySelectorAll('.a-opt')].map(i=>i.value.trim()).filter(Boolean); if(!qq) return; if(options.length<2){ say('선택지를 2개 이상 입력해 주세요'); return; } await addDoc(collection(db,'polls'), { q:qq, options, open:false, show:false, createdAt: serverTimestamp() }); $('#a-pq').value=''; resetOpts(); });
+  $('#a-pf').addEventListener('submit', async e => { e.preventDefault(); const qq = $('#a-pq').value.trim(), rows = [...optBox.children].map(d => [d.querySelector('.a-opt').value.trim(), d.querySelector('.a-img').value.trim()]).filter(r => r[0]), options = rows.map(r => r[0]), imgs = rows.map(r => r[1]); if(!qq) return; if(options.length<2){ say('선택지를 2개 이상 입력해 주세요'); return; } await addDoc(collection(db,'polls'), { q:qq, options, ...(imgs.some(Boolean) ? { imgs } : {}), open:false, show:false, createdAt: serverTimestamp() }); $('#a-pq').value=''; resetOpts(); });
   render.polls = () => { $('#a-pl').innerHTML = S.polls.map(p=>`<section class="card"><b>${esc(p.q)}</b> <span class="muted">${p.open?'진행 중':'닫힘'}${p.show?' · 결과 공개 중 (휴대폰 전체 화면)':''}</span>${bars(p)}<p class="muted">${counts(p).total}명</p><div class="row"><button class="btn btn-sm btn-primary" data-a="open" data-id="${esc(p.id)}">${p.open?'닫기':'열기'}</button><button class="btn btn-sm" data-a="show" data-id="${esc(p.id)}">${p.show?'결과 내리기':'결과 공개'}</button><button class="btn btn-sm" data-a="del" data-id="${esc(p.id)}">삭제</button></div></section>`).join(''); };
   $('#a-pl').addEventListener('click', async e => { const b = e.target.closest('button'); if(!b) return; const p = S.polls.find(x=>x.id===b.dataset.id); if(!p) return; const ref = doc(db,'polls',p.id);
     if(b.dataset.a==='open'){ if(!p.open){ for(const o of S.polls) if((o.open || o.show) && o.id!==p.id) await updateDoc(doc(db,'polls',o.id),{open:false,show:false}); /* 앞 투표 결과가 공개된 채면 새 투표를 덮으므로 함께 내림 */ await updateDoc(ref,{open:true,show:false}); } else await updateDoc(ref,{open:false}); }
