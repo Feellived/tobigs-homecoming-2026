@@ -492,7 +492,7 @@ function qa(){
   <section class="card"><div class="eyebrow">ALUMNI SESSION</div><h2>연사님께 묻고 싶은 것</h2>
     <div class="who" id="g-who"></div>
     <form id="g-form"><div class="to" id="g-to"><span class="tl">누구에게 묻나요?</span><button type="button" class="on" data-to="">모두에게</button>${SPK.map(x=>`<button type="button" class="${roleCls(x)}" data-to="${esc(x.name)}">${esc(x.name)}</button>`).join('')}</div>
-    <textarea id="g-text" aria-label="질문 내용" maxlength="200" placeholder="(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?" required></textarea>
+    <textarea id="g-text" aria-label="질문 내용" maxlength="500" placeholder="(예시) 투빅스 끝나고 첫 직장은 어떻게 구하셨나요?" required></textarea>
     <button class="btn btn-primary" type="submit" id="g-submit" style="width:100%;margin-top:6px">질문 게시하기</button></form></section>
   <section class="card"><div class="row qh"><div class="eyebrow" style="margin:0">QUESTIONS</div><div class="seg" id="g-sort"><button type="button" data-s="top" class="on">추천순</button><button type="button" data-s="new">최신순</button></div></div>
     <div class="chips" id="g-filter"><button type="button" data-f="*" class="on">전체</button><button type="button" data-f="">모두에게</button>${SPK.map(x=>`<button type="button" class="${roleCls(x)}" data-f="${esc(x.name)}">${esc(x.name)}</button>`).join('')}</div>

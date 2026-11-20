@@ -24,7 +24,7 @@ service cloud.firestore {
       allow create: if qid.matches('^[A-Za-z0-9]{20}$')
         && request.resource.data.keys().hasOnly(['gen','text','name','voters','createdAt','hidden','answered','client'])
         && request.resource.data.text is string
-        && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 200
+        && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 500
         && request.resource.data.gen is string && request.resource.data.gen.size() <= 10
         && request.resource.data.name is string && request.resource.data.name.size() <= 20
         && request.resource.data.client is string && request.resource.data.client.size() <= 64
